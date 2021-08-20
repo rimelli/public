@@ -8,6 +8,6 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 
-$con = new PDO("mysql:host=$servername;dbname=social", $username, $password);
+$con = new PDO("mysql:host=$servername;dbname=dbtest", $username, $password);
 
 ?>
