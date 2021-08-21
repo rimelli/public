@@ -26,6 +26,8 @@ include("includes/classes/Notification.php");
 <!-- Javascript
 ================================================== -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.js"></script>
 <script src="assets/js/tryouts.js"></script>
 <script src="assets/js/jquery.Jcrop.js"></script>
 <script src="assets/js/jcrop_bits.js"></script>

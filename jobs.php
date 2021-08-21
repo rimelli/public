@@ -29,6 +29,15 @@ if (isset($_GET['page'])) {
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/colors/blue.css">
 
+<style type="text/css">
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+</style>
+
 </head>
 <body class="gray">
 
@@ -65,75 +74,75 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
                     <!-- Category -->
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <input type="text" value="" class="with-border" name="job_title" id="job_title" placeholder="Type Job Title..." autocomplete="off">
+                        <input type="text" value="" class="with-border job_check" name="job_title" id="job_title" placeholder="Type Job Title..." autocomplete="off">
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <select class="selectpicker with-border job_check" name="job_position" data-size="7">
+                        <select class="selectpicker with-border job_check" name="job_position" id="job_position" data-size="7">
                           <option value="" selected>Select Job Position</option>
-                          <option value="Player" id="job_position">Player</option>
-                          <option value="Head Coach" id="job_position">Head Coach</option>
-                          <option value="Assistant Coach" id="job_position">Assistant Coach</option>
-                          <option value="Physical Trainer" id="job_position">Physical Trainer</option>
-                          <option value="Physiotherapist" id="job_position">Physiotherapist</option>
-                          <option value="Goalkeeper Coach" id="job_position">Goalkeeper Coach</option>
-                          <option value="Analyst" id="job_position">Analyst</option>
-                          <option value="Other" id="job_position">Other</option>
+                          <option value="Player">Player</option>
+                          <option value="Head Coach">Head Coach</option>
+                          <option value="Assistant Coach">Assistant Coach</option>
+                          <option value="Physical Trainer">Physical Trainer</option>
+                          <option value="Physiotherapist">Physiotherapist</option>
+                          <option value="Goalkeeper Coach">Goalkeeper Coach</option>
+                          <option value="Analyst">Analyst</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <select class="selectpicker with-border job_check" name="job_category" data-size="7">
+                        <select class="selectpicker with-border job_check" name="job_category" id="job_category" data-size="7">
                           <option value="" selected>Select Category</option>
-                          <option value="Full Time" id="job_category">Full Time</option>
-                          <option value="Freelance" id="job_category">Freelance</option>
-                          <option value="Part Time" id="job_category">Part Time</option>
-                          <option value="Internship" id="job_category">Internship</option>
-                          <option value="Temporary" id="job_category">Temporary</option>
+                          <option value="Full Time">Full Time</option>
+                          <option value="Freelance">Freelance</option>
+                          <option value="Part Time">Part Time</option>
+                          <option value="Internship">Internship</option>
+                          <option value="Temporary">Temporary</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <select class="selectpicker with-border job_check" name="job_type" data-size="7">
+                        <select class="selectpicker with-border job_check" id="job_type" name="job_type" data-size="7">
                           <option value="" selected>Select Job Type</option>
-                          <option value="Onsite" id="job_type">Onsite</option>
-                          <option value="Remote" id="job_type">Remote</option>
-                          <option value="Any" id="job_type">Any</option>
-                          <option value="Both" id="job_type">Both</option>
+                          <option value="Onsite">Onsite</option>
+                          <option value="Remote">Remote</option>
+                          <option value="Any">Any</option>
+                          <option value="Both">Both</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <select class="selectpicker with-border job_check" name="job_sport" data-size="7">
+                        <select class="selectpicker with-border job_check" name="job_sport" id="job_sport" data-size="7">
                           <option value="" selected>Select Job Sport</option>
-                          <option value="Football" id="job_sport">Football</option>
+                          <option value="Football">Football</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <select class="selectpicker with-border job_check" name="job_country" data-size="7" data-live-search="true">
+                        <select class="selectpicker with-border job_check" id="job_country" name="job_country" data-size="7" data-live-search="true">
                           <option value="" selected>Select Job Country</option>
-                          <option value="England" id="job_country">England</option>
-                          <option value="Northern Ireland" id="job_country">Northern Ireland</option>
-                          <option value="Scotland" id="job_country">Scotland</option>
-                          <option value="Wales" id="job_country">Wales</option>
+                          <option value="England">England</option>
+                          <option value="Northern Ireland">Northern Ireland</option>
+                          <option value="Scotland">Scotland</option>
+                          <option value="Wales">Wales</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <input type="text" value="" class="with-border" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
+                        <input style="display:none" type="text" value="" class="with-border" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
                       </div>
                     </div>
 
@@ -142,13 +151,13 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
                         <div class="row">
                       <div class="col-xl-6">
                         <div class="input-with-icon">
-                          <input class="with-border" name="reg_jobsalarymin" type="text" placeholder="Min">
+                          <input class="with-border job_check" id="job_salary_min" name="job_salary_min" type="number" placeholder="Min">
                           <i class="currency">GBP</i>
                         </div>
                       </div>
                       <div class="col-xl-6">
                         <div class="input-with-icon">
-                          <input class="with-border" name="reg_jobsalarymax" type="text" placeholder="Max">
+                          <input class="with-border job_check" id="job_salary_max" name="job_salary_max" type="number" placeholder="Max">
                           <i class="currency">GBP</i>
                         </div>
                       </div>
@@ -156,13 +165,13 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
                     <div class="feedback-yes-no margin-top-0">
                       <div class="radio job_check">
-                        <input id="radio-1" name="job_salary" type="radio" value="Fixed">
-                        <label for="radio-1"><span class="radio-label"></span> Fixed Salary</label>
+                        <input id="job_salary_fixed" class="job_check" name="job_salary" type="radio" value="Fixed">
+                        <label for="job_salary_fixed"><span class="radio-label"></span> Fixed Salary</label>
                       </div>
 
                       <div class="radio job_check">
-                        <input id="radio-2" name="job_salary" type="radio" value="Hourly">
-                        <label for="radio-2"><span class="radio-label"></span> Hourly Salary</label>
+                        <input id="job_salary_hourly" class="job_check" name="job_salary" type="radio" value="Hourly">
+                        <label for="job_salary_hourly"><span class="radio-label"></span> Hourly Salary</label>
                       </div>
                     </div>
                       </div>
@@ -191,7 +200,7 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
         <div class="sort-by">
           <span>Sort by:</span>
-          <select class="selectpicker hide-tick">
+          <select class="selectpicker hide-tick job_check" id="sort">
             <option>Relevance</option>
             <option>Newest</option>
             <option>Oldest</option>
@@ -295,24 +304,22 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
                 <?php
 
                 if($page >= 2){
-                    echo "<li class='pagination-arrow'><a href='jobs.php?page=".($page-1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-left'></i></a></li>";
+                    echo "<li class='pagination-arrow'><a href=\"#\" data-page='".($page-1)."' class=\"ripple-effect pag_go\"><i class='icon-material-outline-keyboard-arrow-left'></i></a></li>";
                 }
                 
                 for ($i=1; $i<=$total_pages; $i++) {   
                   if ($i == $page) {   
-                      $pageLink .= "<li><a class = 'current-page' href='jobs.php?page="  
-                                                        .$i."'>".$i." </a></li>";   
+                      $pageLink .= "<li><a class=\"current-page pag_go\" href=\"#\" data-page='". $i. "'>".$i." </a></li>";   
                   }               
                   else  {   
-                      $pageLink .= "<li><a href='jobs.php?page=".$i."'>   
-                                                        ".$i." </a></li>";     
+                      $pageLink .= "<li><a class=\"pag_go\" href=\"#\" data-page='". $i. "'>".$i." </a></li>";     
                   }   
                 };
                 echo $pageLink;
                 
                 
                 if($page < $total_pages){
-                    echo "<li class='pagination-arrow'><a href='jobs.php?page=".($page+1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-right'></i></a></li>";
+                    echo "<li class='pagination-arrow'><a ref=\"#\" class=\"pag_go\" data-page='".($page+1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-right'></i></a></li>";
                 }
                 ?>
               </ul>
@@ -340,6 +347,7 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 ================================================== -->
 <script src="assets/js/jquery-3.5.1.min.js"></script>
 <script src="assets/js/jquery-migrate-3.3.1.min.js"></script>
+<script src="assets/js/jquery.autocomplete.min.js"></script>
 <script src="assets/js/mmenu.min.js"></script>
 <script src="assets/js/tippy.all.min.js"></script>
 <script src="assets/js/simplebar.min.js"></script>
@@ -354,43 +362,76 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
 
 <script>
-  $(document).ready(function() {
+let page = <?php echo $page; ?>;
 
-      $(".job_check").on('change', function() {
+function filter_query(e, reset_page = true){	
+	let items = [
+		'job_title', 'job_position', 'job_category', 'job_type', 'job_sport', 'job_country', 
+		'job_city', 'job_salary_min', 'job_salary_max', 'sort'], 
+	data = {'job_filter': true};
 
-        var job_filter = 'data';
-        var job_title = get_filter_text('job_title');
-        var job_position = get_filter_text('job_position');
-        var job_category = get_filter_text('job_category');
-        var job_type = get_filter_text('job_type');
-        var job_sport = get_filter_text('job_sport');
-        var job_country = get_filter_text('job_country');
-        var job_city = get_filter_text('job_city');
-        var job_salary = get_filter_text('job_salary');
+	//  Resets job_city on job_country change
+	if (e && $(e.target).attr('id') == 'job_country'){
+		$(`#job_city`).val('');
+	}
 
-        $.ajax({
-          url:'filter_jobs.php',
-          method:'POST',
-          data:{job_filter:job_filter,job_title:job_title,job_position:job_position,job_category:job_category,job_type:job_type,job_sport:job_sport,job_country:job_country,job_city:job_city,job_salary:job_salary},
-          success:function(response){
-            $("#results").html(response);
-          }
-        });
+	//  Shows or hide job_city
+	if ($(`#job_country`).val().length){
+		$(`#job_city`).show();	
 
-      });
-      
-      function get_filter_text(text_id) {
-        var filterData = [];
-        $('#'+text_id+':checked').each(function() {
-            filterData.push($(this).val());
-        });
-        $('#'+text_id+':selected').each(function() {
-            filterData.push($(this).val());
-        });
-        return filterData;
-      }
+		$('#job_city').autocomplete({
+			serviceUrl: 'includes/handlers/ajax_search_cities.php?country=' + $(`#job_country`).val(),
+			onSelect: function (suggestion) {
+				$(`#job_city`).val(suggestion['data']);
+				filter_query($(this));
+			}
+		});
+	}else{
+		$(`#job_city`).val('');
+		$(`#job_city`).hide();
+	}
 
-  });
+	//  Loop through all elements
+	items.forEach(i => {
+		if ($(`#${i}`).val().length){
+			data[i] = $(`#${i}`).val();
+		}		
+	});	
+
+	//  Job salary checkbox
+	if ($('#job_salary_fixed').prop('checked')){
+		data['job_salary'] = 'Fixed';
+	}else if ($('#job_salary_hourly').prop('checked')){
+		data['job_salary'] = 'Hourly';
+	}	
+	
+	data['page'] = reset_page ? 1 : page;
+
+	$.ajax({
+        url:'filter_jobs.php',
+        	method: 'POST',
+         	data: data,
+         	success: function(response){
+        		$("#results").html(response);
+    		}
+    });	
+
+}
+
+function pag_go(event){
+	event.preventDefault();
+	let newPage = $(event.target).data('page');
+	if (newPage != page){
+		page = newPage;
+		filter_query(event, false);
+	}
+
+}
+
+$(document).ready(function() {
+	$(".job_check").on('change', filter_query);	
+	$(document).on('click', '.pag_go', pag_go);	
+});
 </script>
 
 

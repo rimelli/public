@@ -3,44 +3,37 @@ require 'config/config.php';
 
 
 if (isset($_POST['job_filter'])) {
-	$sql = "SELECT jobs.*, users.* FROM jobs INNER JOIN users ON jobs.user_id=users.user_id WHERE users.user_closed='no' AND jobs.job_deleted='no'";
+	$sql = "SELECT jobs.*, users.* FROM jobs INNER JOIN users ON jobs.user_id=users.user_id WHERE users.user_closed='no' AND jobs.job_deleted='no' ";
 
-  if (isset($_POST['job_title'])) {
-    $job_title = implode("','", $_POST['job_title']);
-    $sql .="AND jobs.job_title IN('".$job_title."')";
-  }
-  if (isset($_POST['job_position'])) {
-    $job_position = implode("','", $_POST['job_position']);
-    $sql .="AND jobs.job_position IN('".$job_position."')";
-  }
-  if (isset($_POST['job_category'])) {
-    $job_category = implode("','", $_POST['job_category']);
-    $sql .="AND jobs.job_category IN('".$job_category."')";
-  }
-  if (isset($_POST['job_type'])) {
-    $job_type = implode("','", $_POST['job_type']);
-    $sql .="AND jobs.job_type IN('".$job_type."')";
-  }
-  if (isset($_POST['job_sport'])) {
-    $job_sport = implode("','", $_POST['job_sport']);
-    $sql .="AND jobs.job_sport IN('".$job_sport."')";
-  }
-  if (isset($_POST['job_country'])) {
-    $job_country = implode("','", $_POST['job_country']);
-    $sql .="AND jobs.job_country IN('".$job_country."')";
-  }
-  if (isset($_POST['job_city'])) {
-    $job_city = implode("','", $_POST['job_city']);
-    $sql .="AND jobs.job_city IN('".$job_city."')";
-  }
-  if (isset($_POST['job_salary'])) {
-    $job_salary = implode("','", $_POST['job_salary']);
-    $sql .="AND jobs.job_salary IN('".$job_salary."')";
-  }
+	$items = ['job_position', 'job_category', 'job_type', 'job_sport', 'job_country', 'job_city', 'job_salary'];
 
+	foreach ($items as $item){
+		if (isset($_POST[$item])) {	
+			if (is_array($_POST[$item])){	
+				$sql .= sprintf("AND jobs.%s IN('%s') ", $item, implode("','", $_POST[$item]));
+			}else{
+				$sql .= sprintf("AND jobs.%s IN('%s') ", $item, implode("','", explode(',', $_POST[$item])));
+			}
+		}
+	} 
+
+	//  Job title search
+	if (isset($_POST['job_title'])){
+		$sql .= sprintf("AND (jobs.job_title LIKE '%%%s' OR jobs.job_title LIKE '%%%s%%' OR jobs.job_title LIKE '%s%%') ", $_POST['job_title'], $_POST['job_title'], $_POST['job_title']);
+	}
+
+	//  Job salary min/max	
+	if (isset($_POST['job_salary_min'])){
+		$sql .= sprintf("AND jobs.job_salary_min >= %d ", $_POST['job_salary_min']);
+	}
+	if (isset($_POST['job_salary_max'])){
+		$sql .= sprintf("AND jobs.job_salary_max <= %d ", $_POST['job_salary_max']);
+	}
 
   if (isset($_GET['page'])) {
     $page = $_GET['page'];
+  }elseif (isset($_POST['page'])) {
+	$page = $_POST['page'];
   } else {
       $page = 1;
   }
@@ -49,6 +42,23 @@ if (isset($_POST['job_filter'])) {
 
   $all_query = $con->query($sql);
   $count_all = $all_query->rowCount();
+
+  // Sort
+  if (isset($_POST['sort'])){
+	  switch($_POST['sort']){
+		case 'Relevance':
+			//  Don't know how to order when it's Relevance
+			break;
+		case 'Newest':
+			$sql .= 'ORDER BY jobs.id DESC ';
+			break;
+		case 'Oldest':
+			break;
+			$sql .= 'ORDER BY jobs.id ASC ';
+		case 'Random':
+			$sql .= 'ORDER BY RAND() ';
+	  }
+  }
 
   $sql .="LIMIT $offset, $no_of_records_per_page";
 
@@ -63,15 +73,7 @@ if (isset($_POST['job_filter'])) {
     $total_pages = ceil($count_all / $no_of_records_per_page);
     $rows = $result->fetchAll();
     $output .='<h3 class="padding-10 filter-title">'.$count_all . " " . "Results" .'</h3>';
-    for ($i=1; $i<=$total_pages; $i++) {   
-      if ($i == $page) {   
-          $pageLink .= "<li><a class='current-page' href='jobs.php?page=".$i."'>".$i." </a></li>";   
-      }               
-      else  {   
-          $pageLink .= "<li><a href='jobs.php?page=".$i."'>".$i." </a></li>";     
-      }   
-    };
-
+    
 		foreach ($rows as $row) {
       
       $date_time = $row['job_post_date'];
@@ -156,16 +158,25 @@ if (isset($_POST['job_filter'])) {
 
   echo "<div class='pagination-container margin-top-40 margin-bottom-60'>
             <nav class='pagination'>
-              <ul>";
+              <ul>";			  
 
-  if ($page >= 2) {
-      echo "<li class='pagination-arrow'><a href='jobs.php?page=".($page-1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-left'></i></a></li>";
-  }
-  echo $pageLink;
-
-  if($page < $total_pages){
-      echo "<li class='pagination-arrow'><a href='jobs.php?page=".($page+1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-right'></i></a></li>";
-  }
+			  if($page >= 2){
+				  echo "<li class='pagination-arrow'><a href=\"#\" data-page='".($page-1)."' class=\"ripple-effect pag_go\"><i class='icon-material-outline-keyboard-arrow-left'></i></a></li>";
+			  }
+			  
+			  for ($i=1; $i<=$total_pages; $i++) {   
+				if ($i == $page) {   
+					echo "<li><a class=\"current-page pag_go\" href=\"#\" data-page='". $i. "'>".$i." </a></li>";   
+				}               
+				else  {   
+					echo "<li><a class=\"pag_go\" href=\"#\" data-page='". $i. "'>".$i." </a></li>";     
+				}   
+			  };	  
+			  
+			  
+			  if($page < $total_pages){
+				  echo "<li class='pagination-arrow'><a ref=\"#\" class=\"pag_go\" data-page='".($page+1)."' class='ripple-effect'><i class='icon-material-outline-keyboard-arrow-right'></i></a></li>";
+			  }			 
 
   echo "</ul>
       </nav>
