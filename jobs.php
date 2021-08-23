@@ -74,7 +74,7 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
                     <!-- Category -->
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <input type="text" value="" class="with-border job_check" name="job_title" id="job_title" placeholder="Type Job Title..." autocomplete="off">
+                        <input type="text" value="" class="with-border job_check_keyup" name="job_title" id="job_title" placeholder="Type Job Title..." autocomplete="off">
                       </div>
                     </div>
 
@@ -151,13 +151,13 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
                         <div class="row">
                       <div class="col-xl-6">
                         <div class="input-with-icon">
-                          <input class="with-border job_check" id="job_salary_min" name="job_salary_min" type="number" placeholder="Min">
+                          <input class="with-border job_check_keyup" id="job_salary_min" name="job_salary_min" type="number" placeholder="Min">
                           <i class="currency">GBP</i>
                         </div>
                       </div>
                       <div class="col-xl-6">
                         <div class="input-with-icon">
-                          <input class="with-border job_check" id="job_salary_max" name="job_salary_max" type="number" placeholder="Max">
+                          <input class="with-border job_check_keyup" id="job_salary_max" name="job_salary_max" type="number" placeholder="Max">
                           <i class="currency">GBP</i>
                         </div>
                       </div>
@@ -430,6 +430,7 @@ function pag_go(event){
 
 $(document).ready(function() {
 	$(".job_check").on('change', filter_query);	
+	$(".job_check_keyup").on('keyup', filter_query);
 	$(document).on('click', '.pag_go', pag_go);	
 });
 </script>
