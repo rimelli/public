@@ -142,7 +142,7 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <input style="display:none" type="text" value="" class="with-border" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
+                        <input style="display:none" type="text" value="" class="with-border job_check" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
                       </div>
                     </div>
 

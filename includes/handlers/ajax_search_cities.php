@@ -21,9 +21,9 @@ try{
         // execute the prepared statement
         $stmt->execute();
 		$return = ['suggestions' => []];
-        if($stmt->rowCount() > 0){
+        if($stmt->rowCount() > 0){		
             while($row = $stmt->fetch()){				
-				$return['suggestions'][] = ['data' => $row["name"], 'value' => $row["name"]];               
+				$return['suggestions'][] = ['data' => $row["name"], 'value' => sprintf('%s, %s', $row["name"], $row["county"])];               
             }
         } 
 
