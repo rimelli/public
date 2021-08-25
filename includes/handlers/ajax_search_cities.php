@@ -22,8 +22,9 @@ try{
         $stmt->execute();
 		$return = ['suggestions' => []];
         if($stmt->rowCount() > 0){		
-            while($row = $stmt->fetch()){				
-				$return['suggestions'][] = ['data' => $row["name"], 'value' => sprintf('%s, %s', $row["name"], $row["county"])];               
+            while($row = $stmt->fetch()){		
+				$v = sprintf('%s, %s', $row["name"], $row["county"]);	
+				$return['suggestions'][] = ['data' => $v, 'value' => $v];               
             }
         } 
 

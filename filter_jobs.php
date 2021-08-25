@@ -5,7 +5,7 @@ require 'config/config.php';
 if (isset($_POST['job_filter'])) {
 	$sql = "SELECT jobs.*, users.* FROM jobs INNER JOIN users ON jobs.user_id=users.user_id WHERE users.user_closed='no' AND jobs.job_deleted='no' ";
 
-	$items = ['job_position', 'job_category', 'job_type', 'job_sport', 'job_country', 'job_city', 'job_salary'];
+	$items = ['job_position', 'job_category', 'job_type', 'job_sport', 'job_country', 'job_salary'];
 
 	foreach ($items as $item){
 		if (isset($_POST[$item])) {	
@@ -20,6 +20,17 @@ if (isset($_POST['job_filter'])) {
 	//  Job title search
 	if (isset($_POST['job_title'])){
 		$sql .= sprintf("AND (jobs.job_title LIKE '%%%s' OR jobs.job_title LIKE '%%%s%%' OR jobs.job_title LIKE '%s%%') ", $_POST['job_title'], $_POST['job_title'], $_POST['job_title']);
+	}
+
+	//  Job city
+	if (isset($_POST['job_city'])){
+		if (strpos($_POST['job_city'], ',') === FALSE){
+			$sql .= sprintf("AND jobs.job_city = '%s' ", trim($_POST['job_city']));
+		}else{
+			$city = explode(',', $_POST['job_city']);
+			$sql .= sprintf("AND jobs.job_city = '%s' AND jobs.job_county = '%s' ", trim($city[0]), trim($city[1]));
+		}
+
 	}
 
 	//  Job salary min/max	
