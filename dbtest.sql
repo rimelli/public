@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 20, 2021 at 03:49 PM
+-- Generation Time: Oct 16, 2021 at 12:21 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -24,6 +24,48 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL,
+  `post_body` text NOT NULL,
+  `posted_by` varchar(60) NOT NULL,
+  `posted_to` varchar(60) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `removed` varchar(3) NOT NULL,
+  `post_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `individuals`
+--
+
+CREATE TABLE `individuals` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `coach` varchar(4) NOT NULL,
+  `scout` varchar(4) NOT NULL,
+  `agent` varchar(4) NOT NULL,
+  `birth` date NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  `country_based` varchar(100) NOT NULL,
+  `city_based` varchar(100) NOT NULL,
+  `county_based` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `individuals`
+--
+
+INSERT INTO `individuals` (`id`, `user_id`, `coach`, `scout`, `agent`, `birth`, `gender`, `country_based`, `city_based`, `county_based`) VALUES
+(8, 34, 'yes', 'no', 'no', '0000-00-00', 'M', 'England', 'Wilmslow', 'Cheshire');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jobs`
 --
 
@@ -37,6 +79,7 @@ CREATE TABLE `jobs` (
   `job_sport` varchar(50) NOT NULL,
   `job_country` varchar(50) NOT NULL,
   `job_city` varchar(100) NOT NULL,
+  `job_county` varchar(100) NOT NULL,
   `job_salary` varchar(50) NOT NULL,
   `job_salary_min` int(11) NOT NULL,
   `job_salary_max` int(11) NOT NULL,
@@ -44,6 +87,8 @@ CREATE TABLE `jobs` (
   `employer_email` varchar(50) NOT NULL,
   `employer_website` varchar(50) NOT NULL,
   `job_post_date` date NOT NULL,
+  `job_exp_date` date NOT NULL,
+  `job_status` varchar(50) NOT NULL,
   `job_deleted` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -51,12 +96,180 @@ CREATE TABLE `jobs` (
 -- Dumping data for table `jobs`
 --
 
-INSERT INTO `jobs` (`id`, `user_id`, `job_title`, `job_position`, `job_category`, `job_type`, `job_sport`, `job_country`, `job_city`, `job_salary`, `job_salary_min`, `job_salary_max`, `job_description`, `employer_email`, `employer_website`, `job_post_date`, `job_deleted`) VALUES
-(1, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', 'no'),
-(2, 34, 'Coach', 'Head coach', 'Part time', 'Remote', 'Football', 'Northern ireland', 'Belfast', 'Hourly', 200, 400, '', '', '', '2021-08-17', 'no'),
-(3, 34, 'Assistant', 'Assistant Coach', 'Part time', 'Both', 'Football', 'Northern Ireland', 'Belfast', 'Fixed', 370, 560, '', '', '', '2021-08-16', 'no'),
-(4, 34, 'Trainer', 'Physical Trainer', 'Part Time', 'Remote', 'Football', 'Northern Ireland', 'Belfast', 'Hourly', 2000, 4000, '', '', '', '2021-08-19', 'no'),
-(5, 34, 'Coach', 'Head Coach', 'Full Time', 'Onsite', 'Football', 'England', 'Leeds', 'Fixed', 250, 500, '', '', '', '2021-08-12', 'no');
+INSERT INTO `jobs` (`id`, `user_id`, `job_title`, `job_position`, `job_category`, `job_type`, `job_sport`, `job_country`, `job_city`, `job_county`, `job_salary`, `job_salary_min`, `job_salary_max`, `job_description`, `employer_email`, `employer_website`, `job_post_date`, `job_exp_date`, `job_status`, `job_deleted`) VALUES
+(1, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'Woodtown', 'Devon', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(2, 34, 'Coach', 'Head coach', 'Part time', 'Remote', 'Football', 'Northern ireland', 'Belfast', '', 'Hourly', 200, 400, '', '', '', '2021-08-17', '0000-00-00', '', 'no'),
+(3, 34, 'Assistant', 'Assistant Coach', 'Part time', 'Both', 'Football', 'Northern Ireland', 'Belfast', '', 'Fixed', 370, 560, '', '', '', '2021-08-16', '0000-00-00', '', 'no'),
+(4, 34, 'Trainer', 'Physical Trainer', 'Part Time', 'Remote', 'Football', 'Northern Ireland', 'Belfast', '', 'Hourly', 2000, 4000, '', '', '', '2021-08-19', '0000-00-00', '', 'no'),
+(5, 34, 'Coach', 'Head Coach', 'Full Time', 'Onsite', 'Football', 'England', 'Leeds', '', 'Fixed', 250, 500, '', '', '', '2021-08-12', '0000-00-00', '', 'no'),
+(6, 34, 'Coach', 'Head Coach', 'Full Time', 'Onsite', 'Football', 'England', 'Leeds', '', 'Fixed', 250, 500, '', '', '', '2021-08-12', '0000-00-00', '', 'no'),
+(7, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(8, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(9, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(10, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(11, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(12, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(13, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(14, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(15, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(16, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(17, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(18, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(19, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(20, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(21, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(22, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(23, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(24, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(25, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(26, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(27, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(28, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(29, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(30, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(31, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(32, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(33, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(34, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(35, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(36, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(37, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(38, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(39, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(40, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(41, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(42, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(43, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(44, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(45, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(46, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(47, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(48, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(49, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(50, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(51, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(52, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(53, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(54, 34, 'Player', 'Player', 'Full time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 1000, 2000, '', '', '', '2021-08-18', '0000-00-00', '', 'no'),
+(55, 34, 'Test', 'Player', 'Full Time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 12, 24, 'teste', 'johnwill@gmail.com', '', '2021-10-13', '0000-00-00', 'pending', 'no'),
+(56, 34, 'Teste', 'Assistant Coach', 'Part Time', 'Onsite', 'Football', 'England', 'London', '', 'Fixed', 20, 21, 'test', 'teste@gmail.com', '', '2021-10-15', '0000-00-00', 'pending', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `likes`
+--
+
+CREATE TABLE `likes` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `user_to` varchar(50) NOT NULL,
+  `user_from` varchar(50) NOT NULL,
+  `body` text NOT NULL,
+  `date` datetime NOT NULL,
+  `opened` varchar(3) NOT NULL,
+  `viewed` varchar(3) NOT NULL,
+  `deleted` varchar(3) NOT NULL,
+  `image` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nationalities`
+--
+
+CREATE TABLE `nationalities` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `nationality` varchar(10) NOT NULL,
+  `country_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_to` int(11) NOT NULL,
+  `user_from` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `link` varchar(100) NOT NULL,
+  `datetime` datetime NOT NULL,
+  `opened` varchar(3) NOT NULL,
+  `viewed` varchar(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `organisations`
+--
+
+CREATE TABLE `organisations` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `pro_club` varchar(4) NOT NULL,
+  `amateur_club` varchar(4) NOT NULL,
+  `academy` varchar(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
+  `body` text NOT NULL,
+  `added_by` int(11) NOT NULL,
+  `user_to` int(11) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `user_closed` varchar(3) NOT NULL,
+  `deleted` varchar(3) NOT NULL,
+  `likes` int(11) NOT NULL,
+  `image` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `body`, `added_by`, `user_to`, `date_added`, `user_closed`, `deleted`, `likes`, `image`) VALUES
+(87, 'teste', 34, 34, '2021-10-12 15:22:47', 'no', 'no', 4, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `professionals`
+--
+
+CREATE TABLE `professionals` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `professionals`
+--
+
+INSERT INTO `professionals` (`id`, `user_id`) VALUES
+(5, 34);
 
 -- --------------------------------------------------------
 
@@ -713,8 +926,12 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `signup_date` date NOT NULL,
   `profile_pic` varchar(255) NOT NULL,
+  `profile_background` varchar(255) NOT NULL,
   `verified` varchar(4) NOT NULL,
   `sport` varchar(50) NOT NULL,
+  `website` varchar(100) NOT NULL,
+  `tagline` varchar(40) NOT NULL,
+  `about` text NOT NULL,
   `user_closed` varchar(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -722,23 +939,83 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `profile_type`, `first_name`, `last_name`, `username`, `email`, `password`, `signup_date`, `profile_pic`, `verified`, `sport`, `user_closed`) VALUES
-(19, 1, 'John', 'Williams', 'johnwilliams', 'johnwill@gmail.com', '$2y$10$Jmri6KovNVgC82kZznVwUOjUB4zyIYxIhSIKDuC/XeFQqFYV02KcK', '2021-03-08', '', 'yes', 'Football', 'no'),
-(33, 1, 'Justin', 'Schneider', 'justinschneider', 'justinsch@gmail.com', '$2y$10$ZloEUGEINyNvdQP8.1QLh.BPlQMEGHEuxKl./3w3bFGiUCa/Zeix6', '2021-06-15', '', 'yes', 'Football', 'no'),
-(34, 1, 'Daniel', 'Elkins', 'danielelkins', 'danielelk@live.fr', '$2y$10$hvdjdpNjmimhngCZ/3YzveDslX1Cts21rkU6Q9cbYa/1012E0Hgui', '2021-06-16', '', 'yes', 'Football', 'no'),
-(35, 1, 'Victor', 'Duenas', 'victorduenas', 'victorduenas@gmail.com', '$2y$10$MkELX9AJ3HqOqQYpxUozIuzfdfWaERffi.WhrXHgNqnGKxnM723cy', '2021-06-16', '', 'yes', 'Football', 'no'),
-(36, 1, 'James', 'Crawford', 'jamescrawford', 'jamescraw@gmail.com', '$2y$10$0h4aeA6Sl.S7KsZ/NfOBq.keZ54KtX40tGH9e0uMpgwAnif1cwLAi', '2021-07-23', '', 'yes', 'Football', 'no'),
-(37, 1, 'Chris', 'Tate', 'christate', 'christate@gmail.com', '$2y$10$h8tkWyCwpNUK2Pq7lY/CN.2tJzNwJ0m76vG4X1SFJSMMvXPLbikLm', '2021-07-23', '', 'yes', 'Football', 'no'),
-(38, 1, 'Jack', 'Webb', 'jackwebb', 'jackwebb@gmail.com', '$2y$10$nZ/kSU8pqq2EbEIm/TIPHe8ewaKaYjjbmhf9rTn/ZmQ6uLwlxvNq2', '2021-07-23', '', 'yes', 'Football', 'no');
+INSERT INTO `users` (`user_id`, `profile_type`, `first_name`, `last_name`, `username`, `email`, `password`, `signup_date`, `profile_pic`, `profile_background`, `verified`, `sport`, `website`, `tagline`, `about`, `user_closed`) VALUES
+(34, 1, 'Nome', 'Sobrenome', 'usernameteste', 'teste@gmail.com', '$2y$10$Jmri6KovNVgC82kZznVwUOjUB4zyIYxIhSIKDuC/XeFQqFYV02KcK', '2021-03-08', 'assets/images/profile_pics/defaults/profileimg.png', 'assets/images/profile_backgrounds/defaults/default_profile_background.jpg', 'yes', 'Football', '', '', '', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_follow`
+--
+
+CREATE TABLE `user_follow` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `following` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `individuals`
+--
+ALTER TABLE `individuals`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `jobs`
 --
 ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `nationalities`
+--
+ALTER TABLE `nationalities`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `organisations`
+--
+ALTER TABLE `organisations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `professionals`
+--
+ALTER TABLE `professionals`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -754,20 +1031,86 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`);
 
 --
+-- Indexes for table `user_follow`
+--
+ALTER TABLE `user_follow`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `individuals`
+--
+ALTER TABLE `individuals`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+
+--
+-- AUTO_INCREMENT for table `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+
+--
+-- AUTO_INCREMENT for table `nationalities`
+--
+ALTER TABLE `nationalities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `organisations`
+--
+ALTER TABLE `organisations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+
+--
+-- AUTO_INCREMENT for table `professionals`
+--
+ALTER TABLE `professionals`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT for table `user_follow`
+--
+ALTER TABLE `user_follow`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
