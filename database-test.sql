@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 23, 2021 at 08:49 AM
+-- Generation Time: Dec 23, 2021 at 10:37 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -51,6 +51,22 @@ INSERT INTO `comments` (`id`, `post_body`, `posted_by`, `posted_to`, `date_added
 (11, '567', '1', '1', '2021-12-22 16:41:24', 'no', 91),
 (12, '8', '1', '1', '2021-12-22 17:23:06', 'no', 91),
 (13, '9', '1', '1', '2021-12-22 17:32:11', 'no', 91);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments_replies`
+--
+
+CREATE TABLE `comments_replies` (
+  `id` int(11) NOT NULL,
+  `reply_body` text NOT NULL,
+  `posted_by` varchar(60) NOT NULL,
+  `posted_to` varchar(60) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `removed` varchar(3) NOT NULL,
+  `comment_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -274,6 +290,12 @@ ALTER TABLE `comments`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `comments_replies`
+--
+ALTER TABLE `comments_replies`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `individuals`
 --
 ALTER TABLE `individuals`
@@ -336,6 +358,12 @@ ALTER TABLE `user_follow`
 --
 ALTER TABLE `comments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `comments_replies`
+--
+ALTER TABLE `comments_replies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `individuals`
