@@ -1,6 +1,5 @@
 <?php  
 require 'config/config.php';
-require 'includes/form_handlers/register_handler.php';
 ?>
 
 
@@ -110,7 +109,7 @@ require 'includes/form_handlers/register_handler.php';
 				</div>
 					
 				<!-- Registration Form -->
-				<form class="registration-form login-form-style" method="POST" id="register-account-form">
+				<form class="registration-form login-form-style" id="register-account-form">
 				<input type="hidden" name="register_button" value="1" />
 					<div class="input-with-icon-left">
 						<i class="icon-material-baseline-mail-outline"></i>
@@ -152,7 +151,7 @@ require 'includes/form_handlers/register_handler.php';
 					<!-- Button -->
 					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="register_button">Sign Up <i class="icon-material-outline-arrow-right-alt"></i></button>
 				</form>
-
+                <p id="register-result" class="notification"></p>
 			</div>
 
 		</div>
@@ -237,6 +236,35 @@ $("#login-radio").click(function() {
         });
         setTimeout(function () {
             $('#login-result').text('').removeClass('error');
+        }, 3000);
+        return false;
+    });
+</script>
+<script>
+    $("#register-account-form").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: 'includes/form_handlers/register_handler.php',
+            data: $('#register-account-form').serialize(),
+            success: function (data) {
+                console.log(data);
+                let parsedData = JSON.parse(data);
+
+                if (parsedData.status === 'success') {
+                    $('#register-result').text(parsedData.message).addClass('success');
+                    console.log(`Redirecting to ${parsedData.url}`)
+                    setTimeout(function () {
+                        $('#register-result').text('').removeClass('success');
+                        window.location.href = parsedData.url;
+                    }, 3000);
+                } else {
+                    $('#register-result').text(parsedData.message).addClass('error');
+                }
+            }
+        });
+        setTimeout(function () {
+            $('#register-result').text('').removeClass('error');
         }, 3000);
         return false;
     });

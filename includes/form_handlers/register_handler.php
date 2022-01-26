@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/../../config/config.php';
 
 //Declaring variables to prevent errors
 $proftype = ""; //Profile type
@@ -60,34 +61,34 @@ if(isset($_POST['register_button'])) {
 		$num_rows = $e_check->rowCount();
 
 		if($num_rows > 0) {
-			array_push($error_array, "Email already in use<br>");
+			array_push($error_array, "Email already in use");
 		}
 
 	}
 	else{
-		array_push($error_array, "Invalid email format<br>");
+		array_push($error_array, "Invalid email format");
 	}
 
 
 	if(strlen($fname) > 25 || strlen($fname) < 2) {
-		array_push($error_array, "Your first name must be between 2 and 25 characters<br>");
+		array_push($error_array, "Your first name must be between 2 and 25 characters");
 	}
 
 	if(strlen($lname) > 25 || strlen($lname) < 2) {
-		array_push($error_array, "Your last name must be between 2 and 25 characters<br>");
+		array_push($error_array, "Your last name must be between 2 and 25 characters");
 	}
 
 	if($password != $password2) {
-		array_push($error_array, "Your passwords do not match<br>");
+		array_push($error_array, "Your passwords do not match");
 	}
 	else{
 		if(preg_match('/[^A-Za-z0-9]/', $password)) {
-			array_push($error_array, "Your password can only contain characters or numbers<br>");
+			array_push($error_array, "Your password can only contain characters or numbers");
 		}
 	}
 
 	if(strlen($password) > 30 || strlen($password) < 5) {
-		array_push($error_array, "Your password must be between 5 and 30 characters<br>");
+		array_push($error_array, "Your password must be between 5 and 30 characters");
 	}
 
 
@@ -136,8 +137,7 @@ if(isset($_POST['register_button'])) {
 		$query2->execute([$user_id]);
 
 
-
-		array_push($error_array, "<span style='color: #14C800;'>You're all set! Go ahead and login!</span><br>");
+		echo json_encode(array('status' => 'success', 'message' => "You're all set! Go ahead and login!"));
 
 		//Clear session variables
 		$_SESSION['reg_proftype'] = "";
@@ -145,6 +145,9 @@ if(isset($_POST['register_button'])) {
 		$_SESSION['reg_lname'] = "";
 		$_SESSION['reg_email'] = "";
 	}
+	else {
+	    echo json_encode(array('status' => 'error', 'message' => $error_array));
+    }
 
 }
 
