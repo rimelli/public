@@ -33,6 +33,38 @@ try{
 } catch(PDOException $e){
     die("ERROR: Could not able to execute $sql. " . $e->getMessage());
 }
+
+
+// Attempt search query execution
+try{
+    if(isset($_REQUEST["term"])){
+        // create prepared statement
+        if ($_GET["country"] == 'England') {
+            $sql = "SELECT * FROM uk_towns WHERE name LIKE :term AND country='England' LIMIT 6";
+        } elseif ($_GET["country"] == 'Northern Ireland') {
+            $sql = "SELECT * FROM uk_towns WHERE name LIKE :term AND country='Northern Ireland' LIMIT 6";
+        } elseif ($_GET["country"] == 'Scotland') {
+            $sql = "SELECT * FROM uk_towns WHERE name LIKE :term AND country='Scotland' LIMIT 6";
+        } elseif ($_GET["country"] == 'Wales') {
+            $sql = "SELECT * FROM uk_towns WHERE name LIKE :term AND country='Wales' LIMIT 6";
+        }
+        $stmt = $con->prepare($sql);
+        $term = $_REQUEST["term"] . '%';
+        // bind parameters to statement
+        $stmt->bindParam(":term", $term);
+        // execute the prepared statement
+        $stmt->execute();
+        if($stmt->rowCount() > 0){
+            while($row = $stmt->fetch()){
+                echo "<p>" . $row["name"] . ',' . ' ' . $row["county"] . "</p>";
+            }
+        } else{
+            echo "<p>No matches found</p>";
+        }
+    }  
+} catch(PDOException $e){
+    die("ERROR: Could not able to execute $sql. " . $e->getMessage());
+}
  
 // Close statement
 unset($stmt);

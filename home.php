@@ -19,7 +19,6 @@ require 'includes/form_handlers/login_handler.php';
 <!-- CSS
 ================================================== -->
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/custom.css">
 <link rel="stylesheet" href="assets/css/colors/blue.css">
 
 </head>
@@ -29,25 +28,48 @@ require 'includes/form_handlers/login_handler.php';
 <!-- Intro Banner
 ================================================== -->
 <!-- add class "disable-gradient" to enable consistent background overlay -->
-<div class="intro-banner">
+<div class="intro-banner" data-background-image="assets/images/home-background.jpg">
 	<div class="container">
 		
 		<!-- Intro Headline -->
 		<div class="row">
 			<div class="col-md-6">
-				<!-- Logo -->
-					<a href="home.php"><h1>Home</h1></a>
 			</div>
 
-			<div class="col-md-6">
-				<div class="login-div home-form-div">
-					<div class="login-headline">
-						<h3>Sign In</h3>
-					</div>
-						
-					<!-- Form -->
-					<form action="" class="login-form-style" id="login-form">
-					<div id="responselogin"></div>
+			<a href="#small-dialog" class="button ripple-effect big margin-top-20 popup-with-zoom-anim">Log in / Sign up</a>
+
+
+		</div>
+
+		
+
+	</div>
+</div>
+
+
+<!-- Log in / Sign up popup
+================================================== -->
+<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+
+	<!--Tabs -->
+	<div class="sign-in-form">
+
+		<ul class="popup-tabs-nav">
+			<li><a href="#log-in">Log in</a></li>
+			<li><a href="#register">Sign up</a></li>
+		</ul>
+
+		<div class="popup-tabs-container">
+
+			<!-- Log in Tab -->
+			<div class="popup-tab-content" id="log-in">
+				<div class="login-headline">
+					<h3>Log In</h3>
+				</div>
+
+				<!-- Log in Form -->
+				<form class="login-form login-form-style" method="POST">
+					<input type="hidden" name="login_button" value="1" />
 						<div class="input-with-icon-left">
 							<i class="icon-material-baseline-mail-outline"></i>
 							<input type="email" class="input-text with-border" name="log_email" id="emailaddress" placeholder="Email Address" value="<?php 
@@ -61,30 +83,19 @@ require 'includes/form_handlers/login_handler.php';
 							<i class="icon-material-outline-lock"></i>
 							<input type="password" class="input-text with-border" name="log_password" id="password" placeholder="Password" required/>
 						</div>
-						<a href="#" class="forgot-password">Forgot Password?</a>
 
-						<!-- Button -->
-						<div>
-							<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30 spin" id="login_button">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
-						</div>
-					</form>
-					
-					
+					<!-- Button -->
+					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="login_button">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
+				</form>
+			</div>
 
-					<div class="account-type">
-                      <div>
-                        <input type="radio" name="account-type-radio" id="login-radio" class="account-type-radio"/>
-                        <label for="login-radio" class="ripple-effect-dark"><i class="icon-material-outline-account-circle"></i>Don't have an account? <span class="login-form-label">Sign Up!</span></label>
-                      </div>
-                	</div>
+			<!-- Sign up Tab -->
+			<div class="popup-tab-content" id="register">
+				<div class="login-headline">
+					<h3>Sign Up</h3>
 				</div>
 
-
-				<div class="register-div home-form-div">
-					<div class="login-headline">
-						<h3>Register</h3>
-					</div>
-
+				<div class="margin-bottom-10" style="text-align: center; margin: auto;"><h4 style="font-weight: 600;">Choose your profile:</h4></div>
 					<!-- Account Type -->
 				<div class="account-type login-form-style">
 					<div>
@@ -99,11 +110,11 @@ require 'includes/form_handlers/login_handler.php';
 				</div>
 					
 				<!-- Registration Form -->
-				<form action=""class="login-form-style" id="register-account-form">
-				<div id="responseregister"></div>
+				<form class="registration-form login-form-style" method="POST" id="register-account-form">
+				<input type="hidden" name="register_button" value="1" />
 					<div class="input-with-icon-left">
 						<i class="icon-material-baseline-mail-outline"></i>
-						<input type="text" class="input-text with-border" name="reg_fname" id="firstname-register" placeholder="First Name" value="<?php 
+						<input type="text" class="input-text with-border" name="reg_fname" placeholder="First Name" value="<?php 
                             if(isset($_SESSION['reg_fname'])) {
                                 echo $_SESSION['reg_fname'];
                             } 
@@ -112,7 +123,7 @@ require 'includes/form_handlers/login_handler.php';
 
 					<div class="input-with-icon-left">
 						<i class="icon-material-baseline-mail-outline"></i>
-						<input type="text" class="input-text with-border" name="reg_lname" id="lastname-register" placeholder="Last Name" value="<?php 
+						<input type="text" class="input-text with-border" name="reg_lname" placeholder="Last Name" value="<?php 
                             if(isset($_SESSION['reg_lname'])) {
                                 echo $_SESSION['reg_lname'];
                             } 
@@ -121,7 +132,7 @@ require 'includes/form_handlers/login_handler.php';
 
 					<div class="input-with-icon-left">
 						<i class="icon-material-baseline-mail-outline"></i>
-						<input type="text" class="input-text with-border" name="reg_email" id="emailaddress-register" placeholder="Email Address" value="<?php 
+						<input type="text" class="input-text with-border" name="reg_email" placeholder="Email Address" value="<?php 
                             if(isset($_SESSION['reg_email'])) {
                                 echo $_SESSION['reg_email'];
                             } 
@@ -130,51 +141,30 @@ require 'includes/form_handlers/login_handler.php';
 
 					<div class="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
 						<i class="icon-material-outline-lock"></i>
-						<input type="password" class="input-text with-border" name="reg_password" id="password-register" placeholder="Password" required/>
+						<input type="password" class="input-text with-border" name="reg_password" placeholder="Password" required/>
 					</div>
 
 					<div class="input-with-icon-left">
 						<i class="icon-material-outline-lock"></i>
-						<input type="password" class="input-text with-border" name="reg_password2" id="password-repeat-register" placeholder="Repeat Password" required/>
+						<input type="password" class="input-text with-border" name="reg_password2" placeholder="Repeat Password" required/>
 					</div>
 
 					<!-- Button -->
-					<div>
-						<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" id="register_button">Register <i class="icon-material-outline-arrow-right-alt"></i></button>
-					</div>
+					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="register_button">Sign Up <i class="icon-material-outline-arrow-right-alt"></i></button>
 				</form>
-
-					<div class="account-type">
-                      <div>
-                        <input type="radio" name="account-type-radio" id="register-radio" class="account-type-radio"/>
-                        <label for="register-radio" class="ripple-effect-dark"><i class="icon-material-outline-account-circle"></i>Already have an account? <span class="login-form-label">Log In!</span></label>
-                      </div>
-                	</div>
-				</div>
-
-				
 
 			</div>
 
 		</div>
-
-		
-
 	</div>
 </div>
-
-
-
+<!-- Log in / Sign up popup / End -->
 
 
 <!-- Scripts
 ================================================== -->
 <script src="assets/js/jquery-3.5.1.min.js"></script>
 <script src="assets/js/jquery-migrate-3.3.1.min.js"></script>
-<script src="assets/js/xhr/jquery.form.min.js"></script>
-<script src="assets/js/xhr/jquery.validate.min.js"></script>
-<script src="assets/js/xhr/login.js"></script>
-<script src="assets/js/xhr/register.js"></script>
 <script src="assets/js/mmenu.min.js"></script>
 <script src="assets/js/tippy.all.min.js"></script>
 <script src="assets/js/simplebar.min.js"></script>

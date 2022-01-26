@@ -9,6 +9,9 @@ class Post {
 	}
 
 	public function submitPost($body, $user_to, $imageName) {
+
+		global $userLoggedIn;
+
 		$body = strip_tags($body); //Removes html tags
 
 		$body = str_replace('\r\n', '\n', $body);
@@ -17,8 +20,6 @@ class Post {
 		$check_empty = preg_replace('/\s+/', '', $body); //Deletes all spaces
 
 		if($check_empty != "") {
-
-
 
 			$body_array = preg_split("/\s+/", $body);
 
@@ -270,13 +271,13 @@ class Post {
 					$like_button = '';
 					 
 					if($num_rows > 0) {
-					    $like_button .= "<button id='likeBtn$id' class='likeBtn' name='like_button' onclick='sendLike($id)' value='Like'>
-											<a href='#'><span id='likeText$id' class='liked-btn'><i class='icon-line-awesome-thumbs-up'></i> Liked</span></a>
+					    $like_button .= "<button id='like_button_$id' name='like_button' onclick='sendLike($id)' value='Like'>
+											<a href='#'><i class='icon-line-awesome-thumbs-down'></i> Unlike</a>
 										</button>";
 					}
 					else {
-					    $like_button .= "<button id='likeBtn$id'>
-											<a href='#' id='like_button_$id' name='like_button' onclick='sendLike($id)' value='Like'><span id='likeText$id' class='like-btn'><i class='icon-line-awesome-thumbs-up'></i> Like</span></a>
+					    $like_button .= "<button>
+											<a href='#' id='like_button_$id' name='like_button' onclick='sendLike($id)' value='Like'><i class='icon-line-awesome-thumbs-up'></i> Like</a>
 										</button>";
 					}
 
@@ -296,13 +297,13 @@ class Post {
 										<div>$body</div>
 										<div>$imageDiv</div>
 
+
+										<button onClick='javascript:toggle$id()'><h5 class='margin-top-45 margin-bottom-0'><i class='icon-line-awesome-comment'></i> Comments <span class='comments-amount'>($comments_check_num)</span></h5></button>
 										<br>
 
 										$likes_num
 
-										$like_button
-
-										<button onClick='javascript:toggle$id()'><span class='comments-btn'><i class='icon-line-awesome-comment'></i> $comments_check_num Comments</span></button>										
+										$like_button											
 
 									</div>
 
@@ -314,13 +315,13 @@ class Post {
 							
 							   <div class='comments_area'>
 							     <textarea id='comment$id' placeholder='Post a comment...'></textarea>
-							     <input type='button' class='send-comment-btn' onclick='sendComment($id)' value='Send'>
+							     <input type='button' onclick='sendComment($id)' value='Send'>
 							   </div>
 
 							   	<section class='comments'>
-							   		<ul id='loadComment$id'><li>"
+							   		<ul>"
 										.$this->getComments($id).
-							  		"</li></ul>
+							  		"</ul>
 							  	</section>
 
 							</div>
@@ -945,17 +946,16 @@ class Post {
 				$names = $user_obj->getFirstAndLastName();
 	 
 						
-				$commment_from_db .= "<ul>
-										<li class='postedImage'>
-											<div class='avatar'><img src='$prof_pic' alt=''></div>
-											<div class='comment-content'><div class='arrow-comment'></div>
-												<div class='comment-by'>$names<span class='date'>$time_message</span>
-													<a href='#' class='reply'><i class='fa fa-reply'></i> Reply</a>
-												</div>
-												<p>$comment_body</p>
+				$commment_from_db .= "<li>
+										<div class='avatar'><img src='$prof_pic' alt=''></div>
+										<div class='comment-content'><div class='arrow-comment'></div>
+											<div class='comment-by'>$names<span class='date'>$time_message</span>
+												<a href='#' class='reply'><i class='fa fa-reply'></i> Reply</a>
 											</div>
+											<p>$comment_body</p>
+										</div>
 										</li>
-									</ul>";
+										<hr>";
 				
 	 
 			}

@@ -28,6 +28,7 @@
   # Titlebar
   # Single Page Header
   # Blog Post
+  # Job Post
   # Contact Page
 
 03. Listings Styles ---------------------------------------------
@@ -796,6 +797,7 @@ a.header-notifications-button i {
 }
 
 .search-results-box {
+	border: 1px solid #999;
 	position: absolute;
 	z-index: 9;
 	background-color: white;
@@ -3381,14 +3383,26 @@ body #backtotop a {
 .postedImage {
 	background-color: #f6f6f6;
 	border-radius: 10px;
+	padding: 10px;
+}
+.postedImage > .multi{
+	display: flex;
+	justify-content: flex-start;
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding-bottom: 5px;
+}
+.postedImage > .multi img{
+	margin: 0;
+	margin-left: 10px;
 }
 
 .postedImage img {
-	max-height: 300px;
-	max-width: 100%;
+	height: 300px;
+	width: auto;
 	display: block;
 	margin: 5px auto;
-	border-radius: 10px;
+	border-radius: 10px;	
 }
 
 
@@ -3782,72 +3796,6 @@ body .comment-content p { padding: 5px 0; }
 
 }
 
-.comments_area {
-	width: 80%;
-	margin: auto;
-}
-
-.send-comment-btn {
-	width: 20%;
-	margin: auto;
-	display: block !important;
-}
-
-
-.comments-btn {
-	font-size: 14px;
-	color: #888;
-	display: inline-block;
-	background-color: #f0f0f0;
-	border-radius: 4px;
-	line-height: 20px;
-	padding: 4px 10px;
-	margin-right: 3px;
-	transition: 0.3s;
-}
-
-.comments-btn:hover {
-	color: #fff;
-	background-color: #2a41e8;
-}
-
-
-.like-btn {
-	font-size: 14px;
-	color: #888;
-	display: inline-block;
-	background-color: #f0f0f0;
-	border-radius: 4px;
-	line-height: 20px;
-	padding: 4px 10px;
-	margin-right: 3px;
-	transition: 0.3s;
-}
-
-.like-btn:hover {
-	color: #fff;
-	background-color: #2a41e8;
-}
-
-.liked-btn {
-	font-size: 14px;
-	color: #fff;
-	display: inline-block;
-	background-color: #2a41e8;
-	border-radius: 4px;
-	line-height: 20px;
-	padding: 4px 10px;
-	margin-right: 3px;
-	transition: 0.3s;
-}
-
-.liked-btn:hover {
-	color: #fff;
-	background-color: #2a41e8;
-}
-
-
-
 @media (max-width: 768px) {
 
 	/* Media Queries for Comments */
@@ -3985,6 +3933,107 @@ body .comment-content p { padding: 5px 0; }
 .widget-content.active span { 
 	background: rgba(255,255,255,0.25);
 	color: #fff
+}
+
+/* ---------------------------------- */
+/* Job Post
+------------------------------------- */
+#job-post-delete{
+	align-items: center;
+	background-color: #FFF;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);	
+	display: none;
+	height: 120px;
+	left: 50%;
+	margin: -60px 0 0 -150px;
+	padding: 0 20px 0 20px;
+	position: absolute;
+	top: 50%;
+	width: 300px;
+	z-index: 1000;
+}
+#job-post-delete i{	
+	font-size: 40px;
+}
+#job-post-delete ul{
+	list-style: none;
+	margin: 0 0 0 15px;
+	padding: 0;
+}
+#job-post-delete ul li:first-child{
+	font-size: 110%;
+	font-weight: bold;
+}	
+#job-post-delete .q a:first-child{
+	background-color: #333;
+	border-radius: 5px;
+	color: #FFF;
+	display: inline-block;
+	font-size: 80%;
+	font-weight: bold;	
+	margin-top: 10px;
+	padding: 2px 7px 0 7px;
+}
+#job-post-delete .q a:first-child:hover{
+	background-color: #2a41e8;
+}
+#job-post-delete .q a:last-child{
+	background-color: #e0e0e0;
+	border-radius: 5px;
+	color: #666;
+	display: inline-block;
+	font-size: 80%;
+	font-weight: bold;
+	margin: 10px 0 0 10px;
+	padding: 2px 7px 0 7px;
+}
+#job-post-delete .q a:last-child:hover{
+	background-color: #CCC;
+}
+#job-post-delete .r a{
+	color: #2a41e8;
+}
+
+#job-post-loader{
+	align-items: center;
+	background-color: #FFF;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);	
+	display: none;
+	height: 80px;
+	left: 50%;
+	margin: -40px 0 0 -150px;
+	padding: 0 20px 0 20px;
+	position: absolute;
+	top: 50%;
+	width: 300px;
+	z-index: 1000;
+}
+#job-post-loader i{	
+	font-size: 40px;
+}
+#job-post-loader ul{
+	list-style: none;
+	margin: 0 0 0 15px;
+	padding: 0;
+}
+#job-post-loader ul li:first-child{
+	font-size: 110%;
+	font-weight: bold;
+}	
+#job-post-loader ul li:last-child a{
+	color: #2a41e8;
+}
+#job-post-overlay{	
+	background-color: rgba(0, 0, 0, 0.3);
+	bottom: 0;
+	display: none;
+	left: 0;	
+	position: absolute;
+	right: 0;
+	top: 0;	
+	z-index: 999;
 }
 
 
@@ -6252,10 +6301,27 @@ span.bookmark-icon {
 .bookmark-button .bookmarked-text { display: none; }
 
 .save-details {
+	align-items: center;
+	display: flex;
 	height: 50px !important;
 	vertical-align: 0 !important;
-	float: right;
+	
 }
+.save-details > .fa-sync{
+	display: none;
+}
+.save-details > .text{
+	font-size: 130%;
+	margin-left: 10px;
+}
+.save-submit{
+	align-items: center;
+	display: flex;
+	justify-content: flex-end;	
+}
+.save-submit > .return-message{
+	margin-right: 10px;
+}	
 
 
 /* ---------------------------------- */
@@ -7248,6 +7314,29 @@ table.basic-table { margin-bottom: 0; }
 	margin-right: 10px;
 }
 
+
+/* Follow Button */
+.follow-btn a {
+	background-color: #fff !important;
+	color: #2a41e8 !important;
+	border: 1px solid #2a41e8;
+}
+
+.follow-btn:hover a {
+	background-color: #2a41e8 !important;
+	color: #fff !important;
+}
+
+.following-btn a {
+	color: #fff !important;
+}
+
+.following-btn:hover a {
+	background-color: #fff !important;
+	color: #2a41e8 !important;
+	border: 1px solid #2a41e8;
+}
+
 /* No stars */
 .star-rating.no-stars .star { display: none; }
 .star-rating.no-stars:before { margin-right: 0; }
@@ -7911,11 +8000,21 @@ input:checked + .switch-button:before {
 	outline: none;
 	box-shadow: 0 3px 10px rgba(102,103,107,0.1);
 }
+.uploadButton .uploadButton-button > span{
+	color: #2a41e8;
+	margin-left: 5px;
+}
 
 .uploadButton .uploadButton-button:hover {
 	background-color: #66676b;
 	box-shadow: 0 4px 12px rgba(102,103,107,0.15);
 	color: #fff;
+}
+.uploadButton .uploadButton-button:hover > span{
+	color: #FFF;	
+}
+.uploadButton .uploadButton-button .fa-spin{
+	display: none;
 }
 
 .uploadButton .uploadButton-file-name {
@@ -14859,6 +14958,9 @@ a.attachment-box:hover:before { border-color: rgba(0,0,0,0.25) #fff; }
 	line-height: 20px;
 	display: inline-block;
 	flex: auto;
+}
+.attachment-box span a{
+	color: #666;
 }
 
 .attachment-box i {

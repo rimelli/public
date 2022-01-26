@@ -26,23 +26,30 @@
 			<div class="dashboard-nav" id="myDIV">
 				<div class="dashboard-nav-inner">
 
-					<ul data-submenu-title="Start">
-						<li><a href="index.php"><i class="icon-material-outline-speaker-notes"></i> Newsfeed</a></li>
-						<li><a href="messages.php"><i class="icon-material-outline-question-answer"></i> Messages
+					<ul data-submenu-title="Nav">
+						<li class="active"><a href="index.php"></i> feed</a></li>
+                        <li><a href="dashboard.php"> Dashboard</a></li>
+						<li><a href="messages.php"></i> Messages
 								<?php
 								if($num_messages > 0)
 								echo '<span class="nav-tag">' . $num_messages . '</span>';
 								?>
 							</a></li>
-						<li><a href="notifications.php"><i class="icon-material-outline-notifications"></i> Notifications 
-								<?php
-								if($num_notifications > 0)
-								echo '<span class="nav-tag">' . $num_notifications . '</span>';
-								?>
-							</a></li>
+						<li><a href="bookmarks.php"> Bookmarks</a></li>
+					</ul>
+					
+					<ul data-submenu-title="Jobs">
+						<li><a href="#"><i class="icon-material-outline-business-center"></i> Jobs</a>
+							<ul>
+								<li><a href="jobs_manage.php">Manage Jobs <span class="nav-tag">3</span></a></li>
+								<li><a href="jobs_candidates.php">Manage Candidates</a></li>
+								<li><a href="jobs_post.php">Post a Job</a></li>
+							</ul>	
+						</li>
 					</ul>
 
 					<ul data-submenu-title="Account">
+						<li><a href="settings.php"><i class="icon-material-outline-settings"></i> Settings</a></li>
 						<li><a href="includes/handlers/logout.php"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
 					</ul>
 					

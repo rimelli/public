@@ -519,6 +519,7 @@ mark,
 .img-fluid {
   max-width: 100%;
   height: auto;
+  max-height: 300px;
 }
 
 .img-thumbnail {
@@ -17388,7 +17389,7 @@ button:focus {
 }
 
 .avatar:not(img) {
-  background-color: transparent;
+  background-color: #fff;
 }
 
 .avatar-img {

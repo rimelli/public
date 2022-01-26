@@ -45,9 +45,8 @@ else {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="assets/js/trycs.js"></script>
 <script src="assets/js/jquery.Jcrop.js"></script>
-<script src="assets/js/jcrop_bits.js"></script>
 
 <!-- CSS
 ================================================== -->
@@ -56,7 +55,6 @@ else {
 <link rel="stylesheet" href="assets/css/jquery.Jcrop.css" type="text/css">
 <link rel="stylesheet" href="assets/css/docs.css">
 <link rel="stylesheet" href="assets/css/theme.css">
-<link rel="stylesheet" href="assets/vendor/quill/dist/quill.snow.css">
 
 </head>
 <body>
@@ -72,17 +70,14 @@ else {
 			
 			<!-- Left Side Content -->
 			<div class="left-side">
-				
-				<!-- Logo -->
-				<div id="logo">
-					<a href="index.php"><h1>Home</h1></a>
-				</div>
 
 				<!-- Main Navigation -->
 				<nav id="navigation">
 					<ul id="responsive">
 
 						<li><a href="index.php" class="current">Home</a></li>
+
+						<li><a href="jobs.php">Jobs</a></li>
 
 					</ul>
 				</nav>
@@ -249,7 +244,7 @@ else {
 									<?php
 									echo $user['first_name'] . " " . $user['last_name'];
 
-									?> <span>Freelancer</span>
+									?>
 									</div>
 								</div>
 								
@@ -261,10 +256,6 @@ else {
 									<span class="status-indicator" aria-hidden="true"></span>
 								</div>	
 						</div>
-						
-						<ul class="user-menu-small-nav">
-							<li><a href="includes/handlers/logout.php"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
-						</ul>
 
 						</div>
 					</div>

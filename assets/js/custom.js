@@ -181,18 +181,281 @@ $(document).ready(function(){
 
 
 	/*--------------------------------------------------*/
-	/*  Sliding Button Icon
+	/*  Bookmark Actions
+	/*--------------------------------------------------*/	
+    $(document).on('click', '.bookmark-icon, .bookmark-remove', function(e){ 
+    	e.preventDefault();	
+		let type = ($(e.target).hasClass('bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', job_id = $(e.target).data("job_id");	
+
+		$.get(`filter_jobs.php?job_id=${job_id}`);
+
+		if (type == 'delete'){
+			$(`#bookmark_${job_id}`).fadeOut();
+		}else{
+			$(this).toggleClass('bookmarked');
+		}
+
+	});
+
 	/*--------------------------------------------------*/
-    $('.bookmark-icon').on('click', function(e){
-    	e.preventDefault();
-		$(this).toggleClass('bookmarked');
+	/*  Settings form submission
+	/*--------------------------------------------------*/
+	$('.settings-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.ico-save')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.ico-save')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+				
 	});
 
-    $('.bookmark-button').on('click', function(e){
-    	e.preventDefault();
-		$(this).toggleClass('bookmarked');
+	/*--------------------------------------------------*/
+	/*  Settings Attachment Upload
+	/*--------------------------------------------------*/
+	$('#attachment-upload').on('change', function(e) {
+		if ($(e.target)[0].files.length > 0){
+			let formData = new FormData(), button = $('#attachment-upload-label');
+
+			for (let x = 0, l = $(e.target)[0].files.length; x < l; x++){	
+				formData.append(`attachments[${x}]`, $(e.target)[0].files[x]);						
+			}
+			
+			button.find($('.ico-save')).hide();
+			button.find($('.fa-spin')).show();
+
+			$.ajax({
+				url : 'settings_update.php',
+				type : 'POST',
+				data : formData,
+				processData: false, 
+				contentType: false, 
+				success : function(data) {
+					setTimeout(() => {
+						let ret = $.parseJSON(data), button = $('#attachment-upload-label'), upload = $('#attachment-upload');
+
+						upload.val('');
+						$('.uploadButton-file-name').html('');
+						
+						button.find($('.ico-save')).show();
+						button.find($('.fa-spin')).hide();
+
+						if (ret.length){
+							let html = '';
+							ret.forEach(attachment => {
+								html += `<div class="attachment-box ripple-effect" id="attachment_${attachment[0]}">`; 
+								html += `<span><a href="settings_update.php?download_attachment_id=${attachment[0]}">${attachment[1]}</a></span>`;
+								html += `<i>${attachment[2].toUpperCase()}</i><button class="remove-attachment" data-tippy-placement="top" data-id="${attachment[0]}" title="Remove"></button>`;
+								html += '</div>';
+
+							});
+
+							$('#attachments-container').prepend(html);
+
+						}
+
+					}, 1000);	
+
+				}
+
+			});
+
+		}
+
 	});
 
+	/*--------------------------------------------------*/
+	/*  Settings Attachment Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-attachment', function(e){ 
+    	e.preventDefault();	
+		let attachment_id = $(e.target).data("id");	
+
+		if (attachment_id){
+			$.get(`settings_update.php?remove_attachment_id=${attachment_id}`);			
+			$(`#attachment_${attachment_id}`).fadeOut();
+
+		}
+
+	});
+
+	/*--------------------------------------------------*/
+	/*  Job deletion
+	/*--------------------------------------------------*/
+	$(document).on('click', '.job-deletion', function(e){ 
+    	e.preventDefault();	
+		let job_id = $(e.target).data("job_id");	
+
+		let jobPostOverlay = $('#job-post-overlay'), 
+			jobPostDelete = $('#job-post-delete');
+
+		jobPostDelete.html(`<i class="fas fa-question"></i><ul><li>Are you sure you want to delete the job #${job_id}?</li>` + 
+						   `<li class="q"><a href="#" class="job-deletion-confirm" data-job_id="${job_id}">YES</a><a class="job-deletion-close" href="#">NO</a></li></ul>`);	
+
+		jobPostOverlay.css('display', 'block');
+		jobPostDelete.css('display', 'flex');
+
+	});
+
+	$(document).on('click', '.job-deletion-confirm', function(e){ 
+    	e.preventDefault();	
+		let job_id = $(e.target).data("job_id");	
+
+		let jobPostOverlay = $('#job-post-overlay'), 
+			jobPostDelete = $('#job-post-delete');
+
+		jobPostDelete.css('height', '80px');
+		jobPostDelete.css('margin', '-40px 0 0 -150px');
+		jobPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting job #${job_id}</li><li>Please wait ...</li></ul>`);	
+
+		$.get(`jobs_update.php?job_delete_id=${job_id}`, data => {			
+			setTimeout(() => {
+				let message = '';
+
+				if (data == 'job_deleted'){
+					$(`#job_${job_id}`).fadeOut();
+					message = '<i class="fas fa-check-circle"></i><ul><li>Job deleted with success</li>';	
+
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+
+				}
+
+				message += '<li class="r"><a href="#" class="job-deletion-close">Click here</a> to close.</li></ul>';				
+				jobPostDelete.html(message);				
+
+			}, 1000);			
+
+		});
+
+	});
+
+	$(document).on('click', '.job-deletion-close', function(e){ 
+    	e.preventDefault();	
+
+		$('#job-post-overlay').css('display', 'none');
+		$('#job-post-delete').css('display', 'none');
+		$('#job-post-delete').css('height', '120px');
+		$('#job-post-delete').css('margin', '-60px 0 0 -150px');
+
+	});
+
+	/*--------------------------------------------------*/
+	/*  Job post form submission
+	/*--------------------------------------------------*/
+	$('#jobs-post-submit').on('submit', function(e) {
+		e.preventDefault();		
+
+		let jobPostOverlay = $('#job-post-overlay'), 
+			jobPostLoader = $('#job-post-loader'), 
+			type = $(e.target).find('input[name="post_job"]').length > 0 ? 'add' : 'edit';
+		
+		jobPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>${type == 'add' ? 'Creating a new job' : 'Editing job'}</li><li>Please wait ...</li></ul>`);
+		jobPostOverlay.css('display', 'block');
+		jobPostLoader.css('display', 'flex');
+
+		$.post('jobs_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				let message = '';
+
+				if (data == 'job_added'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Job created with success</li>';
+				}else if (data == 'job_edited'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Job edited with success</li>';	
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+				}
+
+				message += '<li><a href="#" id="jobs-post-submit-close">Click here</a> to close.</li></ul>';
+				
+				jobPostLoader.html(message);
+				
+				if (data == 'job_added'){
+					$(e.target).trigger('reset');	
+					$(".selectpicker").val('default').selectpicker("refresh");			
+				}
+
+			}, 1000);			
+
+		});
+				
+	});
+
+	$(document).on('click', '#jobs-post-submit-close', function(e){ 
+    	e.preventDefault();	
+
+		$('#job-post-overlay').css('display', 'none');
+		$('#job-post-loader').css('display', 'none');
+
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Gallery Upload
+	/*--------------------------------------------------*/
+	$('#gallery-upload').on('change', function(e) {
+		if ($(e.target)[0].files.length > 0){
+			let formData = new FormData(), button = $('#gallery-upload-label');
+
+			for (let x = 0, l = $(e.target)[0].files.length; x < l; x++){	
+				formData.append(`galleries[${x}]`, $(e.target)[0].files[x]);						
+			}
+			
+			button.find($('.ico-save')).hide();
+			button.find($('.fa-spin')).show();
+
+			$.ajax({
+				url : 'gallery_update.php',
+				type : 'POST',
+				data : formData,
+				processData: false, 
+				contentType: false, 
+				success : function(data) {
+					setTimeout(() => {
+						let ret = $.parseJSON(data), button = $('#gallery-upload-label'), upload = $('#gallery-upload');
+
+						upload.val('');
+						$('.uploadButton-file-name').html('');
+						
+						button.find($('.ico-save')).show();
+						button.find($('.fa-spin')).hide();
+
+						if (ret.length){
+							let html = '';
+							ret.forEach(gallery => {
+								html += `<div class="gallery-box ripple-effect" id="gallery_${gallery[0]}">`;
+								html += `<i>${gallery[2].toUpperCase()}</i><button class="remove-gallery" data-tippy-placement="top" data-id="${gallery[0]}" title="Remove"></button>`;
+								html += '</div>';
+
+							});
+
+							$('#galleries-container').prepend(html);
+
+						}
+
+					}, 1000);	
+
+				}
+
+			});
+
+		}
+
+	});
 
 	/*----------------------------------------------------*/
 	/*  Notifications Boxes

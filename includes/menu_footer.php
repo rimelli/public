@@ -23,7 +23,6 @@
             <div class="footer-rows-left">
               <div class="footer-row">
                 <div class="footer-row-inner footer-logo">
-                  <img src="" alt="">
                 </div>
               </div>
             </div>
@@ -151,7 +150,7 @@
     <div class="container">
       <div class="row">
         <div class="col-xl-12">
-          © <strong></strong>.
+          © 2021 <strong>Website</strong>. All Rights Reserved.
         </div>
       </div>
     </div>

@@ -1,50 +1,51 @@
 <?php
 include("includes/header.php");
 
+if (isset($_POST['post'])) {	
+	$error = NULL;
+	$images = [];
 
-if(isset($_POST['post'])) {
+	if (is_uploaded_file($_FILES['images']['tmp_name'][0])) {
 
-	$user_to = $userLoggedIn;
+		// Allowed file mime-types below
+		$allowed = [
+			'image/png' => 'png', 
+			'image/jpeg' => 'jpg', 
+			'image/gif' => 'gif', 
+			'application/pdf' => 'pdf'			
+		];
 
-	$uploadOk = 1;
-	$imageName = $_FILES['fileToUpload']['name'];
-	$errorMessage = "";
+		$targetBaseName = sprintf('assets/images/posts/%d-%s', $userLoggedIn, uniqid());
+		
+		for ($x = 0, $l = count($_FILES['images']['type']); $x < $l; $x++){
+			if (!$error){
+				if (isset($allowed[$_FILES['images']['type'][$x]]) && $_FILES['images']['size'][$x] <= 10000000){
+					$fileName = sprintf('%s-%d.%s', $targetBaseName, $x, $allowed[$_FILES['images']['type'][$x]]);
 
-	if($imageName != "") {
-		$targetDir = "assets/images/posts/";
-		$imageName = $targetDir . uniqid() . basename($imageName);
-		$imageFileType = pathinfo($imageName, PATHINFO_EXTENSION);
+					if (move_uploaded_file($_FILES['images']['tmp_name'][$x], $fileName)){
+						$images[] = $fileName; 
+					}else{
+						$error = "Sorry, could not save an image";
+					}
 
-		if($_FILES['fileToUpload']['size'] > 10000000) {
-			$errorMessage = "Sorry, your file is too large";
-			$uploadOk = 0;
+				}else{
+					$error = "Sorry, only JPG, PNG and GIF files with less than 10 MB are allowed";
+				}
+
+			}		
+
 		}
 
-		if(strtolower($imageFileType) != "jpeg" && strtolower($imageFileType) != "png" && strtolower($imageFileType) != "jpg") {
-			$errorMessage = "Sorry, only JPEG, JPG and PNG files are allowed";
-			$uploadOk = 0;
-		}
-
-		if($uploadOk) {
-			if(move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $imageName)) {
-				//Image uploaded okay
-			}
-			else {
-				//Image did not upload
-				$uploadOk = 0;
-			}
-		}
 	}
-
-	if($uploadOk) {
+	
+	if (!$error){
 		$post = new Post($con, $userLoggedIn);
-		$post->submitPost($_POST['post_text'], $user_to, $imageName);
+		$post->submitPost($_POST['post_text'], $userLoggedIn, implode(';', $images));
 		header("Location: index.php");
-	}
-	else {
-		echo "<div style='text-align:center;' class='alert alert-danger'>
-				$errorMessage
-			</div>";
+
+	}else{
+		echo "<div style='text-align:center;' class='alert alert-danger'>$error</div>";
+
 	}
 
 }
@@ -59,7 +60,7 @@ if(isset($_POST['post'])) {
 
 <!-- Basic Page Needs
 ================================================== -->
-<title>TRYOUTS</title>
+<title>Feed</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -67,16 +68,6 @@ if(isset($_POST['post'])) {
 ================================================== -->
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/colors/blue.css">
-<style>
-	.likeBtn{
-		background-color: blue;
-		color:#fff;
-	}
-	.likeBtn a i{
-		color: #fff;
-	}
-</style>
-
 </head>
 <body class="gray">
 
@@ -94,10 +85,10 @@ if(isset($_POST['post'])) {
 	================================================== -->
 	<div class="dashboard-content-container" data-simplebar>
 		<div class="dashboard-content-inner">
-			
+
 			<!-- Dashboard Headline -->
 			<div class="dashboard-headline">
-				<h3>Hello, <a class="name_profile" href="<?php echo $user['username']; ?>">
+				<h3>Profile-> <a class="name_profile" href="<?php echo $user['username']; ?>">
                     <?php
                     echo $user['first_name'];
 
@@ -117,7 +108,7 @@ if(isset($_POST['post'])) {
 							<!-- Upload Button -->
 							<div class="messages-headline">
 								<div class="uploadButton margin-top-0">
-									<input form="index-post" class="uploadButton-input" type="file" name="fileToUpload" id="fileToUpload" accept="image/*, application/pdf" multiple/>
+									<input form="index-post" class="uploadButton-input" type="file" name="images[]" id="fileToUpload" accept=".gif, .jpg, .jpeg, .png" multiple />
 									<label class="uploadButton-button ripple-effect" for="fileToUpload">Upload</label>
 									<span class="uploadButton-file-name">Maximum file size: 10 MB</span>
 								</div>
@@ -133,8 +124,7 @@ if(isset($_POST['post'])) {
 
 					</div>
 
-			</div>
-
+			</div>		
 
 
 			<!-- Posts Container -->
@@ -170,51 +160,6 @@ if(isset($_POST['post'])) {
 <!-- Wrapper / End -->
 
 
-<!-- Apply for a job popup
-================================================== -->
-<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
-
-	<!--Tabs -->
-	<div class="sign-in-form">
-
-		<ul class="popup-tabs-nav">
-			<li><a href="#tab">Add Note</a></li>
-		</ul>
-
-		<div class="popup-tabs-container">
-
-			<!-- Tab -->
-			<div class="popup-tab-content" id="tab">
-				
-				<!-- Welcome Text -->
-				<div class="welcome-text">
-					<h3>Do Not Forget 😎</h3>
-				</div>
-					
-				<!-- Form -->
-				<form method="post" id="add-note">
-
-					<select class="selectpicker with-border default margin-bottom-20" data-size="7" title="Priority">
-						<option>Low Priority</option>
-						<option>Medium Priority</option>
-						<option>High Priority</option>
-					</select>
-
-					<textarea name="textarea" cols="10" placeholder="Note" class="with-border"></textarea>
-
-				</form>
-				
-				<!-- Button -->
-				<button class="button full-width button-sliding-icon ripple-effect" type="submit" form="add-note">Add Note <i class="icon-material-outline-arrow-right-alt"></i></button>
-
-			</div>
-
-		</div>
-	</div>
-</div>
-<!-- Apply for a job popup / End -->
-
-
 <!-- Scripts
 ================================================== -->
 <script src="assets/js/jquery-3.5.1.min.js"></script>
@@ -230,6 +175,100 @@ if(isset($_POST['post'])) {
 <script src="assets/js/magnific-popup.min.js"></script>
 <script src="assets/js/slick.min.js"></script>
 <script src="assets/js/custom.js"></script>
+
+
+
+<!-- Snackbar // documentation: https://www.polonel.com/snackbar/ -->
+<script>
+// Snackbar for user status switcher
+$('#snackbar-user-status label').click(function() { 
+	Snackbar.show({
+		text: 'Your status has been changed!',
+		pos: 'bottom-center',
+		showAction: false,
+		actionText: "Dismiss",
+		duration: 3000,
+		textColor: '#fff',
+		backgroundColor: '#383838'
+	}); 
+}); 
+</script>
+
+<!-- Chart.js // documentation: http://www.chartjs.org/docs/latest/ -->
+<script src="assets/js/chart.min.js"></script>
+<script>
+	Chart.defaults.global.defaultFontFamily = "Nunito";
+	Chart.defaults.global.defaultFontColor = '#888';
+	Chart.defaults.global.defaultFontSize = '14';
+
+	var ctx = document.getElementById('chart').getContext('2d');
+
+	var chart = new Chart(ctx, {
+		type: 'line',
+
+		// The data for our dataset
+		data: {
+			labels: ["January", "February", "March", "April", "May", "June"],
+			// Information about the dataset
+	   		datasets: [{
+				label: "Views",
+				backgroundColor: 'rgba(42,65,232,0.08)',
+				borderColor: '#2a41e8',
+				borderWidth: "3",
+				data: [196,132,215,362,210,252],
+				pointRadius: 5,
+				pointHoverRadius:5,
+				pointHitRadius: 10,
+				pointBackgroundColor: "#fff",
+				pointHoverBackgroundColor: "#fff",
+				pointBorderWidth: "2",
+			}]
+		},
+
+		// Configuration options
+		options: {
+
+		    layout: {
+		      padding: 10,
+		  	},
+
+			legend: { display: false },
+			title:  { display: false },
+
+			scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: false
+					},
+					gridLines: {
+						 borderDash: [6, 10],
+						 color: "#d8d8d8",
+						 lineWidth: 1,
+	            	},
+				}],
+				xAxes: [{
+					scaleLabel: { display: false },  
+					gridLines:  { display: false },
+				}],
+			},
+
+		    tooltips: {
+		      backgroundColor: '#333',
+		      titleFontSize: 13,
+		      titleFontColor: '#fff',
+		      bodyFontColor: '#fff',
+		      bodyFontSize: 13,
+		      displayColors: false,
+		      xPadding: 10,
+		      yPadding: 10,
+		      intersect: false
+		    }
+		},
+
+
+});
+
+</script>
 
 
 <script>
@@ -292,6 +331,15 @@ if(isset($_POST['post'])) {
 	        );
 	    }
 	});
+	
+    $(document).ready(function(){		
+      	$('.carousel').slick({
+			dots: true,
+                infinite: true,
+                slidesToShow: 3,
+                slidesToScroll: 3
+		});
+    });  	
  
 </script>
 

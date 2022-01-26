@@ -21,7 +21,7 @@ class User {
 
 	public function getNumPosts() {
 		$user_id = $this->user['user_id'];
-		$query = $this->con->prepare("SELECT num_posts FROM users WHERE user_id=?");
+		$query = $this->con->prepare("SELECT count(*) AS num_posts FROM posts WHERE added_by=?");
 		$query->execute([$user_id]);
 		$row = $query->fetch();
 		return $row['num_posts'];
@@ -54,6 +54,18 @@ class User {
 		$row = $query->fetch();
 
 		if($row['user_closed'] =='yes')
+			return true;
+		else
+			return false;
+	}
+
+	public function isVerified() {
+		$user_id = $this->user['user_id'];
+		$query = $this->con->prepare("SELECT verified FROM users WHERE user_id=?");
+		$query->execute([$user_id]);
+		$row = $query->fetch();
+
+		if($row['verified'] =='yes')
 			return true;
 		else
 			return false;
