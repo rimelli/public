@@ -1,7 +1,6 @@
 <?php  
 require 'config/config.php';
 require 'includes/form_handlers/register_handler.php';
-require 'includes/form_handlers/login_handler.php';
 ?>
 
 
@@ -68,7 +67,7 @@ require 'includes/form_handlers/login_handler.php';
 				</div>
 
 				<!-- Log in Form -->
-				<form class="login-form login-form-style" method="POST">
+				<form id="login-form" class="login-form login-form-style">
 					<input type="hidden" name="login_button" value="1" />
 						<div class="input-with-icon-left">
 							<i class="icon-material-baseline-mail-outline"></i>
@@ -87,6 +86,7 @@ require 'includes/form_handlers/login_handler.php';
 					<!-- Button -->
 					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="login_button">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
 				</form>
+                <p id="login-result" class="notification"></p>
 			</div>
 
 			<!-- Sign up Tab -->
@@ -212,6 +212,34 @@ $("#login-radio").click(function() {
     }
 });
 </script>
+<script>
+    $("#login-form").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: 'includes/form_handlers/login_handler.php',
+            data: $('#login-form').serialize(),
+            success: function (data) {
+                console.log(data);
+                let parsedData = JSON.parse(data);
 
+                if (parsedData.status === 'success') {
+                    $('#login-result').text(parsedData.message).addClass('success');
+                    console.log(`Redirecting to ${parsedData.url}`)
+                    setTimeout(function () {
+                        $('#login-result').text('').removeClass('success');
+                        window.location.href = parsedData.url;
+                    }, 3000);
+                } else {
+                    $('#login-result').text(parsedData.message).addClass('error');
+                }
+            }
+        });
+        setTimeout(function () {
+            $('#login-result').text('').removeClass('error');
+        }, 3000);
+        return false;
+    });
+</script>
 </body>
 </html>
