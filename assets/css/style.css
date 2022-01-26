@@ -10948,7 +10948,8 @@ button.mfp-close {
 #small-dialog-2,
 #small-dialog-3,
 #small-dialog-4,
-#small-dialog {
+#small-dialog,
+[id^="delete-dialog"] {
 	background: #fff;
 	padding: 40px;
 	padding-top: 0;
@@ -11339,7 +11340,8 @@ img.mfp-img {
 .dialog-with-tabs#small-dialog-2,
 .dialog-with-tabs#small-dialog-3,
 .dialog-with-tabs#small-dialog-4,
-.dialog-with-tabs#small-dialog { 
+.dialog-with-tabs#small-dialog
+.dialog-with-tabs[id^="delete-dialog"] { 
 	padding: 0;
 	color: #666;
 	max-width: 540px;
@@ -11352,7 +11354,8 @@ img.mfp-img {
 #small-dialog-1.dialog-with-tabs .mfp-close,
 #small-dialog-2.dialog-with-tabs .mfp-close,
 #small-dialog-3.dialog-with-tabs .mfp-close,
-#small-dialog-4.dialog-with-tabs .mfp-close {
+#small-dialog-4.dialog-with-tabs .mfp-close,
+[id^="delete-dialog"].dialog-with-tabs .mfp-close {
     color: #888;
     background-color: #f8f8f8;
     border-left: 1px solid #e0e0e0;

@@ -376,7 +376,7 @@ include("includes/form_handlers/settings_handler.php");
 														<i class="icon-material-outline-location-on"></i>
 														<input type="text" value="<?php if ($individual_user['city_based'] != '') echo $individual_user['city_based'] . ', ' . $individual_user['county_based']; ?>" class="with-border" name="city_based" id="city_based" placeholder="Type..." autocomplete="off">
 														<i class="icon-material-outline-location-on"></i>
-														<div class="result search-results-box"></div>
+														<div class="result"></div>
 													</div>
 													<i class="icon-material-outline-location-on"></i>
 												</div>
@@ -984,6 +984,7 @@ $('#snackbar-user-status label').click(function() {
 <script>
 $(document).ready(function(){
     $('.search-box input[type="text"]').on("keyup input", function(){
+
     	var countryBased = $("#country_based").val();
         /* Get input value on change */
         var inputVal = $(this).val();
@@ -992,8 +993,10 @@ $(document).ready(function(){
             $.get("includes/handlers/ajax_query_cities.php", {term: inputVal, country: countryBased}).done(function(data){
                 // Display the returned data in browser
                 resultDropdown.html(data);
+				resultDropdown.addClass('search-results-box');
             });
         } else{
+			resultDropdown.removeClass('search-results-box');
             resultDropdown.empty();
         }
     });
