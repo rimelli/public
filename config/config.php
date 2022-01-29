@@ -6,7 +6,7 @@ $timezone = date_default_timezone_set("Europe/London");
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 
 $con = new PDO("mysql:host=$servername;dbname=dbtest", $username, $password);
 

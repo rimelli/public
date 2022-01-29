@@ -191,9 +191,24 @@ $(document).ready(function(){
 
 		if (type == 'delete'){
 			$(`#bookmark_${job_id}`).fadeOut();
+			$('.mfp-close').click();
 		}else{
 			$(this).toggleClass('bookmarked');
 		}
+
+	});
+
+	/*--------------------------------------------------*/
+	/*  Post Feed Actions
+	/*--------------------------------------------------*/	
+    $(document).on('click', '.post-remove', function(e){ 
+    	e.preventDefault();	
+		var post_id = $(e.target).data("post_id");	
+		$.get(`includes/form_handlers/delete_post.php?post_id=${post_id}`);
+		console.log(post_id+ " Post Deleted.");
+
+			$(`#post_${post_id}`).fadeOut();
+			$('.mfp-close').click();
 
 	});
 
