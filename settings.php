@@ -1004,6 +1004,7 @@ $(document).ready(function(){
     // Set search input value on click of result item
     $(document).on("click", ".result p", function(){
         $(this).parents(".search-box").find('input[type="text"]').val($(this).text());
+        $(this).parent(".result").removeClass('search-results-box');
         $(this).parent(".result").empty();
     });
 });
