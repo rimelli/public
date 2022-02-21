@@ -100,16 +100,10 @@ END OF FAKE STATS DATA GENERATOR  */
 							<h3><i class="icon-feather-bar-chart-2"></i> Your Profile Views</h3>							
 							<div class="sort-by">							
 								<select class="selectpicker hide-tick" onChange="statsGet(this.value)">
-									<option value="this_week" selected>Daily</option>
-									<option value="this_week">Monthly</option>
-									<option value="this_week">This Week</option>
-									<option value="last_week">Last Week</option>
-									<option value="this_month">This Month</option>
-									<option value="last_month">Last Month</option>
-									<option value="last_3_months">Last 3 Months</option>
-									<option value="last_6_months">Last 6 Months</option>
-									<option value="this_year">This Year</option>
-									<option value="last_year">Last Year</option>
+									<option value="daily" selected>Daily</option>
+									<option value="weekly">Weekly</option>
+									<option value="monthly">Monthly</option>
+									<option value="yearly">Yearly</option>
 								</select>
 							</div>
 						</div>
