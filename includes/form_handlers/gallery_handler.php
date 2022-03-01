@@ -42,12 +42,12 @@ if (isset($_FILES['galleries'])){
 		if (isset($allowed[$_FILES['galleries']['type'][$x]])){
 			$filename = uniqid('', true);
 			if (move_uploaded_file($_FILES['galleries']['tmp_name'][$x], 'assets/files/profile_galleries/'. $filename. '.'. $allowed[$_FILES['galleries']['type'][$x]])){
-				$query = $con->prepare("INSERT INTO profile_galleries (NULL, user_id, filename, original, mimetype, type, size) VALUES (?, ?, ?, ?, ?, ?)");
+				$query = $con->prepare("INSERT INTO profile_galleries (user_id, filename, original, mimetype, type, size) VALUES (?, ?, ?, ?, ?, ?)");
 				$query->execute([$userLoggedIn, $filename, $_FILES['galleries']['name'][$x], $_FILES['galleries']['type'][$x], $allowed[$_FILES['galleries']['type'][$x]], $_FILES['galleries']['size'][$x]]);
 				$id = $con->lastInsertId();
 
 				if ($id){
-					$ret[] = [$id, $_FILES['galleries']['name'][$x], $allowed[$_FILES['galleries']['type'][$x]]];
+					$ret[] = [$id, 'assets/files/profile_galleries/'.$filename. '.'.$allowed[$_FILES['galleries']['type'][$x]], $allowed[$_FILES['galleries']['type'][$x]]];
 				}
 
 			}
