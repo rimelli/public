@@ -68,7 +68,7 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
           <div class="content with-padding padding-bottom-0">
             
-
+                  <div id="location_error" style="display:none;" class="text-center p-3 bg-danger text-white"></div>
                   <div class="row">
 
                     <!-- Category -->
@@ -123,14 +123,14 @@ $sql_count = $con->query("SELECT jobs.*, users.* FROM jobs INNER JOIN users ON j
 
                     <div class="col-xl-3 col-md-6">
                       <div class="margin-bottom-20">
-                        <input style="display:none" type="text" value="" class="with-border" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
+                        <input style="display:none;" type="text" value="" class="with-border" name="job_city" id="job_city" placeholder="Type Job City..." autocomplete="off">
                       </div>
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                      <div class="margin-bottom-20">
+                      <div class="margin-bottom-20 job_distance" style="display:none;" >
                         <select class="selectpicker with-border job_check" id="job_distance" name="job_distance" data-size="7">
-                          <option value="" selected>Select Job Distance</option>
+                          <option value="0">Select Job Distance</option>
                           <option value="1">Within 1 Mile</option>
                           <option value="3">Within 3 Miles</option>
                           <option value="5">Within 5 Miles</option>
@@ -382,12 +382,15 @@ function filter_query(e, reset_page = true){
   //  Resets job_city on job_country change
   if (e && $(e.target).attr('id') == 'job_country'){
     $(`#job_city`).val('');
+    $(`#job_distance`).val(0);
+    // $(`#job_distance`).text('Select Job Distance');
+
   }
 
   //  Shows or hide job_city
   if ($(`#job_country`).val().length){
     $(`#job_city`).show();  
-
+    
     $('#job_city').autocomplete({
       serviceUrl: 'includes/handlers/ajax_search_cities.php?country=' + $(`#job_country`).val(),	  
       onSelect: function (suggestion) {
@@ -400,6 +403,13 @@ function filter_query(e, reset_page = true){
     $(`#job_city`).hide();
   }
 
+  if($(`#job_city`).val().length){
+    $(`.job_distance`).show();
+  }else{
+    $(`#job_distance`).val(0);
+    $(`.job_distance`).hide();
+
+  }
   //  Loop through all elements
   items.forEach(i => {
     if ($(`#${i}`).val().length){
@@ -415,6 +425,10 @@ function filter_query(e, reset_page = true){
   } 
   
   data['page'] = reset_page ? 1 : page;
+  console.log($("#job_distance").val());
+  if($(`#job_distance`).val()>=1){
+    data['job_distance']=$(`#job_distance`).val();
+  }
 
   $.ajax({
         url:'filter_jobs.php',
@@ -447,12 +461,52 @@ function pag_go(event){
 
 }
 
+// function job_dist(e){
+//   if($('#job_city').val().lenght && $(`#job_country`).val().length){
+//     filter_query(e);
+//   }
+// }
+
 $(document).ready(function() {
   $('#job_city').on('keyup', city_reset);
   $(".job_check").on('change', filter_query); 
+  // $("#job_distance").on('change', filter_query); 
   $(".job_check_keyup").on('keyup', filter_query);
   $(document).on('click', '.pag_go', pag_go); 
 });
+
+
+// var x = document.getElementById("location_error");
+
+// function getLocation() {
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(showPosition, showError);
+//   } else { 
+//     x.innerHTML = "Geolocation is not supported by this browser.";
+//   }
+// }
+
+// function showPosition(position) {
+//   x.innerHTML = "Latitude: " + position.coords.latitude + 
+//   "<br>Longitude: " + position.coords.longitude;
+// }
+
+// function showError(error) {
+//   switch(error.code) {
+//     case error.PERMISSION_DENIED:
+//       x.innerHTML = "User denied the request for Geolocation."
+//       break;
+//     case error.POSITION_UNAVAILABLE:
+//       x.innerHTML = "Location information is unavailable."
+//       break;
+//     case error.TIMEOUT:
+//       x.innerHTML = "The request to get user location timed out."
+//       break;
+//     case error.UNKNOWN_ERROR:
+//       x.innerHTML = "An unknown error occurred."
+//       break;
+//   }
+// }
 </script>
 
 
