@@ -106,6 +106,7 @@ if (isset($_POST['job_filter'])) {
       }
       $rows = $filterrows;
       $count_all = count($filterrows);
+      $total_pages = ceil($count_all / $no_of_records_per_page);
     }
     $output .= '<h3 class="padding-10 filter-title">' . $count_all . " " . "Results" . '</h3>';
 
