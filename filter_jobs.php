@@ -80,7 +80,9 @@ if (isset($_POST['job_filter'])) {
     }
   }
 
-  $sql .= "LIMIT $offset, $no_of_records_per_page";
+  if(!isset($_POST['job_distance']) || empty($_POST['job_distance'])){
+    $sql .= "LIMIT $offset, $no_of_records_per_page";
+  }
 
 
   $result = $con->query($sql);
@@ -92,7 +94,6 @@ if (isset($_POST['job_filter'])) {
   if ($result->rowCount() > 0) {
     $total_pages = ceil($count_all / $no_of_records_per_page);
     $rows = $result->fetchAll();
-
     if (isset($_POST['job_distance']) && !empty($_POST['job_distance']) && isset($_POST['job_city'])) {
       $filterrows = [];
       $city_from = $filter->get_towns($_POST['job_city']);
@@ -107,6 +108,7 @@ if (isset($_POST['job_filter'])) {
       $rows = $filterrows;
       $count_all = count($filterrows);
       $total_pages = ceil($count_all / $no_of_records_per_page);
+      $rows = array_slice($rows, $offset, $no_of_records_per_page);
     }
     $output .= '<h3 class="padding-10 filter-title">' . $count_all . " " . "Results" . '</h3>';
 
