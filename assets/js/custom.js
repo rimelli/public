@@ -191,9 +191,24 @@ $(document).ready(function(){
 
 		if (type == 'delete'){
 			$(`#bookmark_${job_id}`).fadeOut();
+			$('.mfp-close').click();
 		}else{
 			$(this).toggleClass('bookmarked');
 		}
+
+	});
+
+	/*--------------------------------------------------*/
+	/*  Post Feed Actions
+	/*--------------------------------------------------*/	
+    $(document).on('click', '.post-remove', function(e){ 
+    	e.preventDefault();	
+		var post_id = $(e.target).data("post_id");	
+		$.get(`includes/form_handlers/delete_post.php?post_id=${post_id}`);
+		console.log(post_id+ " Post Deleted.");
+
+			$(`#post_${post_id}`).fadeOut();
+			$('.mfp-close').click();
 
 	});
 
@@ -437,9 +452,19 @@ $(document).ready(function(){
 						if (ret.length){
 							let html = '';
 							ret.forEach(gallery => {
-								html += `<div class="gallery-box ripple-effect" id="gallery_${gallery[0]}">`;
-								html += `<i>${gallery[2].toUpperCase()}</i><button class="remove-gallery" data-tippy-placement="top" data-id="${gallery[0]}" title="Remove"></button>`;
-								html += '</div>';
+								html+=`<div class="col-sm-4 mb-3 gallery-box">
+								<a class="js-fancybox media-viewer" href="javascript:;"
+								   data-hs-fancybox-options='{
+									 "selector": "#galleries-container .js-fancybox",
+									 "speed": 700
+								   }'
+								   data-src="${gallery[1]}">
+								  <img class="img-fluid rounded" src="${gallery[1]}" alt="Image Description">
+								</a>
+							  </div>`;
+								// html += `<div class="gallery-box ripple-effect" id="gallery_${gallery[0]}">`;
+								// html += `<i>${gallery[2].toUpperCase()}</i><button class="remove-gallery" data-tippy-placement="top" data-id="${gallery[0]}" title="Remove"></button>`;
+								// html += '</div>';
 
 							});
 

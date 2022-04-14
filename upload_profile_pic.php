@@ -29,7 +29,7 @@ if(isset($_FILES['image']['name'])){
 		$ImageType = @explode('/', $_FILES['image']['type']);
 		$type = $ImageType[1]; //file type	
 	//Set Upload directory    
-		$uploaddir = $_SERVER['DOCUMENT_ROOT'].'/Website/assets/images/profile_pics';
+		$uploaddir = $_SERVER['DOCUMENT_ROOT'].'/assets/images/profile_pics';
 	//Set File name	
 		$file_temp_name = $profile_id.'_original.'.md5(time()).'n'.$type; //the temp file name
 		$fullpath = $uploaddir."/".$file_temp_name; // the temp file path
@@ -183,7 +183,7 @@ if (isset($_POST['x'])){
 	<!-- Dashboard Content
 	================================================== -->
 	<div class="dashboard-content-container" data-simplebar>
-		<div class="dashboard-content-inner">
+		<div class="dashboard-content-inner" style="overflow-y:auto; max-height:90vh">
 
 			<!-- Dashboard Headline -->
 			<div class="dashboard-headline">
@@ -243,7 +243,26 @@ if (isset($_POST['x'])){
 
  </div>
 <!-- End of wrapper -->
-
+<script>
+$('#jcrop_target').Jcrop({
+   	setSelect: [0, 0, 300, 300],
+    minSize: [300, 300],
+    aspectRatio: 1/1,
+   	onSelect: updateCoords
+});
+function updateCoords(c){
+    $('#x').val(c.x);
+    $('#y').val(c.y);
+    $('#w').val(c.w);
+    $('#h').val(c.h);
+	checkCoords();
+};
+function checkCoords(){
+    if (parseInt($('#w').val())) return true;
+    alert('Please select a crop region then press submit.');
+    return false;
+}; 
+</script>
 
 </body>
 </html>

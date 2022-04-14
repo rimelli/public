@@ -8,6 +8,7 @@ $imgTempFileName = null;
 $imgTempHeight = 0;
 $imgIsUploaded = false;
 
+
 //  Image is uploaded
 if (is_uploaded_file($_FILES['image']['tmp_name'])) {	
 
@@ -54,14 +55,18 @@ if (isset($_POST['imgTempFileName'])){
 
 		if ($src){
 			$dest = imagecreatetruecolor($dest_w, $dest_h);
-
+			print_r($_POST);
+			if($_POST['y']<=0){
+				$y=1;
+			}else{
+				$y=intval($_POST['y']);
+			}
 			if ($dest){
-				$src_y = floor($src_wh[0] / (500 / $_POST['y']));
+				$src_y = floor($src_wh[0] / (500 / $y));
 				$src_h = floor($src_wh[0] / (500 / $_POST['h']));
 				
-				if (imagecopyresampled($dest, $src, 0, 0, 0, $src_y, $dest_w, $dest_h, $src_wh[0], $src_h)){
+				if (imagecopyresampled($dest, $src, 0, 0, 0, intval($src_y), $dest_w, $dest_h, intval($src_wh[0]), intval($src_h))){
 					$imgFileName = sprintf('%s/cover_%s_%d.%s', $imgDestFolder, uniqid(), $user['user_id'], $allowed[$src_wh['mime']]);
-
 					if (imagejpeg($dest, $_SERVER['DOCUMENT_ROOT']. $imgFileName, 90)){
 						$insert_pic_query = $con->prepare("UPDATE users SET profile_background=? WHERE user_id=?");
 						$insert_pic_query->execute([$imgFileName, $user['user_id']]);
@@ -77,7 +82,7 @@ if (isset($_POST['imgTempFileName'])){
 
 	}
 
-	header(sprintf('Location: /%s', $user['username'])); 
+	header(sprintf('Location: /profile.php?profile_username=%s', $user['username'])); 
 	exit();
 
 }
@@ -116,7 +121,7 @@ if ($imgIsUploaded){
 	<!-- Dashboard Content
 	================================================== -->
 	<div class="dashboard-content-container" data-simplebar>
-		<div class="dashboard-content-inner">
+		<div class="dashboard-content-inner" style="overflow-y:auto; max-height:90vh">
 
 			<!-- Dashboard Headline -->
 			<div class="dashboard-headline">
@@ -134,7 +139,7 @@ if ($imgIsUploaded){
 		    </div>
 
 		    <div id="CropImageForm" style="float:left; margin:0px 0px 0px 30px;" >  
-		        <form action="#" method="post" onsubmit="return checkCoords();">
+		        <form action="upload_cover_pic.php" method="post">
 		            <input type="hidden" id="x" name="x" />
 		            <input type="hidden" id="y" name="y" />
 		            <input type="hidden" id="w" name="w" />
@@ -166,6 +171,7 @@ function updateCoords(c){
     $('#y').val(c.y);
     $('#w').val(c.w);
     $('#h').val(c.h);
+	checkCoords();
 };
 function checkCoords(){
     if (parseInt($('#w').val())) return true;
