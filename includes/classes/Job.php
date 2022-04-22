@@ -22,7 +22,7 @@ class Job {
 
 
 			$row = $data_query->fetch();
-				$id = $row['job_id'];
+				$id = $row['id'];
 				$body = $row['job_description'];
 				$user_id = $row['user_id'];
 				$date_time = $row['job_post_date'];
@@ -119,6 +119,11 @@ class Job {
 							$time_message = $interval->s . " seconds ago";
 						}
 					}
+					if($bookmarks){
+						$bookmark_text='Bookmarked';
+					}else{
+						$bookmark_text='Bookmark';
+					}
 
 					$str .= "<div class='single-page-header' data-background-image='assets/images/profile_backgrounds/defaults/default_profile_background.jpg'>
 									<div class='container'>
@@ -148,13 +153,13 @@ class Job {
 									
 								<div class='col-xl-4 col-lg-4'>
 									<div class='sidebar-container'>
-										<a href='#' class='apply-now-button'>Apply Now <i class='icon-material-outline-arrow-right-alt'></i></a>
+										<a href='#small-dialog' class='apply-now-button' id='apply-job-btn'>Apply Now <i class='icon-material-outline-arrow-right-alt'></i></a>
 							
 										<div class='sidebar-widget'>
 											<h3>Bookmark</h3>
 											<button class='bookmark-button margin-bottom-25'>
-												<span class='bookmark-icon'></span>
-												<span class='bookmark-text'>Bookmark</span>
+												<span class='bookmark-icon bookmarked'></span>
+												<span class='bookmark-text'>".$bookmark_text."</span>
 												<span class='bookmarked-text'>Bookmarked</span>
 											</button>
 										</div>
