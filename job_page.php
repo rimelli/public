@@ -50,60 +50,60 @@ if (isset($_GET['id'])) {
 		<?php include("includes/menu_footer.php"); ?>
 		<!-- Footer / End -->
 
-	
-	<!-- Wrapper / End -->
 
-	<!-- Apply for a job popup
+		<!-- Wrapper / End -->
+
+		<!-- Apply for a job popup
 ================================================== -->
-	<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+		<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
 
-		<!--Tabs -->
-		<div class="sign-in-form">
+			<!--Tabs -->
+			<div class="sign-in-form">
 
-			<ul class="popup-tabs-nav">
-				<li><a href="#tab">Apply Now</a></li>
-			</ul>
+				<ul class="popup-tabs-nav">
+					<li><a href="#tab">Apply Now</a></li>
+				</ul>
 
-			<div class="popup-tabs-container">
+				<div class="popup-tabs-container">
 
-				<!-- Tab -->
-				<div class="popup-tab-content" id="tab">
+					<!-- Tab -->
+					<div class="popup-tab-content" id="tab">
 
-					<!-- Welcome Text -->
-					<div class="welcome-text">
-						<h3>Attach File With CV</h3>
+						<!-- Welcome Text -->
+						<div class="welcome-text">
+							<h3>Attach File With CV</h3>
+						</div>
+
+						<!-- Form -->
+						<form method="post" id="apply-now-form">
+
+							<div class="input-with-icon-left">
+								<i class="icon-material-outline-account-circle"></i>
+								<input type="text" class="input-text with-border" name="name" id="name" placeholder="First and Last Name" required />
+							</div>
+
+							<div class="input-with-icon-left">
+								<i class="icon-material-baseline-mail-outline"></i>
+								<input type="text" class="input-text with-border" name="emailaddress" id="emailaddress" placeholder="Email Address" required />
+							</div>
+
+							<div class="uploadButton">
+								<input class="uploadButton-input" type="file" accept="image/*, application/pdf" id="upload-cv" />
+								<label class="uploadButton-button ripple-effect" for="upload-cv">Select File</label>
+								<span class="uploadButton-file-name">Upload your CV / resume relevant file. <br> Max. file size: 50 MB.</span>
+							</div>
+
+						</form>
+
+						<!-- Button -->
+						<button class="button margin-top-35 full-width button-sliding-icon ripple-effect" type="submit" form="apply-now-form">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></button>
+
 					</div>
 
-					<!-- Form -->
-					<form method="post" id="apply-now-form">
-
-						<div class="input-with-icon-left">
-							<i class="icon-material-outline-account-circle"></i>
-							<input type="text" class="input-text with-border" name="name" id="name" placeholder="First and Last Name" required />
-						</div>
-
-						<div class="input-with-icon-left">
-							<i class="icon-material-baseline-mail-outline"></i>
-							<input type="text" class="input-text with-border" name="emailaddress" id="emailaddress" placeholder="Email Address" required />
-						</div>
-
-						<div class="uploadButton">
-							<input class="uploadButton-input" type="file" accept="image/*, application/pdf" id="upload-cv" />
-							<label class="uploadButton-button ripple-effect" for="upload-cv">Select File</label>
-							<span class="uploadButton-file-name">Upload your CV / resume relevant file. <br> Max. file size: 50 MB.</span>
-						</div>
-
-					</form>
-
-					<!-- Button -->
-					<button class="button margin-top-35 full-width button-sliding-icon ripple-effect" type="submit" form="apply-now-form">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></button>
-
 				</div>
-
 			</div>
 		</div>
-	</div>
-	<!-- Apply for a job popup / End -->
+		<!-- Apply for a job popup / End -->
 
 	</div>
 	<!-- Scripts
@@ -123,6 +123,59 @@ if (isset($_GET['id'])) {
 
 	<!-- Snackbar // documentation: https://www.polonel.com/snackbar/ -->
 	<script>
+		function bookmark(jobid) {
+			var bookbtn = $('#bookmark-text');
+			var btntext = bookbtn.text().trim()
+			console.log(btntext);
+			var newBtn = (btntext == 'Bookmark') ? 'Bookmarked' : 'Bookmark';
+
+			$.ajax({
+				url: "includes/handlers/job_bookmark.php",
+				type: "GET",
+				data: {
+					job_id: jobid
+				},
+				cache: false,
+
+				success: function(response) {
+					console.log(response);
+					if(response=='done'){
+						bookbtn.html(newBtn);
+					}else{
+						bookbtn.html(response);
+					}
+				}
+			});
+
+		}
+
+		function apply(jobid) {
+			var applybtn = $('#apply-job-btn');
+			var btntext = applybtn.text().trim()
+			console.log(btntext);
+			var newBtn = (btntext == 'Apply Now') ? 'Applied' : 'Apply Now';
+
+			$.ajax({
+				url: "includes/handlers/job_apply.php",
+				type: "GET",
+				data: {
+					job_id: jobid
+				},
+				cache: false,
+
+				success: function(response) {
+					console.log(response);
+					if (response == 'done') {
+						applybtn.html(newBtn);
+					} else {
+						applybtn.html(response);
+					}
+				}
+			});
+
+		}
+		// console.log(fbtn);
+
 		// Snackbar for user status switcher
 		$('#snackbar-user-status label').click(function() {
 			Snackbar.show({
@@ -142,21 +195,21 @@ if (isset($_GET['id'])) {
 				text: 'Copied to clipboard!',
 			});
 		});
-		$('#apply-job-btn').magnificPopup({
-			type: 'inline',
+		// $('#apply-job-btn').magnificPopup({
+		// 	type: 'inline',
 
-			fixedContentPos: false,
-			fixedBgPos: true,
+		// 	fixedContentPos: false,
+		// 	fixedBgPos: true,
 
-			overflowY: 'auto',
+		// 	overflowY: 'auto',
 
-			closeBtnInside: true,
-			preloader: false,
+		// 	closeBtnInside: true,
+		// 	preloader: false,
 
-			midClick: true,
-			removalDelay: 300,
-			mainClass: 'my-mfp-zoom-in'
-		});
+		// 	midClick: true,
+		// 	removalDelay: 300,
+		// 	mainClass: 'my-mfp-zoom-in'
+		// });
 	</script>
 
 </body>

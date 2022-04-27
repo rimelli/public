@@ -46,6 +46,10 @@ class Job {
 					$bookmark_query->execute([$userLoggedIn, $job_id]);
 					$bookmarks = $bookmark_query->fetchAll();
 
+					$apply_query = $this->con->prepare("SELECT * FROM job_applications WHERE user_id=? AND job_id=?");
+					$apply_query->execute([$userLoggedIn, $job_id]);
+					$application = $apply_query->fetchAll();
+
 					$user_details_query = $this->con->prepare("SELECT * FROM users WHERE user_id=?");
 					$user_details_query->execute([$user_id]);
 					$user_row = $user_details_query->fetch();
@@ -125,6 +129,12 @@ class Job {
 						$bookmark_text='Bookmark';
 					}
 
+					if($application){
+						$appl='Applied';
+					}else{
+						$appl='Apply Now';
+					}
+
 					$str .= "<div class='single-page-header' data-background-image='assets/images/profile_backgrounds/defaults/default_profile_background.jpg'>
 									<div class='container'>
 										<div class='row'>
@@ -153,14 +163,13 @@ class Job {
 									
 								<div class='col-xl-4 col-lg-4'>
 									<div class='sidebar-container'>
-										<a href='#small-dialog' class='apply-now-button' id='apply-job-btn'>Apply Now <i class='icon-material-outline-arrow-right-alt'></i></a>
+										<a href='javascript:;' class='apply-now-button' id='apply-job-btn' onclick='apply($job_id)'>$appl <i class='icon-material-outline-arrow-right-alt'></i></a>
 							
 										<div class='sidebar-widget'>
 											<h3>Bookmark</h3>
-											<button class='bookmark-button margin-bottom-25'>
+											<button class='bookmark-button margin-bottom-25' onclick='bookmark($job_id)'>
 												<span class='bookmark-icon bookmarked'></span>
-												<span class='bookmark-text'>".$bookmark_text."</span>
-												<span class='bookmarked-text'>Bookmarked</span>
+												<span class='bookmark-text' id='bookmark-text'>".$bookmark_text."</span>
 											</button>
 										</div>
 									</div>
