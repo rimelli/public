@@ -84,37 +84,6 @@ END OF FAKE STATS DATA GENERATOR  */
 
 			<!-- Dashboard Content
 	================================================== -->
-<<<<<<< HEAD
-	<div class="dashboard-content-container" data-simplebar>
-		<div class="dashboard-content-inner" >
-			
-			<!-- Dashboard Headline -->
-			<div class="dashboard-headline">
-				<h3>Dashboard</h3>
-			</div>
-			
-			<!-- Row -->
-			<div class="row">
-
-				<div class="col-xl-8">
-					<!-- Dashboard Box -->
-					<div class="dashboard-box main-box-in-row">
-						<div class="headline">
-							<h3><i class="icon-feather-bar-chart-2"></i> Your Profile Views</h3>							
-							<div class="sort-by">							
-								<select class="selectpicker hide-tick" onChange="statsGet(this.value)">
-									<option value="daily" selected>Daily</option>
-									<option value="weekly">Weekly</option>
-									<option value="monthly">Monthly</option>
-									<option value="yearly">Yearly</option>
-								</select>
-							</div>
-						</div>
-						<div class="content">
-							<!-- Chart -->
-							<div class="chart">
-								<canvas id="chart" width="100" height="45"></canvas>
-=======
 			<div class="dashboard-content-container" data-simplebar>
 				<div class="dashboard-content-inner">
 
@@ -153,7 +122,6 @@ END OF FAKE STATS DATA GENERATOR  */
 										<canvas id="chart" width="100" height="45"></canvas>
 									</div>
 								</div>
->>>>>>> c83ad1adf003c16eb8b617847dbb07a2ba770983
 							</div>
 							<!-- Dashboard Box / End -->
 						</div>
