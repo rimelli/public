@@ -21,6 +21,14 @@ if (isset($_GET['profile_username'])) {
 	$individual_array_query->execute([$user_id]);
 	$individual_array = $individual_array_query->fetch();
 
+	$num_following_query = $con->prepare("SELECT * FROM user_follow WHERE user_id=?");
+	$num_following_query->execute([$user_id]);
+	$num_following = $num_following_query->rowCount();
+
+	$num_followers_query = $con->prepare("SELECT * FROM user_follow WHERE following=?");
+	$num_followers_query->execute([$user_id]);
+	$num_followers = $num_followers_query->rowCount();
+
 	$galleries_query = $con->prepare("SELECT id, filename, original, type FROM profile_galleries WHERE user_id=? ORDER BY id DESC");
 	$galleries_query->execute([$user_id]);
 	$galleries = $galleries_query->fetchAll();
@@ -152,6 +160,15 @@ if (isset($_POST['post_message'])) {
 									</div>
 									<!-- End Media -->
 
+									<div class="col-auto">
+		                              <span class="h4" id="num_follow"><?php echo $num_followers ?></span>
+		                              <span>Followers</span>
+		                            </div>
+		                            <div class="col-auto">
+		                              <span class="h4"><?php echo $num_following ?></span>
+		                              <span>Following</span>
+		                            </div>
+
 									<!-- Buttons -->
 									<div class="always-visible margin-top-25 margin-bottom-5">
 										<?php
@@ -222,8 +239,6 @@ if (isset($_POST['post_message'])) {
 
 		<!-- Scripts
 ================================================== -->
-		<script src="assets/js/jquery-3.5.1.min.js"></script>
-		<script src="assets/js/jquery-migrate-3.3.1.min.js"></script>
 		<script src="assets/js/mmenu.min.js"></script>
 		<script src="assets/js/tippy.all.min.js"></script>
 		<script src="assets/js/simplebar.min.js"></script>
@@ -249,7 +264,8 @@ if (isset($_POST['post_message'])) {
 				var fbtn = $('#followBtn');
 				var fbtnClass = $('#followBtnClass');
 				var btntext = fbtn.text().trim()
-
+				var numfollow=$('#num_follow');
+				var followers=parseInt(numfollow.text().trim());
 				if (btntext == 'Follow') {
 
 					$.ajax({
@@ -265,6 +281,7 @@ if (isset($_POST['post_message'])) {
 							fbtnClass.removeClass('follow-btn');
 							fbtnClass.addClass('following-btn');
 							fbtn.html('<i class="icon-feather-user-check"></i> Following');
+							numfollow.html(followers+1);
 						}
 					});
 
@@ -282,6 +299,7 @@ if (isset($_POST['post_message'])) {
 							fbtnClass.addClass('follow-btn');
 							fbtnClass.removeClass('following-btn');
 							fbtn.html('<i class="icon-feather-user"></i> Follow');
+							numfollow.html(followers-1);
 						}
 					});
 				}
