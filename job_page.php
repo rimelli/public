@@ -26,6 +26,12 @@ if (isset($_GET['id'])) {
 ================================================== -->
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/colors/blue.css">
+	<style>
+		.bookmarked_job{
+			background-color: #feb342;
+			color: #fff;
+		}
+		</style>
 
 </head>
 
@@ -125,6 +131,7 @@ if (isset($_GET['id'])) {
 	<script>
 		function bookmark(jobid) {
 			var bookbtn = $('#bookmark-text');
+			var btn_mark=$('#btn_bookmark');
 			var btntext = bookbtn.text().trim()
 			console.log(btntext);
 			var newBtn = (btntext == 'Bookmark') ? 'Bookmarked' : 'Bookmark';
@@ -141,6 +148,11 @@ if (isset($_GET['id'])) {
 					console.log(response);
 					if(response=='done'){
 						bookbtn.html(newBtn);
+						if(newBtn=='Bookmark'){
+							btn_mark.removeClass('bookmarked_job')
+						}else{
+							btn_mark.addClass('bookmarked_job')
+						}
 					}else{
 						bookbtn.html(response);
 					}

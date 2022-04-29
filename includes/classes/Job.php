@@ -125,8 +125,10 @@ class Job {
 					}
 					if($bookmarks){
 						$bookmark_text='Bookmarked';
+						$mark="bookmarked_job";
 					}else{
 						$bookmark_text='Bookmark';
+						$mark="";
 					}
 
 					if($application){
@@ -167,7 +169,7 @@ class Job {
 							
 										<div class='sidebar-widget'>
 											<h3>Bookmark</h3>
-											<button class='bookmark-button margin-bottom-25' onclick='bookmark($job_id)'>
+											<button class='bookmark-button $mark margin-bottom-25' id='btn_bookmark' onclick='bookmark($job_id)'>
 												<span class='bookmark-icon bookmarked'></span>
 												<span class='bookmark-text' id='bookmark-text'>".$bookmark_text."</span>
 											</button>
