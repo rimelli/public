@@ -5,6 +5,8 @@ include("includes/classes/Post.php");
 include("includes/classes/Message.php");
 include("includes/classes/Notification.php");
 include("includes/classes/Job.php");
+include("includes/classes/ChatRooms.php");
+include("includes/classes/Security.php");
 
 if (isset($_SESSION['user_id'])) {
 	$userLoggedIn = $_SESSION['user_id'];

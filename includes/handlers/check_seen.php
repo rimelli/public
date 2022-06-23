@@ -19,6 +19,7 @@ $row2 = $friend_last_message->fetch();
  
 $row3 = $get_last_messages_query->fetch();
  
- 
-if($row1['id'] > $row2['id'] && $row1['opened'] === "yes" && $row1['id'] === $row3['id']) 
+if($row1){
+	if($row1['id'] > $row2['id'] && $row1['opened'] === "yes" && $row1['id'] === $row3['id']) 
 	echo "<div class='checkSeen'>Seen</div>";
+}

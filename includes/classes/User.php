@@ -4,11 +4,19 @@ class User {
 	private $user;
 	private $con;
 
-	public function __construct($con, $user){
+	public function __construct($con, $user=null,$token_id=null){
 		$this->con = $con;
-		$user_details_query = $con->prepare("SELECT * FROM users WHERE user_id=?");
-		$user_details_query->execute([$user]);
-		$this->user = $user_details_query->fetch();
+		if($user!=null || !empty($user)){
+			$user_details_query = $con->prepare("SELECT * FROM users WHERE user_id=?");
+			$user_details_query->execute([$user]);
+			$this->user = $user_details_query->fetch();
+		}
+
+		if($token_id!= null || !empty($token_id)){
+			$user_details_query = $con->prepare("SELECT * FROM users WHERE token_id=?");
+			$user_details_query->execute([$token_id]);
+			$this->user = $user_details_query->fetch();
+		}
 	}
 
 	public function getUserId() {
@@ -94,7 +102,29 @@ class User {
 		$query->execute([$user_id, $user_to]);
 	}
 
+	public function updateUserConnectionID($connection_id){
+        $user_id=$this->user['user_id'];
+		$query=$this->con->prepare('UPDATE users set connection_id=? WHERE connection_id=?');
+		$r=$query->execute([null,$connection_id]);
+		$query=$this->con->prepare('UPDATE users set connection_id=? WHERE user_id=?');
+		$r=$query->execute([$connection_id, $user_id]);
+		if($r){
+			return true;
+		}else{
+			return false;
+		}
+    }
 
+	public function updateUserTokenID($token_id){
+        $user_id=$this->user['user_id'];
+		$query=$this->con->prepare('UPDATE users set token_id=? WHERE user_id=?');
+		$r=$query->execute([$token_id, $user_id]);
+		if($r){
+			return true;
+		}else{
+			return false;
+		}
+    }
 
 }
 

@@ -3,6 +3,7 @@ include '../../config/config.php';
 include '../classes/User.php';
  
 		$userLoggedIn = $_POST['me'];
+		$user_obj=new User($con,$_SESSION['user_id']);
 		$otherUser = $_POST['friend'];
 		
 		
@@ -50,7 +51,7 @@ include '../classes/User.php';
 													"You" .  " on " . date("M d Y H:i", strtotime($date));
  
  
-			$div_top = ($user_to === $userLoggedIn) ? "<div class='message-bubble'><div class='message-bubble-inner'><div class='message-avatar'><img src='assets/images/profile_pics/defaults/default_profile_pic.svg'></div><div class='message-text'>" : "<div class='message-bubble me'><div class='message-bubble-inner'><div class='message-avatar'><img src='" . $this->user_obj->getProfilePic() . "'></div><div class='message-text'>";
+			$div_top = ($user_to === $userLoggedIn) ? "<div class='message-bubble'><div class='message-bubble-inner'><div class='message-avatar'><img src='assets/images/profile_pics/defaults/default_profile_pic.svg'></div><div class='message-text'>" : "<div class='message-bubble me'><div class='message-bubble-inner'><div class='message-avatar'><img src='" . $friend->getProfilePic() . "'></div><div class='message-text'>";
  
 			$body_array = preg_split("/\s+/", $body);
  

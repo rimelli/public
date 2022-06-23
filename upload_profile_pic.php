@@ -31,7 +31,7 @@ if(isset($_FILES['image']['name'])){
 	//Set Upload directory    
 		$uploaddir = $_SERVER['DOCUMENT_ROOT'].'/assets/images/profile_pics';
 	//Set File name	
-		$file_temp_name = $profile_id.'_original.'.md5(time()).'n'.$type; //the temp file name
+		$file_temp_name = $profile_id.'_original.'.md5(time()).'n.'.$type; //the temp file name
 		$fullpath = $uploaddir."/".$file_temp_name; // the temp file path
 		$file_name = $profile_id.'_temp.jpeg'; //$profile_id.'_temp.'.$type; // for the final resized image
 		$fullpath_2 = $uploaddir."/".$file_name; //for the final resized image
