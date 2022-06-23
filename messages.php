@@ -24,6 +24,7 @@ if (isset($_GET['u'])) {
 			header("Location: /messages.php?conversation=" . $slug);
 			exit();
 		} else {
+			echo 'No User Found';
 			http_response_code(404);
 			exit();
 		}
@@ -33,33 +34,40 @@ if (isset($_GET['u'])) {
 } else if ($_GET['conversation']) {
 	$conv_id = Security::input_secure($_GET['conversation']);
 	$currentRoom = $chatRoom->getChatRoomInfo($conv_id);
-	$messages = $chatRoom->getChatMessages($conv_id);
-	$e2e_key = Security::aes_gcm_decrypt($currentRoom['e2e_key'], $master_key);
-	$profile = $chatRoom->getChatUserProfile($currentRoom['group_id'], $userLoggedIn);
-	$chatrooms = $chatRoom->getChatRooms($userLoggedIn);
-	$token = Security::guidv4();
-	$userClass->updateUserTokenID($token);
-	$chats = [];
-	foreach ($chatrooms as $chat) {
-		if ($chat['group_type'] == 'private') {
-			$pro = $chatRoom->getChatUserProfile($chat['group_id'], $userLoggedIn);
-			$last_message = $chatRoom->getLastGroupMessage($chat['group_id']);
-			$chat['profile'] = $pro;
-			$chat['last_message'] = $last_message;
-			array_push($chats, $chat);
-		} else {
-			$last_message = $chatRoom->getLastGroupMessage($chat['group_id']);
-			$chat['last_message'] = $last_message;
-			array_push($chats, $chat);
+
+	if ($currentRoom) {
+		$messages = $chatRoom->getChatMessages($conv_id);
+		$e2e_key = Security::aes_gcm_decrypt($currentRoom['e2e_key'], $master_key);
+		$profile = $chatRoom->getChatUserProfile($currentRoom['group_id'], $userLoggedIn);
+		$chatrooms = $chatRoom->getChatRooms($userLoggedIn);
+		$token = Security::guidv4();
+		$userClass->updateUserTokenID($token);
+		$chats = [];
+		foreach ($chatrooms as $chat) {
+			if ($chat['group_type'] == 'private') {
+				$pro = $chatRoom->getChatUserProfile($chat['group_id'], $userLoggedIn);
+				$last_message = $chatRoom->getLastGroupMessage($chat['group_id']);
+				$chat['profile'] = $pro;
+				$chat['last_message'] = $last_message;
+				array_push($chats, $chat);
+			} else {
+				$last_message = $chatRoom->getLastGroupMessage($chat['group_id']);
+				$chat['last_message'] = $last_message;
+				array_push($chats, $chat);
+			}
 		}
+	}else{
+		echo 'This Converstaion Not Found';
+		http_response_code(404);
+		exit();
 	}
 	// echo '<pre>';
 	// print_r($messages);
 	// die();
 } else {
 	$chatrooms = $chatRoom->getChatRooms($userLoggedIn);
-	if($chatrooms){
-		
+	if ($chatrooms) {
+
 		header("Location: /messages.php?conversation=" . $chatrooms[0]['group_slug']);
 		exit();
 	}
@@ -195,7 +203,7 @@ if (isset($_GET['u'])) {
 																	<div class='message-by-headline'>
 																		<h5><?= $chat['profile']['first_name'] . ' ' . $chat['profile']['last_name'] ?></h5><span class='timestamp_smaller' id='grey'> <?= (isset($chat['last_message']['date'])) ? $chatRoom->calculateTimeAgo($chat['last_message']['date']) : '' ?></span>
 																	</div>
-																	<p id='grey' style='margin: 0;'><?= ($chat['last_message']['user_id'] == $userLoggedIn) ? 'You said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'],Security::aes_gcm_decrypt($chat['e2e_key'],$master_key)) : 'They said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'],Security::aes_gcm_decrypt($chat['e2e_key'],$master_key)) ?> </p>
+																	<p id='grey' style='margin: 0;'><?= ($chat['last_message']['user_id'] == $userLoggedIn) ? 'You said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'], Security::aes_gcm_decrypt($chat['e2e_key'], $master_key)) : 'They said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'], Security::aes_gcm_decrypt($chat['e2e_key'], $master_key)) ?> </p>
 																</div>
 															</a></li>
 													<?php } else { ?>
@@ -207,7 +215,7 @@ if (isset($_GET['u'])) {
 																	<div class='message-by-headline'>
 																		<h5><?= $chat['group_name'] ?></h5><span class='timestamp_smaller' id='grey'> <?= (isset($chat['last_message']['date'])) ? $chatRoom->calculateTimeAgo($chat['last_message']['date']) : '' ?></span>
 																	</div>
-																	<p id='grey' style='margin: 0;'><?= ($chat['last_message']['user_id'] == $userLoggedIn) ? 'You said: '.Security::aes_gcm_decrypt($chat['last_message']['body'],Security::aes_gcm_decrypt($chat['e2e_key'],$master_key)) : 'They said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'],Security::aes_gcm_decrypt($chat['e2e_key'],$master_key)) ?> </p>
+																	<p id='grey' style='margin: 0;'><?= ($chat['last_message']['user_id'] == $userLoggedIn) ? 'You said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'], Security::aes_gcm_decrypt($chat['e2e_key'], $master_key)) : 'They said: ' . Security::aes_gcm_decrypt($chat['last_message']['body'], Security::aes_gcm_decrypt($chat['e2e_key'], $master_key)) ?> </p>
 																</div>
 															</a></li>
 											<?php }
@@ -237,7 +245,7 @@ if (isset($_GET['u'])) {
 								</div>
 
 								<!-- Message Content Inner -->
-								<div class="message-content-inner" >
+								<div class="message-content-inner">
 
 									<div class='loaded_messages custom-message-area scroll-bar' id='scroll_messages'>
 										<?php
@@ -271,7 +279,7 @@ if (isset($_GET['u'])) {
 										<?php
 												}
 											}
-										}else{
+										} else {
 											echo '<p style="text-align:center;">No Messages Found.<p>';
 										}
 										?>

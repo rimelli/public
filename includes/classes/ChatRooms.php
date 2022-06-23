@@ -219,7 +219,12 @@ class ChatRooms
             return false;
         }
     }
-
+    /**
+     * get Chat Room Info Using Group SLug
+     *
+     * @param string $group_slug
+     * @return array Group Info
+     */
     public function getChatRoomInfo($group_slug){
         $query='SELECT * FROM groups WHERE group_slug=?';
         $pdo=$this->con->prepare($query);
@@ -232,6 +237,12 @@ class ChatRooms
         }
     }
 
+    /**
+     * Get Group Encryption KMey
+     *
+     * @param int|string $group_id
+     * @return string $key
+     */
     public function getChatKey($group_id){
         $query='SELECT e2e_key FROM groups WHERE group_id=?';
         $pdo=$this->con->prepare($query);
