@@ -149,40 +149,19 @@ include("includes/form_handlers/settings_handler.php");
 												<?php if ($prof_type == 1) { ?>
 														<div>
 															<div class="section-headline margin-top-25 margin-bottom-12">
-																<h5>Professional</h5>
+																<h5>Profile</h5>
 															</div>
 															<div class="checkbox form-control">
 																<input type="checkbox" name="coach" value="yes" id="checkbox2" <?php if ($coach == "yes") echo "checked=checked"; ?>>
-																<label for="checkbox2"><span class="checkbox-icon"></span> Coach</label>
+																<label for="checkbox2"><span class="checkbox-icon"></span> Pro1</label>
 															</div>
 															<div class="checkbox form-control">
 																<input type="checkbox" name="scout" value="yes" id="checkbox3" <?php if ($scout == "yes") echo "checked=checked"; ?>>
-																<label for="checkbox3"><span class="checkbox-icon"></span> Scout</label>
+																<label for="checkbox3"><span class="checkbox-icon"></span> Pro2</label>
 															</div>
 															<div class="checkbox form-control">
 																<input type="checkbox" name="agent" value="yes" id="checkbox4" <?php if ($agent == "yes") echo "checked=checked"; ?>>
-																<label for="checkbox4"><span class="checkbox-icon"></span> Intermediary (Agent)</label>
-															</div>
-														</div>
-													<?php } ?>
-
-													<?php if ($prof_type == 2) { ?>
-														<div class="col-xl-12 col-md-12">
-															<div class="section-headline margin-top-25 margin-bottom-12">
-																<h5>Organisation</h5>
-															</div>
-															<div class="checkbox form-control">
-																<input type="checkbox" name="pro_club" value="yes" id="checkbox7">
-																<label for="checkbox7"><span class="checkbox-icon"></span> Professional Club</label>
-															</div>
-															<div class="checkbox form-control">
-																<input type="checkbox" name="amateur_club" value="yes" id="checkbox6">
-																<label for="checkbox6"><span class="checkbox-icon"></span> Amateur Club</label>
-															</div>
-															<br>
-															<div class="checkbox form-control">
-																<input type="checkbox" name="academy" value="yes" id="checkbox8">
-																<label for="checkbox8"><span class="checkbox-icon"></span> Academy</label>
+																<label for="checkbox4"><span class="checkbox-icon"></span> Pro3</label>
 															</div>
 														</div>
 													<?php } ?>
@@ -486,6 +465,71 @@ include("includes/form_handlers/settings_handler.php");
 					</div>
 				</div>
 				<?php } ?>
+
+
+				<div class="col-xl-12">
+					<div class="dashboard-box">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-person-pin"></i> Contacts</h3>
+						</div>
+
+						<div class="content with-padding padding-bottom-0">
+							<div class="row">
+
+								<form class="settings-form" method="POST" style="display: contents;">
+								<input type="hidden" name="update_contacts" value="1" />
+								<div class="col">
+									<div class="row">
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Contact Title</h5>
+												<input type="text" name="contacts_title" class="with-border" value="" required>
+											</div>
+										</div>
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Contact Name</h5>
+												<input type="text" name="contacts_name" class="with-border" value="" id="contacts_name" required>
+												<div id="live-search-results"></div>
+											</div>
+										</div>
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Contact Email</h5>
+												<input type="email" name="contacts_email" class="with-border" value="" id="contacts_email">
+											</div>
+										</div>
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Contact Number</h5>
+												<input type="text" name="contacts_number" class="with-border" value="" id="contacts_number">
+											</div>
+										</div>
+
+									</div>
+								</div>
+									<!-- Button -->
+									<div class="col-xl-12 mb-4 save-submit">
+										<div class="return-message"></div>
+										<button class="btn btn-primary ripple-effect save-details" type="submit">											
+											<i class="fas fa-sync fa-lg fa-spin margin-right-10"></i>
+											<i class="fas icon-material-outline-add fa-lg margin-right-10"></i>
+											<span class="text save-changes-text">Add Contact</span>
+										</button>										
+									</div>
+								</form>
+
+							</div>
+						</div>
+						
+					</div>
+				</div>
 
 
 
@@ -1031,6 +1075,43 @@ $(document).ready(function(){
 });
 </script>
 
+
+<script>
+	$(document).ready(function(){
+	    /// Live Search ///
+	    $("#contacts_name").keyup(function(){
+
+	        var query = $(this).val();
+	        if (query !="") {
+	            $.ajax({
+	                url:"includes/handlers/live_search.php",
+	                type:"POST",
+	                cache:false,
+	                data:{query:query},
+	                success:function(data){
+
+	                    $("#live-search-results").html(data);
+	                    $('#live-search-results').css('display', 'block');
+
+	                    /// Click to enter result ///
+	                    $("#live-search-results a").on("click", function(){
+	                        $("#contacts_name").val($(this).html());
+	                        $("#live-search-results").css('display', 'none');
+	                    });
+	                }
+
+	            });
+	        }
+
+	        else {
+	            $("#live-search-results").html("");
+	            $('#search-results-box').css('display', 'none');
+	        }
+
+	    });
+
+	});
+</script>
 
 
 
