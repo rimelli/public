@@ -43,7 +43,7 @@
                     </ul>
 
 					<ul data-submenu-title="Account">
-						<li><a href="logout.php?user_id=<?= $_SESSION['user_id']?>"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
+						<li><a href="includes/handlers/logout.php"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
 					</ul>
 					
 				</div>
