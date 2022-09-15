@@ -1,7 +1,6 @@
 <?php
 
 if (isset($_POST['login_button'])) {
-	
 	$email = filter_var($_POST['log_email'], FILTER_SANITIZE_EMAIL); //Sanitize email
 
 	$_SESSION['log_email'] = $email; //Store email into session variable
@@ -27,6 +26,8 @@ if (isset($_POST['login_button'])) {
 
 		if (password_verify($password, $check_login_query['password'])) {
 				$_SESSION['user_id'] = $user_id;
+                $make_online_account = $con->prepare("UPDATE users SET is_online=true WHERE email=?");
+                $make_online_account->execute([$email]);
 				header("Location: index.php");
 				exit();
 			}

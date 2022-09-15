@@ -9,7 +9,6 @@ $password = ""; //password
 $password2 = ""; //password 2
 $date = ""; //Sign up date
 $error_array = array(); //Holds error messages
-
 if(isset($_POST['register_button'])) {
 
 	//Registration form values
@@ -116,19 +115,19 @@ if(isset($_POST['register_button'])) {
 		$profile_background = "assets/images/profile_backgrounds/defaults/default_profile_background.jpg";
 
 
-		$query = $con->prepare("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'no', '', '0', '0', 'no')");
+		$query = $con->prepare("INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, , '0', '0', 'no')");
 		$query->execute([$proftype, $fname, $lname, $username, $em, $password, $date, $profile_pic, $profile_background]);
 
 		$user_id = $con->lastInsertId();
 
 
 		if ($proftype == 1) {
-			$query = $con->prepare("INSERT INTO individuals VALUES (NULL, ?, '', '', '', '0000-00-00', '', '', '', '')");
+			$query = $con->prepare("INSERT INTO individuals VALUES (NULL, ?)");
 			$query->execute([$user_id]);
 		}
 
 		if ($proftype == 2) {
-			$query = $con->prepare("INSERT INTO organisations VALUES (NULL, ?, '', '', '')");
+			$query = $con->prepare("INSERT INTO organisations VALUES (NULL, ?)");
 			$query->execute([$user_id]);
 		}
 

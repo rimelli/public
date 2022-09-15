@@ -27,19 +27,12 @@ class Message {
 			return $user_from;
 	}
 
-	public function sendMessage($user_to, $body, $date, $imageName) {
-
-		if($body !== "" || $imageName !== "") {
-
-			if($imageName !== "" && strpos($imageName, "../../assets/images/messages") !== false) {
- 
-				$imageName = str_replace("../../assets/images/messages", "assets/images/messages", $imageName);
-			}
-
+	public function sendMessage($user_to, $body, $date) {
+		if($body !== "") {
 			$userLoggedIn = $this->user_obj->getUserId();
-			$query = $this->con->prepare("INSERT INTO messages VALUES(NULL, ?, ?, ?, ?, 'no', 'no', 'no', ?)");
-			$query->execute([$user_to, $userLoggedIn, $body, $date, $imageName]);
-		}
+			$query = $this->con->prepare('INSERT INTO messages (user_to, user_from, body, sent_on, opened, viewed, deleted) VALUES (?,?,?,?,?,?,?)');
+            $query->execute([$user_to, $userLoggedIn, $body, $date, 'no', 'no', 'no']);
+        }
 	}
 
 	public function getMessages($otherUser) {
@@ -58,26 +51,11 @@ class Message {
 			$user_from = $row['user_from'];
 			$body = $row['body'];
 			$date = $row['date'];
-			$image = $row['image'];
-
-			//Check if user is sending an image
-			if($image != "") {
- 
-				$imageDiv = "<div class='postedImage'>
-								<img src='$image'>
-							</div>";
-			}
- 
-			else {
- 
-				$imageDiv = "";
-			}
-			//End of checking if user is sending an image
 
 			$info = ($user_to === $userLoggedIn) ? $user_to . " on " . date("M d Y H:i", strtotime($date)) : 
 													"You" .  " on " . date("M d Y H:i", strtotime($date));
 
-			$div_top = ($user_to == $userLoggedIn) ? "<div class='message-bubble'><div class='message-bubble-inner'><div class='message-avatar'><img src='assets/images/profile_pics/defaults/default_profile_pic.svg'></div><div class='message-text'>" : "<div class='message-bubble me'><div class='message-bubble-inner'><div class='message-avatar'><img src='" . $this->user_obj->getProfilePic() . "'></div><div class='message-text'>";
+			$div_top = ($user_to == $userLoggedIn) ? "<div class='message-bubble'><div class='message-bubble-inner'><div class='message-avatar'><img src='assets/images/profile_pics/defaults/default_profile_pic.svg'></div><div class='message-text'>" : "<div class='message-bubble me'><div class='message-bubble-inner'><div class='message-avatar'><img src='assets/images/profile_pics/defaults/profileimg.png'></div><div class='message-text'>";
 
 			$body_array = preg_split("/\s+/", $body);
  
@@ -97,7 +75,7 @@ class Message {
 				
 			}
 
-			$data = $data . $div_top . $body . $imageDiv . "</div>$info</div></div><p></p><br><br>";
+			$data = $data . $div_top . $body . "</div>$info</div></div><p></p><br><br>";
 		}
 		return $data;
 	}
@@ -249,7 +227,7 @@ class Message {
 			if(strpos($latest_message_details[1], "http://") !== false) {
 
 				$return_string .= "<li><a href='messages.php?u=$username'> <div class='message-avatar'>
-								<i class='status-icon status-online'></i><img src='" . $user_found_obj->getProfilePic() . "'></div>
+								<i class='status-icon status-online'></i><img src='assets/images/profile_pics/defaults/profileimg.png'></div>
 								<div class='message-by'><div class='message-by-headline'><h5>" . $user_found_obj->getFirstAndLastName() . "</h5><span class='timestamp_smaller' id='grey'> " . $latest_message_details[2] . "</span></div>
 								<p id='grey' style='margin: 0;'>" . $latest_message_details[0] . $split . " </p>
 								</div>
@@ -260,7 +238,7 @@ class Message {
 			else {
 				
 				$return_string .= "<li><a href='messages.php?u=$username'> <div class='message-avatar'>
-								<i class='status-icon status-online'></i><img src='" . $user_found_obj->getProfilePic() . "'></div>
+								<i class='status-icon status-online'></i><img src='assets/images/profile_pics/defaults/profileimg.png'></div>
 								<div class='message-by'><div class='message-by-headline'><h5>" . $user_found_obj->getFirstAndLastName() . "</h5><span class='timestamp_smaller' id='grey'> " . $latest_message_details[2] . "</span></div>
 								<p id='grey' style='margin: 0;'>" . $latest_message_details[0] . $split . " </p>
 								</div>

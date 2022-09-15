@@ -25,32 +25,25 @@
 			<!-- Navigation -->
 			<div class="dashboard-nav" id="myDIV">
 				<div class="dashboard-nav-inner">
-
-					<ul data-submenu-title="Nav">
-						<li class="active"><a href="index.php"></i> feed</a></li>
-                        <li><a href="dashboard.php"> Dashboard</a></li>
-						<li><a href="messages.php"></i> Messages
-								<?php
-								if($num_messages > 0)
-								echo '<span class="nav-tag">' . $num_messages . '</span>';
-								?>
-							</a></li>
-						<li><a href="bookmarks.php"> Bookmarks</a></li>
-					</ul>
-					
-					<ul data-submenu-title="Jobs">
-						<li><a href="#"><i class="icon-material-outline-business-center"></i> Jobs</a>
-							<ul>
-								<li><a href="jobs_manage.php">Manage Jobs <span class="nav-tag">3</span></a></li>
-								<li><a href="jobs_candidates.php">Manage Candidates</a></li>
-								<li><a href="jobs_post.php">Post a Job</a></li>
-							</ul>	
-						</li>
-					</ul>
+                    <?php
+                        $message_obj = new Message($con, $userLoggedIn);
+                        $user_to = $message_obj->getMostRecentUser();
+                    ?>
+					<ul data-submenu-title="Start">
+						<li><a href="index.php"><i class="icon-material-outline-home"></i> Home</a></li>
+						<li><a href="dashboard.php"><i class="icon-material-outline-dashboard"></i>Dashboard</a></li>
+                        <?php
+                            if ($user_to) {
+                                echo '<li><a href="messages.php?user_to='.$user_to.'"><i class="icon-material-outline-speaker-notes"></i> Messages</a></li>';
+                                } else {
+                                echo '<li><a href="messages.php"><i class="icon-material-outline-speaker-notes"></i> Messages</a></li>';
+                            }
+                        ?>
+                        <li><a href="users.php"><i class="icon-material-outline-group"></i>All Users</a></li>
+                    </ul>
 
 					<ul data-submenu-title="Account">
-						<li><a href="settings.php"><i class="icon-material-outline-settings"></i> Settings</a></li>
-						<li><a href="includes/handlers/logout.php"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
+						<li><a href="logout.php?user_id=<?= $_SESSION['user_id']?>"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
 					</ul>
 					
 				</div>

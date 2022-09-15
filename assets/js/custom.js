@@ -181,36 +181,135 @@ $(document).ready(function(){
 
 
 	/*--------------------------------------------------*/
+ 	/*  Remove Post
+ 	/*--------------------------------------------------*/	
+     $(document).on('click', '.post-remove', function(e){ 
+     	e.preventDefault();	
+ 		var post_id = $(e.target).data("post_id");	
+ 		$.get(`includes/form_handlers/delete_post.php?post_id=${post_id}`);
+ 		console.log(post_id+ " Post Deleted.");
+
+ 			$(`#post_${post_id}`).fadeOut();
+ 			$('.mfp-close').click();
+
+ 	});
+
+
+  /*--------------------------------------------------*/
+ 	/*  Remove Note
+ 	/*--------------------------------------------------*/	
+     $(document).on('click', '.note-remove', function(e){ 
+     	e.preventDefault();	
+ 		var note_id = $(e.target).data("note_id");	
+ 		$.get(`includes/form_handlers/delete_note.php?note_id=${note_id}`);
+ 		console.log(note_id+ " Note Deleted.");
+
+ 			$(`#note_${note_id}`).fadeOut();
+ 			$('.mfp-close').click();
+
+ 	});
+
+
+	/*--------------------------------------------------*/
 	/*  Bookmark Actions
-	/*--------------------------------------------------*/	
-    $(document).on('click', '.bookmark-icon, .bookmark-remove', function(e){ 
+	/*--------------------------------------------------*/
+    $(document).on('click', '.bookmark-icon-job, .job-bookmark-remove', function(e){ 
     	e.preventDefault();	
-		let type = ($(e.target).hasClass('bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', job_id = $(e.target).data("job_id");	
+		let type = ($(e.target).hasClass('job-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', job_id = $(e.target).data("job_id");	
 
 		$.get(`filter_jobs.php?job_id=${job_id}`);
 
 		if (type == 'delete'){
 			$(`#bookmark_${job_id}`).fadeOut();
-			$('.mfp-close').click();
 		}else{
 			$(this).toggleClass('bookmarked');
 		}
 
 	});
 
-	/*--------------------------------------------------*/
-	/*  Post Feed Actions
-	/*--------------------------------------------------*/	
-    $(document).on('click', '.post-remove', function(e){ 
-    	e.preventDefault();	
-		var post_id = $(e.target).data("post_id");	
-		$.get(`includes/form_handlers/delete_post.php?post_id=${post_id}`);
-		console.log(post_id+ " Post Deleted.");
 
-			$(`#post_${post_id}`).fadeOut();
-			$('.mfp-close').click();
+	/*--------------------------------------------------*/
+  /*  Bookmark Actions
+  /*--------------------------------------------------*/
+    $(document).on('click', '.bookmark-icon-event, .event-bookmark-remove', function(e){ 
+      e.preventDefault(); 
+    let type = ($(e.target).hasClass('event-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', event_id = $(e.target).data("event_id");  
+
+    $.get(`filter_events.php?event_id=${event_id}`);
+
+    if (type == 'delete'){
+      $(`#bookmark_${event_id}`).fadeOut();
+    }else{
+      $(this).toggleClass('bookmarked');
+    }
+
+  });
+
+	/*--------------------------------------------------*/
+	/*  Bookmark Actions
+	/*--------------------------------------------------*/
+    $(document).on('click', '.bookmark-icon-profile, .profile-bookmark-remove', function(e){ 
+    	e.preventDefault();	
+		let type = ($(e.target).hasClass('profile-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', profile_id = $(e.target).data("profile_id");	
+
+		$.get(`profile_bookmark.php?profile_id=${profile_id}`);
+
+		if (type == 'delete'){
+			$(`#bookmark_${profile_id}`).fadeOut();
+		}else{
+			$(this).toggleClass('bookmarked');
+		}
 
 	});
+
+
+  /*--------------------------------------------------*/
+	/*  Contact form submission
+	/*--------------------------------------------------*/
+	$('#contactform').on('submit', function(e) {
+		e.preventDefault();		
+
+		let jobPostOverlay = $('#job-post-overlay'), 
+			jobPostLoader = $('#job-post-loader')
+		
+		jobPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Sending message</li><li>Please wait ...</li></ul>`);
+		jobPostOverlay.css('display', 'block');
+		jobPostLoader.css('display', 'flex');
+
+		$.post('contact_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				let message = '';
+
+				if (data == 'message_sent'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Message sent with success</li>';
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+				}
+
+				message += '<li><a href="#" id="jobs-post-submit-close">Click here</a> to close.</li></ul>';
+				
+				jobPostLoader.html(message);
+				
+				if (data == 'message_sent'){
+					$(e.target).trigger('reset');	
+					$(".selectpicker").val('default').selectpicker("refresh");
+				}
+
+			}, 1000);			
+
+		});
+				
+	});
+
+	$(document).on('click', '#jobs-post-submit-close', function(e){ 
+    	e.preventDefault();	
+
+		$('#job-post-overlay').css('display', 'none');
+		$('#job-post-loader').css('display', 'none');
+
+	});
+
+
 
 	/*--------------------------------------------------*/
 	/*  Settings form submission
@@ -223,14 +322,16 @@ $(document).ready(function(){
 		return_message.html('');
 
 		button.prop('disabled', true);
-		button.find($('.ico-save')).hide();
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
 		button.find($('.fa-spin')).show();
 
 		$.post('settings_update.php', $(e.target).serialize(), data => {			
 			setTimeout(() => {
 				return_message.html(data);
 				button.prop('disabled', false);
-				button.find($('.ico-save')).show();
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
 			}, 1000);			
@@ -238,6 +339,286 @@ $(document).ready(function(){
 		});
 				
 	});
+
+
+	/*--------------------------------------------------*/
+	/*  Form submission
+	/*--------------------------------------------------*/
+	$('.add-teams-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("add-teams-form").elements;
+		let teamName = inputs["team_name"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+
+		let html = '';
+
+		html += `<div class="col-xl-3"><div class="companies-list"><a href="teams.php" class="company"><div class="company-inner-alignment"><h4 class="margin-bottom-10">${teamName}</h4>
+							<span class="company-not-rated">0 Players</span></div></a></div></div>`;
+
+		$('#teams-container').append(html);
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Settings form submission
+	/*--------------------------------------------------*/
+	$('.remove-team-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("remove-team-form").elements;
+		let teamId = inputs["team_id"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.icon-feather-trash-2')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.icon-feather-trash-2')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);
+
+			$(`#team_${teamId}`).fadeOut();
+
+		});
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Settings form submission
+	/*--------------------------------------------------*/
+	$('.remove-player-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("remove-player-form").elements;
+		let playerId = inputs["player_id"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.icon-feather-trash-2')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.icon-feather-trash-2')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);
+
+			$(`#player_${playerId}`).fadeOut();
+
+		});
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Form submission
+	/*--------------------------------------------------*/
+	$('.add-players-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("add-players-form").elements;
+		let playerName = inputs["player_name"].value;
+		let playerPosition = inputs["player_position"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+
+		let html = '';
+
+		html += `<tr><td>${playerName}</td><td></td><td>${playerPosition}</td></tr>`;
+
+		$('#players-container').append(html);
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Form submission
+	/*--------------------------------------------------*/
+	$('.add-fixture-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("add-fixture-form").elements;
+		let otherTeam = inputs["other_team"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+
+		let html = '';
+
+		html += `<div class="col-xl-3"><div class="companies-list"><a href="fixtures.php" class="company"><div class="company-inner-alignment"><h4 class="margin-bottom-10"><span>X </span>${otherTeam}</h4></div></a></div></div>`;
+
+		$('#fixtures-container').append(html);
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Settings form submission
+	/*--------------------------------------------------*/
+	$('.remove-fixture-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("remove-fixture-form").elements;
+		let fixtureId = inputs["fixture_id"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.icon-feather-trash-2')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.icon-feather-trash-2')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);
+
+			$(`#fixture_${fixtureId}`).fadeOut();
+
+		});
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Child form submission
+	/*--------------------------------------------------*/
+	$('.child-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("child-form").elements;
+		let childName = inputs["first_name_child"].value;
+		let childLastName = inputs["last_name_child"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+
+		let html = '';
+
+		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p></div>`;
+
+		$('#child-container').prepend(html);
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Child Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-child', function(e){ 
+    	e.preventDefault();	
+		let child_id = $(e.target).data("id");	
+
+		if (child_id){
+			$.get(`settings_update.php?remove_child_id=${child_id}`);			
+			$(`#child_${child_id}`).fadeOut();
+
+		}
+
+	});
+	
 
 	/*--------------------------------------------------*/
 	/*  Settings Attachment Upload
@@ -318,7 +699,7 @@ $(document).ready(function(){
 		let jobPostOverlay = $('#job-post-overlay'), 
 			jobPostDelete = $('#job-post-delete');
 
-		jobPostDelete.html(`<i class="fas fa-question"></i><ul><li>Are you sure you want to delete the job #${job_id}?</li>` + 
+		jobPostDelete.html(`<ul><li>Are you sure you want to delete this job?</li>` + 
 						   `<li class="q"><a href="#" class="job-deletion-confirm" data-job_id="${job_id}">YES</a><a class="job-deletion-close" href="#">NO</a></li></ul>`);	
 
 		jobPostOverlay.css('display', 'block');
@@ -335,7 +716,7 @@ $(document).ready(function(){
 
 		jobPostDelete.css('height', '80px');
 		jobPostDelete.css('margin', '-40px 0 0 -150px');
-		jobPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting job #${job_id}</li><li>Please wait ...</li></ul>`);	
+		jobPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting job</li><li>Please wait ...</li></ul>`);	
 
 		$.get(`jobs_update.php?job_delete_id=${job_id}`, data => {			
 			setTimeout(() => {
@@ -420,6 +801,118 @@ $(document).ready(function(){
 
 
 	/*--------------------------------------------------*/
+	/*  Event post form submission
+	/*--------------------------------------------------*/
+	$('#events-post-submit').on('submit', function(e) {
+		e.preventDefault();		
+
+		let eventPostOverlay = $('#post-overlay'), 
+			eventPostLoader = $('#post-loader'), 
+			type = $(e.target).find('input[name="post_event"]').length > 0 ? 'add' : 'edit';
+		
+		eventPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>${type == 'add' ? 'Creating a new event' : 'Editing event'}</li><li>Please wait ...</li></ul>`);
+		eventPostOverlay.css('display', 'block');
+		eventPostLoader.css('display', 'flex');
+
+		$.post('events_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				let message = '';
+
+				if (data == 'event_added'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Event created with success</li>';
+				}else if (data == 'job_edited'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Event edited with success</li>';	
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+				}
+
+				message += '<li><a href="#" id="events-post-submit-close">Click here</a> to close.</li></ul>';
+				
+				eventPostLoader.html(message);
+				
+				if (data == 'event_added'){
+					$(e.target).trigger('reset');	
+					$(".selectpicker").val('default').selectpicker("refresh");			
+				}
+
+			}, 1000);			
+
+		});
+				
+	});
+
+	$(document).on('click', '#events-post-submit-close', function(e){ 
+    	e.preventDefault();	
+
+		$('#post-overlay').css('display', 'none');
+		$('#post-loader').css('display', 'none');
+
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Event deletion
+	/*--------------------------------------------------*/
+	$(document).on('click', '.event-deletion', function(e){ 
+    	e.preventDefault();	
+		let event_id = $(e.target).data("event_id");	
+
+		let eventPostOverlay = $('#post-overlay'), 
+			eventPostDelete = $('#event-post-delete');
+
+		eventPostDelete.html(`<ul><li>Are you sure you want to delete this event?</li>` + 
+						   `<li class="q"><a href="#" class="event-deletion-confirm" data-event_id="${event_id}">YES</a><a class="event-deletion-close" href="#">NO</a></li></ul>`);	
+
+		eventPostOverlay.css('display', 'block');
+		eventPostDelete.css('display', 'flex');
+
+	});
+
+	$(document).on('click', '.event-deletion-confirm', function(e){ 
+    	e.preventDefault();	
+		let event_id = $(e.target).data("event_id");	
+
+		let eventPostOverlay = $('#event-post-overlay'), 
+			eventPostDelete = $('#event-post-delete');
+
+		eventPostDelete.css('height', '80px');
+		eventPostDelete.css('margin', '-40px 0 0 -150px');
+		eventPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting event</li><li>Please wait ...</li></ul>`);	
+
+		$.get(`events_update.php?event_delete_id=${event_id}`, data => {			
+			setTimeout(() => {
+				let message = '';
+
+				if (data == 'event_deleted'){
+					$(`#event_${event_id}`).fadeOut();
+					message = '<i class="fas fa-check-circle"></i><ul><li>Event deleted with success</li>';	
+
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+
+				}
+
+				message += '<li class="r"><a href="#" class="event-deletion-close">Click here</a> to close.</li></ul>';				
+				eventPostDelete.html(message);				
+
+			}, 1000);			
+
+		});
+
+	});
+
+	$(document).on('click', '.event-deletion-close', function(e){ 
+    	e.preventDefault();	
+
+		$('#post-overlay').css('display', 'none');
+		$('#event-post-delete').css('display', 'none');
+		$('#event-post-delete').css('height', '120px');
+		$('#event-post-delete').css('margin', '-60px 0 0 -150px');
+
+	});
+
+
+	/*--------------------------------------------------*/
 	/*  Gallery Upload
 	/*--------------------------------------------------*/
 	$('#gallery-upload').on('change', function(e) {
@@ -452,19 +945,12 @@ $(document).ready(function(){
 						if (ret.length){
 							let html = '';
 							ret.forEach(gallery => {
-								html+=`<div class="col-sm-4 mb-3 gallery-box">
-								<a class="js-fancybox media-viewer" href="javascript:;"
-								   data-hs-fancybox-options='{
-									 "selector": "#galleries-container .js-fancybox",
-									 "speed": 700
-								   }'
-								   data-src="${gallery[1]}">
-								  <img class="img-fluid rounded" src="${gallery[1]}" alt="Image Description">
-								</a>
-							  </div>`;
-								// html += `<div class="gallery-box ripple-effect" id="gallery_${gallery[0]}">`;
-								// html += `<i>${gallery[2].toUpperCase()}</i><button class="remove-gallery" data-tippy-placement="top" data-id="${gallery[0]}" title="Remove"></button>`;
-								// html += '</div>';
+								html+=`<div class="gallery" id="gallery_${gallery[0]}">
+                          <img class="gallery-img" src="${gallery[1]}" alt="Image" width="600" height="400">
+                        </div>
+                        <a href="#" data-id="${gallery[0]}" class="remove-gallery" style="height: 20px;">
+                              <i class="icon-feather-trash-2 remove-gallery" data-id="${gallery[0]}" id="del_${gallery[0]}" title="Remove" data-tippy-placement="left"></i>
+                            </a>`;
 
 							});
 
@@ -481,6 +967,74 @@ $(document).ready(function(){
 		}
 
 	});
+
+	/*--------------------------------------------------*/
+	/*  Gallery Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-gallery', function(e){ 
+    	e.preventDefault();	
+		let gallery_id = $(e.target).data("id");	
+
+		if (gallery_id){
+			$.get(`gallery_update.php?remove_gallery_id=${gallery_id}`);			
+			$(`#gallery_${gallery_id}`).fadeOut();
+			$(`#del_${gallery_id}`).fadeOut();
+
+		}
+
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Work Experience Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-work', function(e){ 
+    	e.preventDefault();	
+		let work_id = $(e.target).data("id");	
+
+		if (work_id){
+			$.get(`work_update.php?remove_work_id=${work_id}`);			
+			$(`#work_${work_id}`).fadeOut();
+			$(`#del_${work_id}`).fadeOut();
+
+		}
+
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Education Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-edu', function(e){ 
+    	e.preventDefault();	
+		let edu_id = $(e.target).data("id");	
+
+		if (edu_id){
+			$.get(`edu_update.php?remove_edu_id=${edu_id}`);			
+			$(`#edu_${edu_id}`).fadeOut();
+			$(`#del_${edu_id}`).fadeOut();
+
+		}
+
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Contact Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-contact', function(e){ 
+    	e.preventDefault();	
+		let contact_id = $(e.target).data("id");	
+
+		if (contact_id){
+			$.get(`contacts_update.php?remove_contact_id=${contact_id}`);			
+			$(`#contact_${contact_id}`).fadeOut();
+			$(`#del_${contact_id}`).fadeOut();
+
+		}
+
+	});
+
 
 	/*----------------------------------------------------*/
 	/*  Notifications Boxes
@@ -517,7 +1071,7 @@ $(document).ready(function(){
 		$('.header-notifications').removeClass("active");
     }
 
-    // Closes notification dropdown on click outside the conatainer
+    // Closes notification dropdown on click outside the container
 	var mouse_is_inside = false;
 
 	$( ".header-notifications" ).on( "mouseenter", function() {

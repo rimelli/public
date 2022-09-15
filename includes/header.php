@@ -4,9 +4,6 @@ include("includes/classes/User.php");
 include("includes/classes/Post.php");
 include("includes/classes/Message.php");
 include("includes/classes/Notification.php");
-include("includes/classes/Job.php");
-include("includes/classes/ChatRooms.php");
-include("includes/classes/Security.php");
 
 if (isset($_SESSION['user_id'])) {
 	$userLoggedIn = $_SESSION['user_id'];
@@ -17,6 +14,10 @@ if (isset($_SESSION['user_id'])) {
 	$individual_user_details_query = $con->prepare("SELECT * FROM individuals WHERE user_id=?");
 	$individual_user_details_query->execute([$userLoggedIn]);
 	$individual_user = $individual_user_details_query->fetch();
+
+	$org_user_details_query = $con->prepare("SELECT * FROM organisations WHERE user_id=?");
+	$org_user_details_query->execute([$userLoggedIn]);
+	$org_user = $org_user_details_query->fetch();
 	
 }
 else {
@@ -47,7 +48,7 @@ else {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-<script src="assets/js/trycs.js"></script>
+<script src="assets/js/main.js"></script>
 <script src="assets/js/jquery.Jcrop.js"></script>
 
 <!-- CSS
@@ -72,16 +73,34 @@ else {
 			
 			<!-- Left Side Content -->
 			<div class="left-side">
+				
+				<!-- Logo -->
+				<div id="logo">
+					<a href="index.php"><h1>Home</h1></a>
+				</div>
 
 				<!-- Main Navigation -->
 				<nav id="navigation">
+                    <?php
+                    $message_obj = new Message($con, $userLoggedIn);
+                    $user_to = $message_obj->getMostRecentUser();
+                    ?>
 					<ul id="responsive">
+                        <?php
+                            $page = basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']);
+                        ?>
+						<li><a href="index.php" class="<?= $page === 'index.php' ? 'current' : '' ?>">Home</a></li>
+                        <?php
+                        $class = $page === "messages.php" ? "current" : "";
+                        if ($user_to) {
+                            echo '<li><a href="messages.php?user_to='.$user_to.'" class="'.$class.'">Messages</a></li>';
+                        } else {
+                            echo '<li><a href="messages.php" class="'.$class.'">Messages</a></li>';
+                        }
+                        ?>
+                        <li><a href="users.php" class="<?= $page === 'users.php' ? 'current' : '' ?>">All Users</a></li>
 
-						<li><a href="index.php" class="current">Home</a></li>
-
-						<li><a href="jobs.php">Jobs</a></li>
-
-					</ul>
+                    </ul>
 				</nav>
 				<div class="clearfix"></div>
 				<!-- Main Navigation / End -->
@@ -103,126 +122,6 @@ else {
 			<!-- Right Side Content / End -->
 			<div class="right-side">
 
-				<!--  User Notifications -->
-				<div class="header-widget hide-on-mobile">
-					
-					<!-- Messages -->
-					<div class="header-notifications">
-						<div class="header-notifications-trigger">
-							<a href="#" onclick="getDropdownData('<?php echo $userLoggedIn; ?>', 'message')"><i class="icon-feather-mail"></i>
-								<?php
-								if($num_messages > 0)
-								echo '<span class="nav-tag">' . $num_messages . '</span>';
-								?>
-							</a>
-						</div>
-
-						<!-- Dropdown -->
-						<div class="header-notifications-dropdown">
-
-							<div class="header-notifications-headline">
-								<h4>Messages</h4>
-								<button class="mark-as-read ripple-effect-dark" title="Mark all as read" data-tippy-placement="left">
-									<i class="icon-feather-check-square"></i>
-								</button>
-							</div>
-
-							<div class="header-notifications-content">
-								<div class="header-notifications-scroll">
-									<ul>
-										<!-- Message -->
-										<div class="dropdown_data_window"></div>
-										<input type="hidden" id="dropdown_data_type" value="">
-									</ul>
-								</div>
-							</div>
-
-							<a href="messages.php" class="header-notifications-button ripple-effect button-sliding-icon">View All Messages<i class="icon-material-outline-arrow-right-alt"></i></a>
-						</div>
-					</div>
-					
-
-					<!-- Notifications -->
-					<div class="header-notifications">
-						<!-- Trigger -->
-						<div class="header-notifications-trigger">
-							<a href="#" onclick="getDropdownData('<?php echo $userLoggedIn; ?>', 'notification')"><i class="icon-feather-bell"></i>
-								<?php
-								if($num_notifications > 0)
-								echo '<span class="nav-tag">' . $num_notifications . '</span>';
-								?>
-							</a>
-						</div>
-
-						<!-- Dropdown -->
-						<div class="header-notifications-dropdown">
-
-							<div class="header-notifications-headline">
-								<h4>Notifications</h4>
-								<button class="mark-as-read ripple-effect-dark" title="Mark all as read" data-tippy-placement="left">
-									<i class="icon-feather-check-square"></i>
-								</button>
-							</div>
-
-							<div class="header-notifications-content" data-simplebar>
-								<div class="header-notifications-scroll">
-									<ul>
-										<!-- Notification -->
-										<div class="dropdown_data_window"></div>
-										<input type="hidden" id="dropdown_data_type" value="">
-									</ul>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-				</div>
-				<!--  User Notifications / End -->
-
-				
-
-				<!-- Search Menu -->
-				<div class="header-widget">
-
-					<!-- Notifications -->
-					<div class="header-notifications">
-
-						<!-- Trigger -->
-						<div class="header-notifications-trigger">
-							<a href="#"><i class="icon-feather-search"></i></a>
-						</div>
-
-						<!-- Dropdown -->
-						<div class="header-notifications-dropdown">
-
-							<div class="header-notifications-headline">
-								<form action="search.php" method="GET">
-									<div class="input-with-icon">
-										<input class="search-bar-input" id="search-bar-input" type="text" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn; ?>')" name="q" placeholder="Search" autocomplete="off">
-										<i class="icon-feather-search" name="q"></i>
-									</div>
-								</form>
-							</div>
-
-							<div class="header-notifications-content">
-
-								<div class="header-notifications-scroll" data-simplebar>
-								
-									<div class="search_results">	
-									</div>
-
-									<div class="search_results_footer_empty">	
-									</div>
-
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-				<!-- Search Menu / End -->
-
 
 				<!-- User Menu -->
 				<div class="header-widget">
@@ -235,29 +134,10 @@ else {
 
 						<!-- Dropdown -->
 						<div class="header-notifications-dropdown">
-
-							<!-- User Status -->
-							<div class="user-status">
-
-								<!-- User Name / Avatar -->
-								<div class="user-details">
-									<div class="user-avatar status-online"><img src="<?php echo $user['profile_pic']; ?>" alt=""></div>
-									<div class="user-name">
-									<?php
-									echo $user['first_name'] . " " . $user['last_name'];
-
-									?>
-									</div>
-								</div>
-								
-								<!-- User Status Switcher -->
-								<div class="status-switch" id="snackbar-user-status">
-									<label class="user-online current-status">Online</label>
-									<label class="user-invisible">Invisible</label>
-									<!-- Status Indicator -->
-									<span class="status-indicator" aria-hidden="true"></span>
-								</div>	
-						</div>
+						
+						<ul class="user-menu-small-nav">
+							<li><a href="logout.php?user_id=<?= $_SESSION['user_id']?>"><i class="icon-material-outline-power-settings-new"></i> Logout</a></li>
+						</ul>
 
 						</div>
 					</div>

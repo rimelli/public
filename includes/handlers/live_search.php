@@ -6,12 +6,12 @@ include("../../includes/classes/User.php");
 if(isset($_POST['query'])) {
 
     $retval = '';
-
-    $retval .= '<div class="search-results-box" style="max-height: 250px; border-radius:6px;">';
      
     $result = $con->query("SELECT * FROM users WHERE (first_name LIKE '%{$_POST['query']}%' OR last_name LIKE '%{$_POST['query']}%') AND user_closed='no' LIMIT 10");
  
     if ($result->rowCount() > 0) {
+
+        $retval .= '<div class="search-results-box" style="max-height: 250px; border-radius:6px;">';
 
         while ($row = $result->fetch()) {
             
@@ -19,9 +19,9 @@ if(isset($_POST['query'])) {
 
         }
 
-    }
+        $retval .= '</div>';
 
-    $retval .= '</div>';
+    }
 
     echo $retval;
  
