@@ -3,8 +3,8 @@ include("includes/header.php");
 
 if(isset($_GET['id'])) {
     $id = $_GET['id'];
-    $sql = $con->prepare("SELECT * FROM fixtures WHERE id=? AND fixture_deleted=?");
-    $sql->execute([$id, 'no']);
+    $sql = $con->prepare("SELECT fixtures.*, teams.* FROM fixtures LEFT JOIN teams ON fixtures.your_team=teams.team_id WHERE fixtures.id=? AND fixtures.user_id=? AND fixtures.fixture_deleted=?");
+    $sql->execute([$id, $userLoggedIn, 'no']);
     $fixture = $sql->fetch();
 
     if($sql->rowCount() == 0) {
@@ -75,7 +75,12 @@ else {
 
                         <!-- Headline -->
                         <div class="headline margin-bottom-20">
-                            <h3><i class="icon-feather-shield"></i> Home Team Name 2 x 1 Away Team Name <i class="icon-feather-shield"></i> </h3>
+                            <?php if ($fixture['home_away'] == 'home'): ?>
+                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['team_name'] ?> 2 x 1 <?php echo $fixture['other_team_name'] ?> <i class="icon-feather-shield"></i> <span class='account-span margin-left-10' style='background-color: #2a41e8;'>10 Viewing</span></h3>
+                            <?php endif ?>
+                            <?php if ($fixture['home_away'] == 'away'): ?>
+                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['other_team_name'] ?> 2 x 1 <?php echo $fixture['team_name'] ?> <i class="icon-feather-shield"></i> <span class='account-span margin-left-10' style='background-color: #2a41e8;'>10 Viewing</span></h3>
+                            <?php endif ?>
                         </div>
 
                         <div class="content">

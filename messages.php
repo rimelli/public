@@ -147,8 +147,10 @@ $msgs_query->execute([$userLoggedIn, $user_to, $userLoggedIn, $user_to]);
 
                                             <?php endif ?>">
                                             <span class="message-text"><?= $row['body'] ?></span>
-                                            <div class="message-avatar"><img
-                                                        src="assets/images/profile_pics/defaults/profileimg.png"></div>
+                                            <?php
+                                                $user = new User($con, $row['user_from']);
+                                            ?>
+                                            <div class="message-avatar"><img src="<?= $user->getProfilePic() ?>"></div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
