@@ -20,9 +20,9 @@ if (isset($_SESSION['user_id'])) {
 	$org_user = $org_user_details_query->fetch();
 	
 }
-else {
-	header("Location: index.php");
-}
+//else {
+//	header("Location: index.php");
+//}
 
 ?>
 

@@ -6,11 +6,31 @@ if(isset($_GET['id'])) {
     $sql = $con->prepare("SELECT fixtures.*, teams.* FROM fixtures LEFT JOIN teams ON fixtures.your_team=teams.team_id WHERE fixtures.id=? AND fixtures.user_id=? AND fixtures.fixture_deleted=?");
     $sql->execute([$id, $userLoggedIn, 'no']);
     $fixture = $sql->fetch();
-
     if($sql->rowCount() == 0) {
         echo "Match not found.";
         exit();
     }
+
+    $player_sql = $con->prepare("SELECT * from  team_players WHERE team_id=?");
+    $player_sql->execute([$fixture['team_id']]);
+    $players= $player_sql->fetchAll();
+
+
+    $kick_of_sql = $con->prepare("SELECT kick_off from  fixtures WHERE id=?");
+    $kick_of_sql->execute([$id]);
+    $kick_of = $kick_of_sql->fetch();
+
+    $half_time_sql = $con->prepare("SELECT half_time from  fixtures WHERE id=?");
+    $half_time_sql->execute([$id]);
+    $half_time = $half_time_sql->fetch();
+
+    $full_time_sql = $con->prepare("SELECT full_time from  fixtures WHERE id=?");
+    $full_time_sql->execute([$id]);
+    $full_time = $full_time_sql->fetch();
+
+    $home_goal = $con->prepare("SELECT your_goal_score from  fixtures WHERE id=?");
+    $home_goal->execute([$id]);
+    $home_goal_val = $home_goal->fetch();
 }
 else {
     $id = 0;
@@ -34,7 +54,7 @@ else {
 ================================================== -->
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/colors/blue.css">
-
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 
 </head>
 <body class="gray">
@@ -76,10 +96,10 @@ else {
                         <!-- Headline -->
                         <div class="headline margin-bottom-20">
                             <?php if ($fixture['home_away'] == 'home'): ?>
-                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['team_name'] ?> 2 x 1 <?php echo $fixture['other_team_name'] ?> <i class="icon-feather-shield"></i> <span class='account-span margin-left-10' style='background-color: #2a41e8;'>10 Viewing</span></h3>
+                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['team_name'] ?>  <span class="your_goal"><?php echo $fixture['your_goal_score'] ?></span> x <span class="other_goal"><?php echo $fixture['other_goal_score'] ?> </span> <i class="icon-feather-shield"></i> <span class='account-span total-view margin-left-10' style='background-color: #2a41e8;'></span></h3>
                             <?php endif ?>
                             <?php if ($fixture['home_away'] == 'away'): ?>
-                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['other_team_name'] ?> 2 x 1 <?php echo $fixture['team_name'] ?> <i class="icon-feather-shield"></i> <span class='account-span margin-left-10' style='background-color: #2a41e8;'>10 Viewing</span></h3>
+                                <h3><i class="icon-feather-shield"></i> <?php echo $fixture['other_team_name'] ?> <?php echo $fixture['other_goal_score'] ?> x <?php echo $fixture['your_goal_score'] ?> <?php echo $fixture['team_name'] ?> <i class="icon-feather-shield"></i> <span class='account-span margin-left-10' style='background-color: #2a41e8;'>10 Viewing</span></h3>
                             <?php endif ?>
                         </div>
 
@@ -89,7 +109,11 @@ else {
                                     <div class="fun-fact" data-fun-fact-color="#efa80f">
                                         <div class="fun-fact-text">
                                             <span>Substitution</span>
-                                            <h3>Substitution for Away Team</h3>
+                                            <h3>Substitution</h3>
+                                            <span class="subst_in"></span>
+                                           <div>
+                                               <span class="subst_out"></span>
+                                        </div>
                                         </div>
                                         <div class="fun-fact-icon"><i class="icon-feather-repeat"></i></div>
                                     </div>
@@ -99,6 +123,7 @@ else {
                                         <div class="fun-fact-text">
                                             <span>Goal!</span>
                                             <h3>Goal for Home Team!</h3>
+                                            <span class="is_goal"></span>
                                         </div>
                                         <div class="fun-fact-icon"><i class="icon-feather-alert-circle"></i></div>
                                     </div>
@@ -107,7 +132,32 @@ else {
                                     <div class="fun-fact" data-fun-fact-color="#2a41e8">
                                         <div class="fun-fact-text">
                                             <span>Kick Off</span>
+                                            <span class="kick_off_val">
+                                            </span>
                                         </div>
+                                       <span class="is_kick_off"></span>
+                                        <div class="fun-fact-icon"><i class="icon-feather-clock"></i></div>
+                                    </div>
+                                </div>
+                                <div class="fun-facts-container" style="max-width: 50%; margin: auto;">
+                                    <div class="fun-fact" data-fun-fact-color="#2a41e8">
+                                        <div class="fun-fact-text">
+                                            <span>Half time</span>
+                                            <span class="kick_off_val">
+                                            </span>
+                                        </div>
+                                        <span class="is_half_time"></span>
+                                        <div class="fun-fact-icon"><i class="icon-feather-clock"></i></div>
+                                    </div>
+                                </div>
+                                <div class="fun-facts-container" style="max-width: 50%; margin: auto;">
+                                    <div class="fun-fact" data-fun-fact-color="#2a41e8">
+                                        <div class="fun-fact-text">
+                                            <span>Full time</span>
+                                            <span class="kick_off_val">
+                                            </span>
+                                        </div>
+                                        <span class="is_full_time"></span>
                                         <div class="fun-fact-icon"><i class="icon-feather-clock"></i></div>
                                     </div>
                                 </div>
@@ -117,7 +167,7 @@ else {
                 </div>
 
             </div>
-            
+
             <!-- Footer -->
             <?php include("includes/footer.php"); ?>
             <!-- Footer / End -->
@@ -151,10 +201,10 @@ else {
                 </div>
                     
                 <!-- Form -->
-                <form id="" class="login-form">
-                
-                <!-- Button -->
-                <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Yes <i class="icon-material-outline-arrow-right-alt"></i></button>
+                <form action="fixture_updates.php?id=<?php echo $fixture['id']?> " method="POST" class="login-form">
+                    <input type="hidden" name="step" value="kick_off" />
+                    <!-- Button -->
+                    <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Yes <i class="icon-material-outline-arrow-right-alt"></i></button>
                 </form>
             </div>
 
@@ -181,9 +231,9 @@ else {
                 </div>
                     
                 <!-- Form -->
-                <form id="" class="login-form">
-                
-                <!-- Button -->
+                <form action="fixture_updates.php?id=<?php echo $fixture['id']?> " method="post" id="" class="login-form">
+                    <input type="hidden" name="step" value="half_time" />
+                    <!-- Button -->
                 <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Yes <i class="icon-material-outline-arrow-right-alt"></i></button>
                 </form>
             </div>
@@ -211,9 +261,9 @@ else {
                 </div>
                     
                 <!-- Form -->
-                <form id="" class="login-form">
-                
-                <!-- Button -->
+                <form id="" action="fixture_updates.php?id=<?php echo $fixture['id']?> " method="post" class="login-form">
+                    <input type="hidden" name="step" value="full_time" />
+                    <!-- Button -->
                 <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Yes <i class="icon-material-outline-arrow-right-alt"></i></button>
                 </form>
             </div>
@@ -239,18 +289,16 @@ else {
                 <div class="welcome-text">
                     <h3>Goal</h3>
                 </div>
-                    
-                <!-- Form -->
-                <form id="" class="login-form">
-
-                    <select class="selectpicker with-border default margin-bottom-20" name="" data-size="7" title="Goal For" required>
-                        <option>Home Team</option>
-                        <option>Away Team</option>
-                    </select>
-                
-                <!-- Button -->
-                <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Submit <i class="icon-material-outline-arrow-right-alt"></i></button>
+                <form id="" action="fixture_updates.php?id=<?php echo $fixture['id']?> " method="post" class="login-form">
+                        <input type="hidden" name="step" value="goal" />
+                        <select class="selectpicker with-border default margin-bottom-20" name="goals" data-size="7" title="Goal For" required>
+                            <option value="home">Home Team</option>
+                            <option value="away">Away Team</option>
+                        </select>
+                    <!-- Button -->
+                    <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Yes <i class="icon-material-outline-arrow-right-alt"></i></button>
                 </form>
+
             </div>
 
         </div>
@@ -270,27 +318,27 @@ else {
 
             <!-- Tab -->
             <div class="popup-tab-content" id="tab">
-                
+
                 <!-- Welcome Text -->
                 <div class="welcome-text">
                     <h3>Substitution</h3>
                 </div>
-                    
+
                 <!-- Form -->
-                <form id="" class="login-form">
-
-                    <select class="selectpicker with-border default margin-bottom-20" name="" data-size="7" title="Player Out" required>
-                        <option>Player 1</option>
-                        <option>Player 2</option>
-                        <option>Player 3</option>
+                <form id="" action="fixture_updates.php?id=<?php echo $fixture['id']?> " method="post" class="login-form">
+                    <input type="hidden" name="step" value="substitution" />
+                    <select class="selectpicker with-border default margin-bottom-20" name="player_out" data-size="7" title="Player Out">
+                        <?php foreach ($players as $player) :?>
+                        <option value="<?php echo $player['id']?>"><?php echo $player['player_name']?></option>
+                        <?php endforeach;?>
                     </select>
 
-                    <select class="selectpicker with-border default margin-bottom-20" name="" data-size="7" title="Player In" required>
-                        <option>Player 1</option>
-                        <option>Player 2</option>
-                        <option>Player 3</option>
+                    <select class="selectpicker with-border default margin-bottom-20" name="player_in" data-size="7" title="Player In">
+                        <?php foreach ($players as $player) :?>
+                            <option value="<?php echo $player['id']?>"><?php echo $player['player_name']?></option>
+                        <?php endforeach;?>
                     </select>
-                
+
                 <!-- Button -->
                 <button class="button full-width button-sliding-icon ripple-effect" type="submit" name="">Submit <i class="icon-material-outline-arrow-right-alt"></i></button>
                 </form>
@@ -316,8 +364,64 @@ else {
 <script src="assets/js/magnific-popup.min.js"></script>
 <script src="assets/js/slick.min.js"></script>
 <script src="assets/js/custom.js"></script>
-<script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
+
+<!--<script type="text/javascript" src="js-index.js"></script>-->
+
+<script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('5506c128345d2a429a4d', {
+        cluster: 'ap2'
+    });
+
+    var channel = pusher.subscribe('demo_pusher');
 
 
+   channel.bind('add_goals', function (data) {
+        let your_goal = data['goals']['your_goal_score'];
+        let other_goal = data['goals']['other_goal_score'];
+        if(your_goal) {
+            $('.your_goal').html(your_goal);
+            $('.is_goal').html('There is a goal in the home team');
+        }
+        if(other_goal) {
+            $('.other_goal').html(other_goal);
+        }
+    });
+    channel.bind('kick_off', function (data) {
+
+        if(data === "kick_off") {
+            $('.is_kick_off').html('There is a kick off');
+        }
+    });
+    channel.bind('half_time', function (data) {
+        if(data === "half_time") {
+            $('.is_half_time').html('There is a half time');
+        }
+    });
+    channel.bind('full_time', function (data) {
+        if(data === "full_time") {
+            $('.is_full_time').html('There is a full time');
+        }
+    });
+    channel.bind('subst', function (data) {
+        let player_in = data['players']['player_in'];
+        let player_out = data['players']['player_out'];
+        if(player_in) {
+            $('.subst_in').html(player_in);
+        }
+        if(player_out)  {
+            $('.subst_out').html(player_out);
+        }
+    });
+    channel.bind('visits', function (data) {
+        let views = data['users']['visits'];
+
+        if(views) {
+            $('.total-view').html(views);
+        }
+    });
+</script>
 </body>
 </html>
