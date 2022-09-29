@@ -14,13 +14,9 @@ $pusher = new Pusher\Pusher($app_key, $app_secret, $app_id, ['cluster' => $app_c
 
 
 $user_ip=$_SERVER['REMOTE_ADDR'];
-
 $check_ip = $con->prepare("SELECT  userip from page_view where page='yourpage' AND userip=?");
 $check_ip->execute([$user_ip]);
-if(count($check_ip->fetchAll()) > 1) {
-    echo "hi";
-}
-else
+if($check_ip->fetch()[0] !== $user_ip)
 {
     $insertview = $con->prepare("INSERT into page_view VALUES (?,?,?)");
     $insertview->execute([1,'yourpage',$user_ip]);
@@ -32,11 +28,8 @@ else
 $stmt = $con->prepare("SELECT `totalvisit` from `total_view` where page=? ");
 $stmt->execute(['yourpage']);
 $visits = (int)$stmt->fetch()["totalvisit"];
-$users['visits'] = array(
-    'visits' => $visits . ' viewing'
-);
 
-$pusher->trigger('demo_pusher', 'visits', $users);
+$pusher->trigger('demo_pusher', 'visits', $visits);
 
 if($_POST['step'] === "half_time") {
 // insert data into the database

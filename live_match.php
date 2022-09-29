@@ -416,10 +416,9 @@ else {
         }
     });
     channel.bind('visits', function (data) {
-        let views = data['users']['visits'];
 
-        if(views) {
-            $('.total-view').html(views);
+        if(data) {
+            $('.total-view').html(data);
         }
     });
 </script>
