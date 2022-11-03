@@ -132,10 +132,17 @@ CREATE TABLE `fixtures` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `home_away` varchar(5) NOT NULL,
+  `your_goal_score` int(11) DEFAULT 0,
+  `other_goal_score` int(11) DEFAULT 0,
   `your_team` int(11) NOT NULL,
   `fixture_date` datetime NOT NULL,
   `other_team_name` varchar(150) NOT NULL,
   `other_team_id` int(11) NOT NULL,
+  `player_in` int(11) DEFAULT 0 ,
+  `player_out` int(11) DEFAULT 0,
+  `kick_off` smallint(1),
+  `half_time` smallint(1),
+  `full_time` smallint(1),
   `fixture_deleted` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -588,7 +595,23 @@ CREATE TABLE `uk_towns` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `pageview`
+--
+CREATE TABLE `page_view` (
+`id` int(11) NOT NULL,
+`page` text NOT NULL,
+`userip` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Table structure for table `totalview`
+--
+CREATE TABLE `total_view` (
+`id` int(11) NOT NULL,
+`page` text NOT NULL,
+`totalvisit` INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 --
 -- Table structure for table `users`
 --
@@ -809,6 +832,17 @@ ALTER TABLE `users`
 ALTER TABLE `user_follow`
   ADD PRIMARY KEY (`id`);
 
+--
+-- Indexes for table `page_view`
+--
+ALTER TABLE `page_view`
+    ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `total_view`
+--
+ALTER TABLE `total_view`
+    ADD PRIMARY KEY (`id`);
 --
 -- AUTO_INCREMENT for dumped tables
 --
