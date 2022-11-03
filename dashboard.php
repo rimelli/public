@@ -43,12 +43,10 @@ include("includes/form_handlers/settings_handler.php");
 			<div class="dashboard-headline">
 				<h3>Dashboard</h3>
 
-				<?php if ($user['profile_type'] == 2): 
-					if ($org_user['pro_club'] == 'yes' || $org_user['amateur_club'] == 'yes' || $org_user['academy'] == 'yes') {
-						echo "<a href='teams.php' class='button ripple-effect margin-top-20 margin-right-10'><i class='icon-feather-shield margin-right-10'></i>Teams</a>
-								<a href='fixtures.php' class='button ripple-effect margin-top-20'><i class='icon-feather-calendar margin-right-10'></i>Fixtures</a>";
-					}?>
-				<?php endif ?>
+				<?php if ($user['profile_type'] == 1): 
+                        echo "<a href='training.php' class='button ripple-effect margin-top-20'>Training Centre</a>";
+                    ?>
+                <?php endif ?>
 			</div>
 
 			<!-- Footer -->

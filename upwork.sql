@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 15, 2022 at 02:39 PM
+-- Generation Time: Nov 03, 2022 at 01:18 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.1.6
 
@@ -502,6 +502,71 @@ CREATE TABLE `tickets` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `training`
+--
+
+CREATE TABLE `training` (
+  `id` int(11) NOT NULL,
+  `tr_name` varchar(100) NOT NULL,
+  `tr_level` int(11) NOT NULL,
+  `tr_category` varchar(50) NOT NULL,
+  `tr_description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `training`
+--
+
+INSERT INTO `training` (`id`, `tr_name`, `tr_level`, `tr_category`, `tr_description`) VALUES
+(1, '2 Miles Run', 1, 'conditioning', 'Must work up a little sweat, average heart rate. Focus on 70% effort.'),
+(2, '100 Repeat', 5, 'conditioning', 'Two sets of 8 x 100m with 30 seconds rest between runs. 3 minutes rest between sets.'),
+(3, '90 Seconds Runs', 3, 'conditioning', '6 x 90 seconds run with 3 minutes recovery between runs.'),
+(4, '30/30\'s', 3, 'conditioning', '10 x 30 seconds run, 30 seconds jog recovery. '),
+(5, '30/30\'s', 5, 'conditioning', '12 x 30 seconds run, 30 seconds jog recovery. '),
+(6, '90 Seconds Runs', 5, 'conditioning', '8 x 90 seconds run with 3 minutes recovery between runs.'),
+(7, '2 Minutes Runs', 3, 'conditioning', '5 x 2 minutes run with 2 minutes recovery between runs.'),
+(8, '10 Seconds Bursts', 5, 'conditioning', 'Burst hard with maximum effort for 10 seconds then slow \ndown and coast for 30 seconds. 2 sets of 5 minutes. 3 minutes walk recovery between sets.'),
+(9, '3-2-1 Intervals', 5, 'conditioning', 'Run at 80% effort for 3 minutes, then rest for 1 minute. Then run again for 2 minutes, then rest for 2 minutes. Then, run for 1 minute and rest for 3 minutes. This exercise will take 12 minutes. Repeat it 3 times (36 minutes total).'),
+(10, '1 Minute Interval Sprints', 3, 'conditioning', 'Sprint for 1 minute, followed by a jog at a calm pace for 1 minute. Needs 10 repetitions.'),
+(11, '30 Seconds Interval Sprints', 1, 'conditioning', 'Sprint for 30 seconds, followed by a jog at a calm pace for 2 minutes. Needs 8 repetitions.'),
+(12, 'Up & Back', 1, 'conditioning', 'Place two cones 10 yards apart. Sprint to the other cone then backpedal sprint (run backwards) to start. Each set consists of sprinting 4 times. Complete 4 sets with a 2 minutes rest between sets.'),
+(13, 'Up & Back', 3, 'conditioning', 'Place a cone at the starting point and one at 10 yards and at 20 yards. Sprint 10 yards and backpedal (run backwards) to start. Sprint 20 yards and backpedal (run backwards) to start.\r\nEach set consists of doing this 4 times. Complete 5 sets with a 2 minutes rest between sets.'),
+(14, 'Ladder L1', 1, 'conditioning', 'Run 100m, rest 1 minute. Run 200m, rest 2 minutes. Run 300m, rest 3 minutes. Run 400m, rest 4 minutes. Run 300m, rest 3 minutes. Run 200m, rest 2 minutes. Run 100m to finish.'),
+(15, 'Ladder L3', 3, 'conditioning', 'Run 100m between 13 – 17 seconds, rest 1 minute. Run 200m between 27 – 33 seconds, rest 2 minutes. Run 300m between 44 – 50 seconds, rest 3 minutes. Run 400m between 59 – 71 seconds, rest 4 minutes. Run 300m between 44 – 50 seconds, rest 3 minutes. Run 200m between 27 – 33 seconds, rest 2 minutes. Run 100m between 13 – 17 seconds to finish.'),
+(16, 'Ladder L5', 5, 'conditioning', 'Run 100m between 12 – 15 seconds, rest 1 minute. Run 200m between 25 – 31 seconds, rest 1:45 minutes. Run 300m between 40 – 45 seconds, rest 2 minutes. Run 400m between 55 – 67 seconds, rest 2:30 minutes. Run 300m between 40 – 45 seconds, rest 2 minutes. Run 200m between 25 – 31 seconds, rest 1:45 minutes. Run 100m between 12 – 15 seconds to finish.'),
+(17, 'Back Tracker 1', 1, 'conditioning', 'Run easy out in one direction for 25 minutes. On the way back increase pace arriving in 19-21 minutes.'),
+(18, 'Back Tracker 3', 3, 'conditioning', 'Run easy out in one direction for 25 minutes. On the way back increase pace arriving in 17-19 minutes.'),
+(19, 'Back Tracker 5', 5, 'conditioning', 'Run easy out in one direction for 25 minutes. On the way back increase pace arriving in less than 17 minutes.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `training_sessions`
+--
+
+CREATE TABLE `training_sessions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `session_category` varchar(100) NOT NULL,
+  `session_drill_1` int(11) NOT NULL,
+  `session_drill_2` int(11) NOT NULL,
+  `session_drill_3` int(11) NOT NULL,
+  `session_drill_4` int(11) NOT NULL,
+  `session_drill_5` int(11) NOT NULL,
+  `session_completed` varchar(4) NOT NULL,
+  `session_deleted` varchar(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `training_sessions`
+--
+
+INSERT INTO `training_sessions` (`id`, `user_id`, `session_category`, `session_drill_1`, `session_drill_2`, `session_drill_3`, `session_drill_4`, `session_drill_5`, `session_completed`, `session_deleted`) VALUES
+(1, 95, 'conditioning', 1, 11, 12, 14, 17, 'no', 'yes');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `uk_towns`
 --
 
@@ -715,6 +780,18 @@ ALTER TABLE `tickets`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `training`
+--
+ALTER TABLE `training`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `training_sessions`
+--
+ALTER TABLE `training_sessions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `uk_towns`
 --
 ALTER TABLE `uk_towns`
@@ -873,6 +950,18 @@ ALTER TABLE `team_players`
 --
 ALTER TABLE `tickets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `training`
+--
+ALTER TABLE `training`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `training_sessions`
+--
+ALTER TABLE `training_sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`

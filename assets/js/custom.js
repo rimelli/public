@@ -344,12 +344,10 @@ $(document).ready(function(){
 	/*--------------------------------------------------*/
 	/*  Form submission
 	/*--------------------------------------------------*/
-	$('.add-teams-form').on('submit', function(e) {
+	$('.create-session-form').on('submit', function(e) {
 		e.preventDefault();
 
 		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("add-teams-form").elements;
-		let teamName = inputs["team_name"].value;
 
 		return_message.html('');
 
@@ -358,7 +356,7 @@ $(document).ready(function(){
 		button.find($('.icon-material-outline-add')).hide();
 		button.find($('.fa-spin')).show();
 
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
+		$.post('training_update.php', $(e.target).serialize(), data => {			
 			setTimeout(() => {
 				return_message.html(data);
 				button.prop('disabled', false);
@@ -366,257 +364,17 @@ $(document).ready(function(){
 				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
-			}, 1000);			
+			}, 1000);	
 
 		});
 
 		let html = '';
 
-		html += `<div class="col-xl-3"><div class="companies-list"><a href="teams.php" class="company"><div class="company-inner-alignment"><h4 class="margin-bottom-10">${teamName}</h4>
-							<span class="company-not-rated">0 Players</span></div></a></div></div>`;
+		html += `<ul class='widget-tabs margin-bottom-30'></ul><li><a href='training_conditioning.php' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''>
+		<div class='widget-text'><h5>Conditioning</h5></div></a></li>`;
 
-		$('#teams-container').append(html);
+		$('#session-container').append(html);
 				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Settings form submission
-	/*--------------------------------------------------*/
-	$('.remove-team-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("remove-team-form").elements;
-		let teamId = inputs["team_id"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.icon-feather-trash-2')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.icon-feather-trash-2')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);
-
-			$(`#team_${teamId}`).fadeOut();
-
-		});
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Settings form submission
-	/*--------------------------------------------------*/
-	$('.remove-player-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("remove-player-form").elements;
-		let playerId = inputs["player_id"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.icon-feather-trash-2')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.icon-feather-trash-2')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);
-
-			$(`#player_${playerId}`).fadeOut();
-
-		});
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Form submission
-	/*--------------------------------------------------*/
-	$('.add-players-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("add-players-form").elements;
-		let playerName = inputs["player_name"].value;
-		let playerPosition = inputs["player_position"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);			
-
-		});
-
-		let html = '';
-
-		html += `<tr><td>${playerName}</td><td></td><td>${playerPosition}</td></tr>`;
-
-		$('#players-container').append(html);
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Form submission
-	/*--------------------------------------------------*/
-	$('.add-fixture-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("add-fixture-form").elements;
-		let otherTeam = inputs["other_team"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);			
-
-		});
-
-		let html = '';
-
-		html += `<div class="col-xl-3"><div class="companies-list"><a href="fixtures.php" class="company"><div class="company-inner-alignment"><h4 class="margin-bottom-10"><span>X </span>${otherTeam}</h4></div></a></div></div>`;
-
-		$('#fixtures-container').append(html);
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Settings form submission
-	/*--------------------------------------------------*/
-	$('.remove-fixture-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("remove-fixture-form").elements;
-		let fixtureId = inputs["fixture_id"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.icon-feather-trash-2')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.icon-feather-trash-2')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);
-
-			$(`#fixture_${fixtureId}`).fadeOut();
-
-		});
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Child form submission
-	/*--------------------------------------------------*/
-	$('.child-form').on('submit', function(e) {
-		e.preventDefault();
-
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("child-form").elements;
-		let childName = inputs["first_name_child"].value;
-		let childLastName = inputs["last_name_child"].value;
-
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				return_message.html(data);
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.fa-spin')).hide();
-
-			}, 1000);			
-
-		});
-
-		let html = '';
-
-		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p></div>`;
-
-		$('#child-container').prepend(html);
-				
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Child Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-child', function(e){ 
-    	e.preventDefault();	
-		let child_id = $(e.target).data("id");	
-
-		if (child_id){
-			$.get(`settings_update.php?remove_child_id=${child_id}`);			
-			$(`#child_${child_id}`).fadeOut();
-
-		}
-
 	});
 	
 
