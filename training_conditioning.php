@@ -1,6 +1,18 @@
 <?php
 include("includes/header.php");
 include("includes/form_handlers/settings_handler.php");
+
+if(isset($_GET['training_session_id'])){
+	$session_id=preg_replace("/[^0-9]/", "",$_GET['training_session_id']);
+	$sql=$con->prepare("SELECT * FROM training_sessions WHERE id=?");
+	$sql->execute([$session_id]);
+	$tr_session = $sql->fetch(PDO::FETCH_ASSOC);
+	$drills=$tr_session['session_drill_1'].','.$tr_session['session_drill_2'].','.$tr_session['session_drill_3'].','.$tr_session['session_drill_4'].','.$tr_session['session_drill_5'];
+	$training_query=$con->prepare("SELECT * from training WHERE id IN ($drills)");
+	$training_query->execute();
+
+	$training_drills=$training_query->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 
@@ -53,9 +65,25 @@ include("includes/form_handlers/settings_handler.php");
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-8 col-lg-8">
+				<?php 
+				if(isset($training_drills)){
+				foreach($training_drills as $tr_drill){
 
+				?>
 				<!-- Blog Post -->
 				<a class="blog-post">
+					<!-- Blog Post Content -->
+					<div class="blog-post-content">
+						<h3><?= $tr_drill['tr_name']?></h3>
+						<p><?= $tr_drill['tr_description']?></p>
+					</div>
+					<!-- Icon -->
+					<div class="entry-icon"></div>
+				</a>
+					<?php }
+				}else{
+					?>
+									<a class="blog-post">
 					<!-- Blog Post Content -->
 					<div class="blog-post-content">
 						<h3>Conditioning</h3>
@@ -64,7 +92,7 @@ include("includes/form_handlers/settings_handler.php");
 					<!-- Icon -->
 					<div class="entry-icon"></div>
 				</a>
-
+				<?php } ?>
 			</div>
 
 
@@ -74,6 +102,7 @@ include("includes/form_handlers/settings_handler.php");
 					<!-- Widget -->
 					<div class="sidebar-widget" id="session-container">
 						<h3>Current Session</h3>
+
 						<?php
 							$sql = $con->prepare("SELECT * FROM training_sessions WHERE user_id=? AND session_deleted=? AND session_completed=?");
 							$sql->execute([$userLoggedIn, 'no', 'no']);
@@ -81,19 +110,24 @@ include("includes/form_handlers/settings_handler.php");
 						  	$res_count = $sql->rowCount();
 
 						  	if ($res_count == 0) {
-						  		echo "<p>No current session</p>";
+						  		echo "
+								  <div id='current-session-container'>
+								  <p>No current session</p>
+								  </div>
+								";
 						  	}
 						  	elseif ($res_count > 0) {
 						  		foreach ($res as $sess) {
-						  		echo "<ul class='widget-tabs margin-bottom-30'>
+						  		echo "<div id='current-session-container'><ul class='widget-tabs margin-bottom-30'>
 										<li>
-											<a href='training_conditioning.php' class='widget-content active'>
+											<a href='training_conditioning.php?training_session_id=".$sess['id']."' class='widget-content active'>
 												<div class='widget-text'>
 													<h5>Conditioning</h5>
 												</div>
 											</a>
 										</li>
-									</ul>";
+									</ul>
+									</div>";
 						  		}
 						  	}
 						  	

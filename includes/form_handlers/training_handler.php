@@ -8,10 +8,9 @@ if (isset($_POST['create_session_cond'])){
 	$drills = array();
 
 	foreach ($res as $drill) {
-		$drills[] = $drill;
+		$drills[] = $drill['id'];
 	}
-
-	$sql = $con->prepare("INSERT INTO training_sessions (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$sql = $con->prepare("INSERT INTO training_sessions VALUES ( NULL,?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$sql->execute([$userLoggedIn, 'conditioning', $drills[0], $drills[1], $drills[2], $drills[3], $drills[4], 'no', 'no']);
 	$last_id = $con->lastInsertId();
 

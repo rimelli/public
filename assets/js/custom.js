@@ -370,10 +370,11 @@ $(document).ready(function(){
 
 		let html = '';
 
-		html += `<ul class='widget-tabs margin-bottom-30'></ul><li><a href='training_conditioning.php' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''>
-		<div class='widget-text'><h5>Conditioning</h5></div></a></li>`;
+		html += `<ul class='widget-tabs margin-bottom-30'><li><a href='training_conditioning.php' class='widget-content active'>
+		<div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>`;
 
-		$('#session-container').append(html);
+		$('#current-session-container p').empty();
+		$('#current-session-container').append(html);
 				
 	});
 	

@@ -6,8 +6,8 @@ $timezone = date_default_timezone_set("Europe/London");
 
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "upwork";
+$password = "root";
+$dbname = "recardo";
 
 $con = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 
