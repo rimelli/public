@@ -14,7 +14,7 @@ if (isset($_POST['create_session_cond'])){
 	$sql->execute([$userLoggedIn, 'conditioning', $drills[0], $drills[1], $drills[2], $drills[3], $drills[4], 'no', 'no']);
 	$last_id = $con->lastInsertId();
 
-	echo "Session created!";
+	echo json_encode(["sess_id"=>$last_id,"message"=>"Session created!"]);
 }
 
 

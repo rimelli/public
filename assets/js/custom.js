@@ -356,25 +356,27 @@ $(document).ready(function(){
 		button.find($('.icon-material-outline-add')).hide();
 		button.find($('.fa-spin')).show();
 
-		$.post('training_update.php', $(e.target).serialize(), data => {			
+		$.post('training_update.php', $(e.target).serialize(), data => {	
+			var response= JSON.parse(data);
 			setTimeout(() => {
-				return_message.html(data);
+				return_message.html(response.message);
+				// console.log(response.sess_id)
 				button.prop('disabled', false);
 				button.find($('.icon-feather-save')).show();
 				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
 			}, 1000);	
+			let html = '';
+
+			html += "<ul class='widget-tabs margin-bottom-30'><li><a href='training_conditioning.php?training_session_id="+response.sess_id+"' class='widget-content active'><div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>";
+	
+			$('#current-session-container p').empty();
+			$('#current-session-container').append(html);
 
 		});
 
-		let html = '';
 
-		html += `<ul class='widget-tabs margin-bottom-30'><li><a href='training_conditioning.php' class='widget-content active'>
-		<div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>`;
-
-		$('#current-session-container p').empty();
-		$('#current-session-container').append(html);
 				
 	});
 	
