@@ -11,4 +11,12 @@ $dbname = "upwork";
 
 $con = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 
+// Pusher Credentials
+
+$cluster = '';
+$auth_key = '';
+$secret = '';
+$app_id = '';
+$chanel_name = ''
+
 ?>

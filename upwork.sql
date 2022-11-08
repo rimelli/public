@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 03, 2022 at 01:18 PM
+-- Generation Time: Nov 08, 2022 at 02:28 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.1.6
 
@@ -132,17 +132,10 @@ CREATE TABLE `fixtures` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `home_away` varchar(5) NOT NULL,
-  `your_goal_score` int(11) DEFAULT 0,
-  `other_goal_score` int(11) DEFAULT 0,
   `your_team` int(11) NOT NULL,
   `fixture_date` datetime NOT NULL,
   `other_team_name` varchar(150) NOT NULL,
   `other_team_id` int(11) NOT NULL,
-  `player_in` int(11) DEFAULT 0 ,
-  `player_out` int(11) DEFAULT 0,
-  `kick_off` smallint(1),
-  `half_time` smallint(1),
-  `full_time` smallint(1),
   `fixture_deleted` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -404,6 +397,18 @@ CREATE TABLE `profile_views` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ratings`
+--
+
+CREATE TABLE `ratings` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `r_conditioning` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `reset_passwords`
 --
 
@@ -556,11 +561,17 @@ CREATE TABLE `training_sessions` (
   `user_id` int(11) NOT NULL,
   `session_category` varchar(100) NOT NULL,
   `session_drill_1` int(11) NOT NULL,
+  `drill_1_completed` varchar(4) NOT NULL,
   `session_drill_2` int(11) NOT NULL,
+  `drill_2_completed` varchar(4) NOT NULL,
   `session_drill_3` int(11) NOT NULL,
+  `drill_3_completed` varchar(4) NOT NULL,
   `session_drill_4` int(11) NOT NULL,
+  `drill_4_completed` varchar(4) NOT NULL,
   `session_drill_5` int(11) NOT NULL,
+  `drill_5_completed` varchar(4) NOT NULL,
   `session_completed` varchar(4) NOT NULL,
+  `completed_date` date NOT NULL,
   `session_deleted` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -568,8 +579,30 @@ CREATE TABLE `training_sessions` (
 -- Dumping data for table `training_sessions`
 --
 
-INSERT INTO `training_sessions` (`id`, `user_id`, `session_category`, `session_drill_1`, `session_drill_2`, `session_drill_3`, `session_drill_4`, `session_drill_5`, `session_completed`, `session_deleted`) VALUES
-(1, 95, 'conditioning', 1, 11, 12, 14, 17, 'no', 'yes');
+INSERT INTO `training_sessions` (`id`, `user_id`, `session_category`, `session_drill_1`, `drill_1_completed`, `session_drill_2`, `drill_2_completed`, `session_drill_3`, `drill_3_completed`, `session_drill_4`, `drill_4_completed`, `session_drill_5`, `drill_5_completed`, `session_completed`, `completed_date`, `session_deleted`) VALUES
+(7, 95, 'Conditioning', 12, '', 18, '', 14, '', 16, '', 22, '', 'no', '0000-00-00', 'yes'),
+(8, 95, 'Conditioning', 9, '', 17, '', 5, '', 23, '', 8, '', 'no', '0000-00-00', 'yes'),
+(9, 95, 'Conditioning', 8, 'no', 14, 'no', 25, 'no', 12, 'no', 18, 'no', 'no', '0000-00-00', 'yes'),
+(10, 95, 'Conditioning', 24, 'no', 14, 'no', 1, 'no', 12, 'no', 19, 'no', 'no', '0000-00-00', 'yes'),
+(11, 95, 'Conditioning', 19, 'no', 17, 'no', 21, 'no', 15, 'no', 22, 'no', 'no', '0000-00-00', 'yes'),
+(12, 95, 'Conditioning', 22, 'no', 12, 'no', 9, 'no', 6, 'no', 3, 'no', 'no', '0000-00-00', 'yes'),
+(13, 95, 'Conditioning', 18, 'no', 23, 'no', 14, 'no', 26, 'no', 4, 'no', 'no', '0000-00-00', 'yes'),
+(14, 95, 'Conditioning', 11, 'no', 23, 'no', 6, 'no', 18, 'no', 21, 'no', 'no', '0000-00-00', 'yes'),
+(15, 95, 'Conditioning', 13, 'no', 6, 'no', 12, 'no', 22, 'no', 2, 'no', 'no', '0000-00-00', 'yes'),
+(16, 95, 'Conditioning', 20, 'no', 5, 'no', 11, 'no', 7, 'no', 4, 'no', 'no', '0000-00-00', 'yes'),
+(17, 95, 'Conditioning', 23, 'no', 7, 'no', 1, 'no', 10, 'no', 22, 'no', 'no', '0000-00-00', 'yes'),
+(18, 95, 'Conditioning', 23, 'no', 19, 'no', 20, 'no', 10, 'no', 18, 'no', 'no', '0000-00-00', 'yes'),
+(19, 95, 'Conditioning', 20, 'no', 17, 'no', 19, 'no', 22, 'no', 11, 'no', 'no', '0000-00-00', 'yes'),
+(20, 95, 'Conditioning', 19, 'no', 22, 'no', 26, 'no', 25, 'no', 21, 'no', 'no', '0000-00-00', 'yes'),
+(21, 95, 'Conditioning', 15, 'no', 9, 'no', 26, 'no', 3, 'no', 24, 'no', 'no', '0000-00-00', 'yes'),
+(22, 95, 'Conditioning', 19, 'no', 4, 'no', 18, 'no', 9, 'no', 25, 'no', 'no', '0000-00-00', 'yes'),
+(23, 95, 'Conditioning', 23, 'no', 8, 'no', 18, 'no', 3, 'no', 4, 'no', 'no', '0000-00-00', 'yes'),
+(24, 95, 'Conditioning', 4, 'no', 22, 'no', 1, 'no', 16, 'no', 13, 'no', 'no', '0000-00-00', 'yes'),
+(25, 95, 'Conditioning', 7, 'no', 23, 'no', 25, 'no', 18, 'no', 13, 'no', 'no', '0000-00-00', 'yes'),
+(26, 95, 'Conditioning', 3, 'no', 10, 'no', 24, 'no', 26, 'no', 14, 'no', 'no', '0000-00-00', 'yes'),
+(27, 95, 'Conditioning', 26, 'no', 2, 'no', 22, 'no', 4, 'no', 21, 'no', 'no', '0000-00-00', 'yes'),
+(28, 95, 'Conditioning', 8, 'no', 12, 'no', 16, 'no', 15, 'no', 14, 'no', 'no', '0000-00-00', 'yes'),
+(29, 95, 'Conditioning', 14, 'no', 3, 'no', 16, 'no', 6, 'no', 1, 'no', 'no', '0000-00-00', 'no');
 
 -- --------------------------------------------------------
 
@@ -595,23 +628,7 @@ CREATE TABLE `uk_towns` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
---
--- Table structure for table `pageview`
---
-CREATE TABLE `page_view` (
-`id` int(11) NOT NULL,
-`page` text NOT NULL,
-`userip` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `totalview`
---
-CREATE TABLE `total_view` (
-`id` int(11) NOT NULL,
-`page` text NOT NULL,
-`totalvisit` INT DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 --
 -- Table structure for table `users`
 --
@@ -779,6 +796,12 @@ ALTER TABLE `profile_views`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `ratings`
+--
+ALTER TABLE `ratings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `reset_passwords`
 --
 ALTER TABLE `reset_passwords`
@@ -832,17 +855,6 @@ ALTER TABLE `users`
 ALTER TABLE `user_follow`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `page_view`
---
-ALTER TABLE `page_view`
-    ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `total_view`
---
-ALTER TABLE `total_view`
-    ADD PRIMARY KEY (`id`);
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -962,6 +974,12 @@ ALTER TABLE `profile_views`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
+-- AUTO_INCREMENT for table `ratings`
+--
+ALTER TABLE `ratings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `reset_passwords`
 --
 ALTER TABLE `reset_passwords`
@@ -995,7 +1013,7 @@ ALTER TABLE `training`
 -- AUTO_INCREMENT for table `training_sessions`
 --
 ALTER TABLE `training_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `users`

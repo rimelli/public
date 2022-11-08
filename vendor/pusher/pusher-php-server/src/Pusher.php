@@ -367,7 +367,7 @@ class Pusher implements LoggerAwareInterface, PusherInterface
             }
         } else {
             try {
-                $data_encoded = $already_encoded ? $data : json_encode($data);
+                $data_encoded = $already_encoded ? $data : json_encode($data, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
                 throw new PusherException('Data encoding error.');
             }
@@ -392,7 +392,7 @@ class Pusher implements LoggerAwareInterface, PusherInterface
         $all_params = array_merge($post_params, $params);
 
         try {
-            $post_value = json_encode($all_params);
+            $post_value = json_encode($all_params, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             throw new PusherException('Data encoding error.');
         }
@@ -450,7 +450,7 @@ class Pusher implements LoggerAwareInterface, PusherInterface
         }
 
         try {
-            $result = json_decode($response->getBody(), false, 512);
+            $result = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             throw new PusherException('Data encoding error.');
         }

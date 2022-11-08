@@ -356,24 +356,26 @@ $(document).ready(function(){
 		button.find($('.icon-material-outline-add')).hide();
 		button.find($('.fa-spin')).show();
 
-		$.post('training_update.php', $(e.target).serialize(), data => {			
+		$.post('training_update.php', $(e.target).serialize(), data => {	
+			var response= JSON.parse(data);		
 			setTimeout(() => {
-				return_message.html(data);
+				return_message.html(response.message);
+				// console.log(response.sess_id)
 				button.prop('disabled', false);
 				button.find($('.icon-feather-save')).show();
 				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
-			}, 1000);	
-
-		});
+			}, 500);	
 
 		let html = '';
 
-		html += `<ul class='widget-tabs margin-bottom-30'></ul><li><a href='training_conditioning.php' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''>
-		<div class='widget-text'><h5>Conditioning</h5></div></a></li>`;
+		html += "<ul class='widget-tabs margin-bottom-30'><li><a href='training_page.php?training_session_id="+response.sess_id+"' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''><div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>";
 
-		$('#session-container').append(html);
+		$('#current-session-container p').empty();
+ 		$('#current-session-container').prepend(html);
+
+ 		});
 				
 	});
 	
