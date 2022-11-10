@@ -357,11 +357,7 @@ $(document).ready(function(){
 		button.find($('.fa-spin')).show();
 
 		$.post('training_update.php', $(e.target).serialize(), data => {	
-<<<<<<< HEAD
-			var response= JSON.parse(data);		
-=======
 			var response= JSON.parse(data);
->>>>>>> 92871722d64bbf73b3b61505e6f7e51d3e3d601e
 			setTimeout(() => {
 				return_message.html(response.message);
 				// console.log(response.sess_id)
@@ -370,9 +366,6 @@ $(document).ready(function(){
 				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
-<<<<<<< HEAD
-			}, 500);	
-=======
 			}, 1000);	
 			let html = '';
 
@@ -380,20 +373,9 @@ $(document).ready(function(){
 	
 			$('#current-session-container p').empty();
 			$('#current-session-container').append(html);
->>>>>>> 92871722d64bbf73b3b61505e6f7e51d3e3d601e
 
 		});
 
-<<<<<<< HEAD
-		html += "<ul class='widget-tabs margin-bottom-30'><li><a href='training_page.php?training_session_id="+response.sess_id+"' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''><div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>";
-
-		$('#current-session-container p').empty();
- 		$('#current-session-container').prepend(html);
-
- 		});
-=======
-
->>>>>>> 92871722d64bbf73b3b61505e6f7e51d3e3d601e
 				
 	});
 	

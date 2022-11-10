@@ -70,11 +70,12 @@ include("includes/form_handlers/training_handler.php");
 						$q->execute([$userLoggedIn]);
 						$rating_result = $q->fetchAll();
 					  	$rating_count = $q->rowCount();
+						// print_r($rating_result);
 					  	if ($rating_count == 0) {
 					  		echo "<div class='star-rating' data-rating='1.0'>
 									</div>";
 					  	} elseif ($rating_count == 1) {
-					  		echo "<div class='star-rating' data-rating='".$rating_result['r_conditioning']."'>
+					  		echo "<div class='star-rating' data-rating='".$rating_result[0]['r_conditioning']."'>
 									</div>";
 					  	}
 						?>
@@ -229,7 +230,7 @@ include("includes/form_handlers/training_handler.php");
 				<form id="cond-form" class="login-form login-form-style">
 					<input type="hidden" name="cond_button" value="1" />
 						<div class="radio" style="width: 100%;">
-							<input id="radio-1" name="cond-radio" type="radio" value="1">
+							<input id="radio-1" name="cond-radio" type="radio" value="2">
 							<label for="radio-1" class="margin-bottom-10"><span class="radio-label"></span> Beginner</label>
 							<input id="radio-2" name="cond-radio" type="radio" value="3">
 							<label for="radio-2" class="margin-bottom-10"><span class="radio-label"></span> Intermediate</label>
@@ -264,27 +265,28 @@ include("includes/form_handlers/training_handler.php");
 				<div class="login-headline">
 					<h3>12 minutes run test</h3>
 				</div>
+				<p id="cond-result-2" class="notification" style="display: none;"></p>
 
 				<!-- Form -->
-				<form id="login-form" class="login-form login-form-style">
-					<input type="hidden" name="login_button" value="1" />
+				<form id="cond-form-2" class="login-form login-form-style">
+					<input type="hidden" name="cond_btn_2" value="1" />
 						<div class="radio" style="width: 100%;">
-							<input id="radio-1" name="radio" type="radio">
+							<input id="radio-1" name="tr-radio" type="radio" value="4.0">
 							<label for="radio-1" class="margin-bottom-10"><span class="radio-label"></span> Excellent - Over 3 km.</label>
-							<input id="radio-2" name="radio" type="radio">
+							<input id="radio-2" name="tr-radio" type="radio" value="3.5">
 							<label for="radio-2" class="margin-bottom-10"><span class="radio-label"></span> Good - 2.3 to 3 km.</label>
-							<input id="radio-3" name="radio" type="radio">
+							<input id="radio-3" name="tr-radio" type="radio" value="3.0">
 							<label for="radio-3" class="margin-bottom-10"><span class="radio-label"></span> Average - 1.9 to 2.3 km.</label>
-							<input id="radio-4" name="radio" type="radio">
+							<input id="radio-4" name="tr-radio" type="radio" value="2.5">
 							<label for="radio-4" class="margin-bottom-10"><span class="radio-label"></span> Below Average - 1.5 to 1.9 km.</label>
-							<input id="radio-5" name="radio" type="radio">
+							<input id="radio-5" name="tr-radio" type="radio" value="2.0">
 							<label for="radio-5" class="margin-bottom-20"><span class="radio-label"></span> Poor - Below 1.5 km.</label>
 						</div>
 
 						<a href="#small-dialog" class="forgot-password popup-with-zoom-anim"><i class="icon-line-awesome-long-arrow-left"></i> Back</a>
 
 					<!-- Button -->
-					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="login_button">Submit <i class="icon-material-outline-arrow-right-alt"></i></button>
+					<button class="button login-form-btn button-sliding-icon ripple-effect margin-top-10 margin-bottom-30" type="submit" name="cond_btn_2">Submit <i class="icon-material-outline-arrow-right-alt"></i></button>
 				</form>
 			</div>
 
@@ -337,6 +339,37 @@ include("includes/form_handlers/training_handler.php");
         setTimeout(function () {
         	document.getElementById("cond-result").style.display="none";
             $('#cond-result').text('').removeClass('login-error');
+        });
+        return false;
+    });
+
+	$("#cond-form-2").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: 'includes/form_handlers/training_handler.php',
+            data: $('#cond-form-2').serialize(),
+            success: function (data) {
+                console.log(data);
+                let parsedData = JSON.parse(data);
+
+                if (parsedData.status === 'success') {
+                	document.getElementById("cond-result-2").style.display="block";
+                    $('#cond-result-2').text(parsedData.message).addClass('login-success');
+                    console.log(`Redirecting to ${parsedData.url}`)
+                    setTimeout(function () {
+                        $('#cond-result-2').text('').removeClass('login-success');
+                        window.location.href = parsedData.url;
+                    }, 500);
+                } else {
+                	document.getElementById("cond-result-2").style.display="block";
+                    $('#cond-result-2').text(parsedData.message).addClass('login-error');
+                }
+            }
+        });
+        setTimeout(function () {
+        	document.getElementById("cond-result-2").style.display="none";
+            $('#cond-result-2').text('').removeClass('login-error');
         });
         return false;
     });
