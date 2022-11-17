@@ -1,0 +1,1 @@
+ALTER TABLE `training_sessions`  ADD `tr_level` INT NOT NULL  AFTER `session_category`;

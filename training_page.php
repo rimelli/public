@@ -68,6 +68,7 @@ if(isset($_GET['training_session_id'])){
 		<div class="row">
 			<div class="col-xl-8 col-lg-8">
 				<?php 
+				$i=1;
  				foreach($training_drills as $tr_drill){
  				?>
 				<a class="blog-post">
@@ -76,16 +77,25 @@ if(isset($_GET['training_session_id'])){
  						<p><?= $tr_drill['tr_description']?></p>
  						<div class="checkbox form-control" style="display: inline-table;">
  							<h4>Completed?</h4>
-							<input type="radio" name="sess_complete_<?= $tr_drill['id']?>" value="yes" id="sess_complete_yes_<?= $tr_drill['id']?>">
+							<form id="sess-form-<?= $tr_drill['id']?>" class="login-form login-form-style">
+							<input type="hidden" name="sess_id" id="sess_id" value="<?php echo htmlspecialchars(strip_tags(trim($_GET['training_session_id'])))?>">
+							<input type="hidden" name="drill_id" id="drill_id" value="drill_<?=$i?>_completed">
+							<input type="radio" name="sess_complete" value="yes" id="sess_complete_yes_<?= $tr_drill['id']?>">
 							<label for="sess_complete_yes_<?= $tr_drill['id']?>"><span class="checkbox-icon"></span> Yes</label>
-							<input type="radio" name="sess_complete_<?= $tr_drill['id']?>" value="no" id="sess_complete_no_<?= $tr_drill['id']?>">
+							<input type="radio" name="sess_complete" value="no" id="sess_complete_no_<?= $tr_drill['id']?>">
 							<label for="sess_complete_no_<?= $tr_drill['id']?>"><span class="checkbox-icon"></span> No</label>
+							<p id='msg_<?=$tr_drill['id']?>'></p>
+							<button  id="form_submit_<?= $tr_drill['id']?>" class="button ripple-effect margin-top-20" type="submit">Save</button>
+							</form>
 						</div>
  					</div>
  					<!-- Icon -->
  					<div class="entry-icon"></div>
  				</a>
- 				<?php } ?>
+				
+ 				<?php
+				$i++; 
+			} ?>
 
 			</div>
 
@@ -101,8 +111,9 @@ if(isset($_GET['training_session_id'])){
 					<!-- Form -->
 					<form class="finish-session-form" method="POST" style="display: contents;" id="finish-session-form">
 					<input type="hidden" name="finish_session_cond" value="1" />
+					<input type="hidden" name="sess_id" id="sess_id" value="<?php echo htmlspecialchars(strip_tags(trim($_GET['training_session_id'])))?>">
 
-						<div class="return-message"></div>
+						<div class="return-message" id="session_comp_msg"></div>
 
 						<button class="btn btn-primary ripple-effect save-details" type="submit">											
 							<i class="fas fa-sync fa-lg fa-spin margin-right-10"></i>
@@ -158,6 +169,44 @@ $('#snackbar-user-status label').click(function() {
 		backgroundColor: '#383838'
 	}); 
 }); 
+<?php 
+ 				foreach($training_drills as $tr_drill){
+ 				?>
+$("#sess-form-<?=$tr_drill['id']?>").submit(function(event) {
+		console.log($(event.target).serialize());
+        event.preventDefault();
+		r_msg=$('#msg_<?=$tr_drill['id']?>').empty();
+        $.ajax({
+            type: 'POST',
+            url: 'includes/form_handlers/sess_handler.php',
+            data: $(event.target).serialize(),
+            success: function (data) {
+                console.log(data);
+                let parsedData = JSON.parse(data);
+				r_msg.html(parsedData.message);
+            }
+        });
+        return false;
+    });
+
+	<?php } ?>
+
+	$("#finish-session-form").submit(function(event) {
+		console.log($(event.target).serialize());
+        event.preventDefault();
+		r_msg=$('#session_comp_msg').empty();
+        $.ajax({
+            type: 'POST',
+            url: 'includes/form_handlers/sess_handler.php',
+            data: $(event.target).serialize(),
+            success: function (data) {
+                console.log(data);
+                let parsedData = JSON.parse(data);
+				r_msg.html(parsedData.message);
+            }
+        });
+        return false;
+    });
 </script>
 
 </body>

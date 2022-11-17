@@ -357,6 +357,7 @@ $(document).ready(function(){
 		button.find($('.fa-spin')).show();
 
 		$.post('training_update.php', $(e.target).serialize(), data => {	
+			console.log(data);
 			var response= JSON.parse(data);
 			setTimeout(() => {
 				return_message.html(response.message);

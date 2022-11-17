@@ -26,8 +26,8 @@ if (isset($_POST['create_session_cond'])){
 		$drills[] = $drill['id'];
 	}
 
-	$sql = $con->prepare("INSERT INTO training_sessions VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	$sql->execute([$userLoggedIn, 'Conditioning', $drills[0], 'no', $drills[1], 'no', $drills[2], 'no', $drills[3], 'no', $drills[4], 'no', 'no', '0000-00-00', 'no']);
+	$sql = $con->prepare("INSERT INTO training_sessions VALUES (NULL, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$sql->execute([$userLoggedIn, 'Conditioning', $tr_level,$drills[0], 'no', $drills[1], 'no', $drills[2], 'no', $drills[3], 'no', $drills[4], 'no', 'no', '0000-00-00', 'no']);
 	$last_id = $con->lastInsertId();
 
 	echo json_encode(["sess_id"=>$last_id,"message"=>"Session created!"]);

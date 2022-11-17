@@ -1,5 +1,6 @@
 <?php
 include("includes/header.php");
+include("includes/form_handlers/sess_handler.php");
 ?>
 
 
@@ -74,15 +75,16 @@ include("includes/header.php");
  									<a class="blog-post">
  										<div class="blog-post-content">
 						<?php
-						$q = $con->prepare("SELECT * FROM ratings WHERE user_id=?");
+						$q = $con->prepare("SELECT * FROM training_sessions WHERE user_id=? and session_completed='yes'");
 						$q->execute([$userLoggedIn]);
 						$rating_result = $q->fetchAll();
 					  	$rating_count = $q->rowCount();
-					  	if ($rating_count == 0) {
+					  	if ($rating_count < 10) {
 					  		echo "<div class='star-rating' data-rating='1.0'>
+							  Complete ". 10-$rating_count ." more sessions to start updating your rating
 									</div>";
-					  	} elseif ($rating_count == 1) {
-					  		echo "<div class='star-rating' data-rating='".$rating_result['r_conditioning']."'>
+					  	} elseif ($rating_count> 10) {
+					  		echo "<div class='star-rating' data-rating='". 1+getRating($con,$userLoggedIn)."'>
 									</div>";
 					  	}
 						?>
