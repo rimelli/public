@@ -7,13 +7,27 @@ if (isset($_POST['sess_id'])&& isset($_POST['drill_id']) && isset($_POST['sess_c
 	$drill=htmlspecialchars(strip_tags(trim($_POST['drill_id'])));
 	$sess_complete=htmlspecialchars(strip_tags(trim($_POST['sess_complete'])));
 	$sess_id=htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
-	$query="UPDATE training_sessions SET ".$drill."=:drill_complete WHERE id=:sess_id AND user_id=:user_id;";
-	$q = $con->prepare($query);
-	$r=$q->execute([':drill_complete'=>$sess_complete,':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
-
-	if($r){
+	if($sess_complete=='yes'){
+		$query='SELECT * FROM training_sessions WHERE id=:sess_id AND user_id=:user_id';
+		$q1 = $con->prepare($query);
+		$q1->execute([':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
+		$r= $q1->fetch(PDO::FETCH_ASSOC);
+		if($r['drills_completed']<5){
+			$drills=$r['drills_completed']+1;
+		}else{
+			$drills=5;
+		}
+		$query="UPDATE training_sessions SET drills_completed=:drill_complete WHERE id=:sess_id AND user_id=:user_id;";
+		$q = $con->prepare($query);
+		$r=$q->execute([':drill_complete'=>$drills,':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
+	
+		if($r){
+			echo json_encode(["message"=>"Session Drill Updated!"]);
+		}
+	}else{
 		echo json_encode(["message"=>"Session Drill Updated!"]);
 	}
+
 }
 if (isset($_POST['sess_id'])&& isset($_POST['finish_session_cond'])){
 	$sess_id=htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
@@ -27,19 +41,21 @@ if (isset($_POST['sess_id'])&& isset($_POST['finish_session_cond'])){
 }
 
 function getRating($con,$userLoggedIn){
-	$query="SELECT tr_level, COUNT(*) FROM training_sessions WHERE user_id=? AND session_completed='yes' GROUP BY tr_level ";
+	$query="SELECT session_level, drills_completed FROM training_sessions WHERE user_id=? ORDER BY id DESC LIMIT 10";
 	$q = $con->prepare($query);
 	$q->execute([$userLoggedIn]);
 	$r=$q->fetchAll(PDO::FETCH_DEFAULT);
 	$rating=0.00;
 	foreach($r as $e){
-		print_r($e);
-		if($e['tr_level']==1){
+		// echo '<pre>';
+		// print_r($e);
+		// echo '</pre>';
+		if($e['session_level']==1){
 			$rating+=floatval(0.06*$e[1]);
 			echo $rating;
-		}elseif($e['tr_level']==3){
+		}elseif($e['session_level']==3){
 			$rating+=floatval(0.08*$e[1]);
-			echo $e['tr_level'];
+			echo $e['session_level'];
 		}else{
 			$rating+=floatval(0.1*$e[1]);
 		}

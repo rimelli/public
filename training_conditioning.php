@@ -84,7 +84,7 @@ include("includes/form_handlers/sess_handler.php");
 							  Complete ". 10-$rating_count ." more sessions to start updating your rating
 									</div>";
 					  	} elseif ($rating_count> 10) {
-					  		echo "<div class='star-rating' data-rating='". 1+getRating($con,$userLoggedIn)."'>
+					  		echo "<div class='star-rating' data-rating='". getRating($con,$userLoggedIn)."'>
 									</div>";
 					  	}
 						?>
