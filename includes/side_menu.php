@@ -39,6 +39,7 @@
                                 echo '<li><a href="messages.php"><i class="icon-material-outline-speaker-notes"></i> Messages</a></li>';
                             }
                         ?>
+                        <li><a href="settings.php"><i class="icon-material-outline-group"></i>Settings</a></li>
                         <li><a href="users.php"><i class="icon-material-outline-group"></i>All Users</a></li>
                     </ul>
 

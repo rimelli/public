@@ -180,136 +180,6 @@ $(document).ready(function(){
 	});
 
 
-	/*--------------------------------------------------*/
- 	/*  Remove Post
- 	/*--------------------------------------------------*/	
-     $(document).on('click', '.post-remove', function(e){ 
-     	e.preventDefault();	
- 		var post_id = $(e.target).data("post_id");	
- 		$.get(`includes/form_handlers/delete_post.php?post_id=${post_id}`);
- 		console.log(post_id+ " Post Deleted.");
-
- 			$(`#post_${post_id}`).fadeOut();
- 			$('.mfp-close').click();
-
- 	});
-
-
-  /*--------------------------------------------------*/
- 	/*  Remove Note
- 	/*--------------------------------------------------*/	
-     $(document).on('click', '.note-remove', function(e){ 
-     	e.preventDefault();	
- 		var note_id = $(e.target).data("note_id");	
- 		$.get(`includes/form_handlers/delete_note.php?note_id=${note_id}`);
- 		console.log(note_id+ " Note Deleted.");
-
- 			$(`#note_${note_id}`).fadeOut();
- 			$('.mfp-close').click();
-
- 	});
-
-
-	/*--------------------------------------------------*/
-	/*  Bookmark Actions
-	/*--------------------------------------------------*/
-    $(document).on('click', '.bookmark-icon-job, .job-bookmark-remove', function(e){ 
-    	e.preventDefault();	
-		let type = ($(e.target).hasClass('job-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', job_id = $(e.target).data("job_id");	
-
-		$.get(`filter_jobs.php?job_id=${job_id}`);
-
-		if (type == 'delete'){
-			$(`#bookmark_${job_id}`).fadeOut();
-		}else{
-			$(this).toggleClass('bookmarked');
-		}
-
-	});
-
-
-	/*--------------------------------------------------*/
-  /*  Bookmark Actions
-  /*--------------------------------------------------*/
-    $(document).on('click', '.bookmark-icon-event, .event-bookmark-remove', function(e){ 
-      e.preventDefault(); 
-    let type = ($(e.target).hasClass('event-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', event_id = $(e.target).data("event_id");  
-
-    $.get(`filter_events.php?event_id=${event_id}`);
-
-    if (type == 'delete'){
-      $(`#bookmark_${event_id}`).fadeOut();
-    }else{
-      $(this).toggleClass('bookmarked');
-    }
-
-  });
-
-	/*--------------------------------------------------*/
-	/*  Bookmark Actions
-	/*--------------------------------------------------*/
-    $(document).on('click', '.bookmark-icon-profile, .profile-bookmark-remove', function(e){ 
-    	e.preventDefault();	
-		let type = ($(e.target).hasClass('profile-bookmark-remove') || $(e.target).hasClass('icon-feather-trash-2')) ? 'delete' : 'toggle', profile_id = $(e.target).data("profile_id");	
-
-		$.get(`profile_bookmark.php?profile_id=${profile_id}`);
-
-		if (type == 'delete'){
-			$(`#bookmark_${profile_id}`).fadeOut();
-		}else{
-			$(this).toggleClass('bookmarked');
-		}
-
-	});
-
-
-  /*--------------------------------------------------*/
-	/*  Contact form submission
-	/*--------------------------------------------------*/
-	$('#contactform').on('submit', function(e) {
-		e.preventDefault();		
-
-		let jobPostOverlay = $('#job-post-overlay'), 
-			jobPostLoader = $('#job-post-loader')
-		
-		jobPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Sending message</li><li>Please wait ...</li></ul>`);
-		jobPostOverlay.css('display', 'block');
-		jobPostLoader.css('display', 'flex');
-
-		$.post('contact_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				let message = '';
-
-				if (data == 'message_sent'){
-					message = '<i class="fas fa-check-circle"></i><ul><li>Message sent with success</li>';
-				}else{
-					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
-				}
-
-				message += '<li><a href="#" id="jobs-post-submit-close">Click here</a> to close.</li></ul>';
-				
-				jobPostLoader.html(message);
-				
-				if (data == 'message_sent'){
-					$(e.target).trigger('reset');	
-					$(".selectpicker").val('default').selectpicker("refresh");
-				}
-
-			}, 1000);			
-
-		});
-				
-	});
-
-	$(document).on('click', '#jobs-post-submit-close', function(e){ 
-    	e.preventDefault();	
-
-		$('#job-post-overlay').css('display', 'none');
-		$('#job-post-loader').css('display', 'none');
-
-	});
-
-
 
 	/*--------------------------------------------------*/
 	/*  Settings form submission
@@ -342,6 +212,61 @@ $(document).ready(function(){
 
 
 	/*--------------------------------------------------*/
+	/*  Child form submission
+	/*--------------------------------------------------*/
+	$('.child-form').on('submit', function(e) {
+		e.preventDefault();
+
+		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
+		let inputs = document.getElementById("child-form").elements;
+		let childName = inputs["first_name_child"].value;
+		let childLastName = inputs["last_name_child"].value;
+
+		return_message.html('');
+
+		button.prop('disabled', true);
+		button.find($('.icon-feather-save')).hide();
+		button.find($('.icon-material-outline-add')).hide();
+		button.find($('.fa-spin')).show();
+
+		$.post('settings_update.php', $(e.target).serialize(), data => {			
+			setTimeout(() => {
+				return_message.html(data);
+				button.prop('disabled', false);
+				button.find($('.icon-feather-save')).show();
+				button.find($('.icon-material-outline-add')).show();
+				button.find($('.fa-spin')).hide();
+
+			}, 1000);			
+
+		});
+
+		let html = '';
+
+		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p></div>`;
+
+		$('#child-container').prepend(html);
+				
+	});
+
+
+	/*--------------------------------------------------*/
+	/*  Child Delete
+	/*--------------------------------------------------*/
+	$(document).on('click', '.remove-child', function(e){ 
+    	e.preventDefault();	
+		let child_id = $(e.target).data("id");	
+
+		if (child_id){
+			$.get(`settings_update.php?remove_child_id=${child_id}`);			
+			$(`#child_${child_id}`).fadeOut();
+
+		}
+
+	});
+
+
+	/*--------------------------------------------------*/
 	/*  Form submission
 	/*--------------------------------------------------*/
 	$('.create-session-form').on('submit', function(e) {
@@ -357,8 +282,7 @@ $(document).ready(function(){
 		button.find($('.fa-spin')).show();
 
 		$.post('training_update.php', $(e.target).serialize(), data => {	
-			console.log(data);
-			var response= JSON.parse(data);
+			var response= JSON.parse(data);		
 			setTimeout(() => {
 				return_message.html(response.message);
 				// console.log(response.sess_id)
@@ -367,433 +291,17 @@ $(document).ready(function(){
 				button.find($('.icon-material-outline-add')).show();
 				button.find($('.fa-spin')).hide();
 
-			}, 1000);	
-			let html = '';
+			}, 500);	
 
-			html += "<ul class='widget-tabs margin-bottom-30'><li><a href='training_conditioning.php?training_session_id="+response.sess_id+"' class='widget-content active'><div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>";
-	
-			$('#current-session-container p').empty();
-			$('#current-session-container').append(html);
+		let html = '';
 
-		});
+		html += "<ul class='widget-tabs margin-bottom-30'><li><a href='training_page.php?training_session_id="+response.sess_id+"' class='widget-content active'><img src='assets/images/conditioning.jpg' alt=''><div class='widget-text'><h5>Conditioning</h5></div></a></li></ul>";
 
+		$('#current-session-container p').empty();
+ 		$('#current-session-container').prepend(html);
+
+ 		});
 				
-	});
-	
-
-	/*--------------------------------------------------*/
-	/*  Settings Attachment Upload
-	/*--------------------------------------------------*/
-	$('#attachment-upload').on('change', function(e) {
-		if ($(e.target)[0].files.length > 0){
-			let formData = new FormData(), button = $('#attachment-upload-label');
-
-			for (let x = 0, l = $(e.target)[0].files.length; x < l; x++){	
-				formData.append(`attachments[${x}]`, $(e.target)[0].files[x]);						
-			}
-			
-			button.find($('.ico-save')).hide();
-			button.find($('.fa-spin')).show();
-
-			$.ajax({
-				url : 'settings_update.php',
-				type : 'POST',
-				data : formData,
-				processData: false, 
-				contentType: false, 
-				success : function(data) {
-					setTimeout(() => {
-						let ret = $.parseJSON(data), button = $('#attachment-upload-label'), upload = $('#attachment-upload');
-
-						upload.val('');
-						$('.uploadButton-file-name').html('');
-						
-						button.find($('.ico-save')).show();
-						button.find($('.fa-spin')).hide();
-
-						if (ret.length){
-							let html = '';
-							ret.forEach(attachment => {
-								html += `<div class="attachment-box ripple-effect" id="attachment_${attachment[0]}">`; 
-								html += `<span><a href="settings_update.php?download_attachment_id=${attachment[0]}">${attachment[1]}</a></span>`;
-								html += `<i>${attachment[2].toUpperCase()}</i><button class="remove-attachment" data-tippy-placement="top" data-id="${attachment[0]}" title="Remove"></button>`;
-								html += '</div>';
-
-							});
-
-							$('#attachments-container').prepend(html);
-
-						}
-
-					}, 1000);	
-
-				}
-
-			});
-
-		}
-
-	});
-
-	/*--------------------------------------------------*/
-	/*  Settings Attachment Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-attachment', function(e){ 
-    	e.preventDefault();	
-		let attachment_id = $(e.target).data("id");	
-
-		if (attachment_id){
-			$.get(`settings_update.php?remove_attachment_id=${attachment_id}`);			
-			$(`#attachment_${attachment_id}`).fadeOut();
-
-		}
-
-	});
-
-	/*--------------------------------------------------*/
-	/*  Job deletion
-	/*--------------------------------------------------*/
-	$(document).on('click', '.job-deletion', function(e){ 
-    	e.preventDefault();	
-		let job_id = $(e.target).data("job_id");	
-
-		let jobPostOverlay = $('#job-post-overlay'), 
-			jobPostDelete = $('#job-post-delete');
-
-		jobPostDelete.html(`<ul><li>Are you sure you want to delete this job?</li>` + 
-						   `<li class="q"><a href="#" class="job-deletion-confirm" data-job_id="${job_id}">YES</a><a class="job-deletion-close" href="#">NO</a></li></ul>`);	
-
-		jobPostOverlay.css('display', 'block');
-		jobPostDelete.css('display', 'flex');
-
-	});
-
-	$(document).on('click', '.job-deletion-confirm', function(e){ 
-    	e.preventDefault();	
-		let job_id = $(e.target).data("job_id");	
-
-		let jobPostOverlay = $('#job-post-overlay'), 
-			jobPostDelete = $('#job-post-delete');
-
-		jobPostDelete.css('height', '80px');
-		jobPostDelete.css('margin', '-40px 0 0 -150px');
-		jobPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting job</li><li>Please wait ...</li></ul>`);	
-
-		$.get(`jobs_update.php?job_delete_id=${job_id}`, data => {			
-			setTimeout(() => {
-				let message = '';
-
-				if (data == 'job_deleted'){
-					$(`#job_${job_id}`).fadeOut();
-					message = '<i class="fas fa-check-circle"></i><ul><li>Job deleted with success</li>';	
-
-				}else{
-					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
-
-				}
-
-				message += '<li class="r"><a href="#" class="job-deletion-close">Click here</a> to close.</li></ul>';				
-				jobPostDelete.html(message);				
-
-			}, 1000);			
-
-		});
-
-	});
-
-	$(document).on('click', '.job-deletion-close', function(e){ 
-    	e.preventDefault();	
-
-		$('#job-post-overlay').css('display', 'none');
-		$('#job-post-delete').css('display', 'none');
-		$('#job-post-delete').css('height', '120px');
-		$('#job-post-delete').css('margin', '-60px 0 0 -150px');
-
-	});
-
-	/*--------------------------------------------------*/
-	/*  Job post form submission
-	/*--------------------------------------------------*/
-	$('#jobs-post-submit').on('submit', function(e) {
-		e.preventDefault();		
-
-		let jobPostOverlay = $('#job-post-overlay'), 
-			jobPostLoader = $('#job-post-loader'), 
-			type = $(e.target).find('input[name="post_job"]').length > 0 ? 'add' : 'edit';
-		
-		jobPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>${type == 'add' ? 'Creating a new job' : 'Editing job'}</li><li>Please wait ...</li></ul>`);
-		jobPostOverlay.css('display', 'block');
-		jobPostLoader.css('display', 'flex');
-
-		$.post('jobs_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				let message = '';
-
-				if (data == 'job_added'){
-					message = '<i class="fas fa-check-circle"></i><ul><li>Job created with success</li>';
-				}else if (data == 'job_edited'){
-					message = '<i class="fas fa-check-circle"></i><ul><li>Job edited with success</li>';	
-				}else{
-					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
-				}
-
-				message += '<li><a href="#" id="jobs-post-submit-close">Click here</a> to close.</li></ul>';
-				
-				jobPostLoader.html(message);
-				
-				if (data == 'job_added'){
-					$(e.target).trigger('reset');	
-					$(".selectpicker").val('default').selectpicker("refresh");			
-				}
-
-			}, 1000);			
-
-		});
-				
-	});
-
-	$(document).on('click', '#jobs-post-submit-close', function(e){ 
-    	e.preventDefault();	
-
-		$('#job-post-overlay').css('display', 'none');
-		$('#job-post-loader').css('display', 'none');
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Event post form submission
-	/*--------------------------------------------------*/
-	$('#events-post-submit').on('submit', function(e) {
-		e.preventDefault();		
-
-		let eventPostOverlay = $('#post-overlay'), 
-			eventPostLoader = $('#post-loader'), 
-			type = $(e.target).find('input[name="post_event"]').length > 0 ? 'add' : 'edit';
-		
-		eventPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>${type == 'add' ? 'Creating a new event' : 'Editing event'}</li><li>Please wait ...</li></ul>`);
-		eventPostOverlay.css('display', 'block');
-		eventPostLoader.css('display', 'flex');
-
-		$.post('events_update.php', $(e.target).serialize(), data => {			
-			setTimeout(() => {
-				let message = '';
-
-				if (data == 'event_added'){
-					message = '<i class="fas fa-check-circle"></i><ul><li>Event created with success</li>';
-				}else if (data == 'job_edited'){
-					message = '<i class="fas fa-check-circle"></i><ul><li>Event edited with success</li>';	
-				}else{
-					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
-				}
-
-				message += '<li><a href="#" id="events-post-submit-close">Click here</a> to close.</li></ul>';
-				
-				eventPostLoader.html(message);
-				
-				if (data == 'event_added'){
-					$(e.target).trigger('reset');	
-					$(".selectpicker").val('default').selectpicker("refresh");			
-				}
-
-			}, 1000);			
-
-		});
-				
-	});
-
-	$(document).on('click', '#events-post-submit-close', function(e){ 
-    	e.preventDefault();	
-
-		$('#post-overlay').css('display', 'none');
-		$('#post-loader').css('display', 'none');
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Event deletion
-	/*--------------------------------------------------*/
-	$(document).on('click', '.event-deletion', function(e){ 
-    	e.preventDefault();	
-		let event_id = $(e.target).data("event_id");	
-
-		let eventPostOverlay = $('#post-overlay'), 
-			eventPostDelete = $('#event-post-delete');
-
-		eventPostDelete.html(`<ul><li>Are you sure you want to delete this event?</li>` + 
-						   `<li class="q"><a href="#" class="event-deletion-confirm" data-event_id="${event_id}">YES</a><a class="event-deletion-close" href="#">NO</a></li></ul>`);	
-
-		eventPostOverlay.css('display', 'block');
-		eventPostDelete.css('display', 'flex');
-
-	});
-
-	$(document).on('click', '.event-deletion-confirm', function(e){ 
-    	e.preventDefault();	
-		let event_id = $(e.target).data("event_id");	
-
-		let eventPostOverlay = $('#event-post-overlay'), 
-			eventPostDelete = $('#event-post-delete');
-
-		eventPostDelete.css('height', '80px');
-		eventPostDelete.css('margin', '-40px 0 0 -150px');
-		eventPostDelete.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>Deleting event</li><li>Please wait ...</li></ul>`);	
-
-		$.get(`events_update.php?event_delete_id=${event_id}`, data => {			
-			setTimeout(() => {
-				let message = '';
-
-				if (data == 'event_deleted'){
-					$(`#event_${event_id}`).fadeOut();
-					message = '<i class="fas fa-check-circle"></i><ul><li>Event deleted with success</li>';	
-
-				}else{
-					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
-
-				}
-
-				message += '<li class="r"><a href="#" class="event-deletion-close">Click here</a> to close.</li></ul>';				
-				eventPostDelete.html(message);				
-
-			}, 1000);			
-
-		});
-
-	});
-
-	$(document).on('click', '.event-deletion-close', function(e){ 
-    	e.preventDefault();	
-
-		$('#post-overlay').css('display', 'none');
-		$('#event-post-delete').css('display', 'none');
-		$('#event-post-delete').css('height', '120px');
-		$('#event-post-delete').css('margin', '-60px 0 0 -150px');
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Gallery Upload
-	/*--------------------------------------------------*/
-	$('#gallery-upload').on('change', function(e) {
-		if ($(e.target)[0].files.length > 0){
-			let formData = new FormData(), button = $('#gallery-upload-label');
-
-			for (let x = 0, l = $(e.target)[0].files.length; x < l; x++){	
-				formData.append(`galleries[${x}]`, $(e.target)[0].files[x]);						
-			}
-			
-			button.find($('.ico-save')).hide();
-			button.find($('.fa-spin')).show();
-
-			$.ajax({
-				url : 'gallery_update.php',
-				type : 'POST',
-				data : formData,
-				processData: false, 
-				contentType: false, 
-				success : function(data) {
-					setTimeout(() => {
-						let ret = $.parseJSON(data), button = $('#gallery-upload-label'), upload = $('#gallery-upload');
-
-						upload.val('');
-						$('.uploadButton-file-name').html('');
-						
-						button.find($('.ico-save')).show();
-						button.find($('.fa-spin')).hide();
-
-						if (ret.length){
-							let html = '';
-							ret.forEach(gallery => {
-								html+=`<div class="gallery" id="gallery_${gallery[0]}">
-                          <img class="gallery-img" src="${gallery[1]}" alt="Image" width="600" height="400">
-                        </div>
-                        <a href="#" data-id="${gallery[0]}" class="remove-gallery" style="height: 20px;">
-                              <i class="icon-feather-trash-2 remove-gallery" data-id="${gallery[0]}" id="del_${gallery[0]}" title="Remove" data-tippy-placement="left"></i>
-                            </a>`;
-
-							});
-
-							$('#galleries-container').prepend(html);
-
-						}
-
-					}, 1000);	
-
-				}
-
-			});
-
-		}
-
-	});
-
-	/*--------------------------------------------------*/
-	/*  Gallery Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-gallery', function(e){ 
-    	e.preventDefault();	
-		let gallery_id = $(e.target).data("id");	
-
-		if (gallery_id){
-			$.get(`gallery_update.php?remove_gallery_id=${gallery_id}`);			
-			$(`#gallery_${gallery_id}`).fadeOut();
-			$(`#del_${gallery_id}`).fadeOut();
-
-		}
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Work Experience Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-work', function(e){ 
-    	e.preventDefault();	
-		let work_id = $(e.target).data("id");	
-
-		if (work_id){
-			$.get(`work_update.php?remove_work_id=${work_id}`);			
-			$(`#work_${work_id}`).fadeOut();
-			$(`#del_${work_id}`).fadeOut();
-
-		}
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Education Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-edu', function(e){ 
-    	e.preventDefault();	
-		let edu_id = $(e.target).data("id");	
-
-		if (edu_id){
-			$.get(`edu_update.php?remove_edu_id=${edu_id}`);			
-			$(`#edu_${edu_id}`).fadeOut();
-			$(`#del_${edu_id}`).fadeOut();
-
-		}
-
-	});
-
-
-	/*--------------------------------------------------*/
-	/*  Contact Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-contact', function(e){ 
-    	e.preventDefault();	
-		let contact_id = $(e.target).data("id");	
-
-		if (contact_id){
-			$.get(`contacts_update.php?remove_contact_id=${contact_id}`);			
-			$(`#contact_${contact_id}`).fadeOut();
-			$(`#del_${contact_id}`).fadeOut();
-
-		}
-
 	});
 
 
