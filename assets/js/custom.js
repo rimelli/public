@@ -229,9 +229,10 @@ $(document).ready(function(){
 		button.find($('.icon-material-outline-add')).hide();
 		button.find($('.fa-spin')).show();
 
-		$.post('settings_update.php', $(e.target).serialize(), data => {			
+		$.post('settings_update.php', $(e.target).serialize(), data => {
+			var response= JSON.parse(data);			
 			setTimeout(() => {
-				return_message.html(data);
+				return_message.html(response.message);
 				button.prop('disabled', false);
 				button.find($('.icon-feather-save')).show();
 				button.find($('.icon-material-outline-add')).show();
@@ -243,7 +244,9 @@ $(document).ready(function(){
 
 		let html = '';
 
-		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p></div>`;
+		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p><a href="#" data-id="<?php echo $child_id; ?>" class="remove-child">
+		                              <i class="icon-feather-trash-2 remove-child" data-id="<?php echo $child_id; ?>" id="del_<?php echo $child_id; ?>" title="Remove" data-tippy-placement="left"></i>
+		                            </a></div>`;
 
 		$('#child-container').prepend(html);
 				

@@ -11,7 +11,7 @@ if(isset($_POST['update_child'])) {
 	$query->execute([$userLoggedIn, $fname_child, $lname_child, $gender, 'no']);
 	$last_id = $con->lastInsertId();
 
-	header('Location: /settings.php');
+	echo json_encode(["child_id"=>$last_id,"message"=>"Child Added!"]);
 
 }
 else
