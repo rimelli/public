@@ -3,61 +3,83 @@ require dirname(__FILE__, 3) . "/config/config.php";
 
 $userLoggedIn = $_SESSION['user_id'];
 
-if (isset($_POST['sess_id'])&& isset($_POST['drill_id']) && isset($_POST['sess_complete'])){
-	$drill=htmlspecialchars(strip_tags(trim($_POST['drill_id'])));
-	$sess_complete=htmlspecialchars(strip_tags(trim($_POST['sess_complete'])));
-	$sess_id=htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
-	if($sess_complete=='yes'){
-		$query='SELECT * FROM training_sessions WHERE id=:sess_id AND user_id=:user_id';
+if (isset($_POST['sess_id']) && isset($_POST['drill_id']) && isset($_POST['sess_complete'])) {
+	$drill = htmlspecialchars(strip_tags(trim($_POST['drill_id'])));
+	$sess_complete = htmlspecialchars(strip_tags(trim($_POST['sess_complete'])));
+	$sess_id = htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
+	if ($sess_complete == 'yes') {
+		$query = 'SELECT * FROM training_sessions WHERE id=:sess_id AND user_id=:user_id';
 		$q1 = $con->prepare($query);
-		$q1->execute([':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
-		$r= $q1->fetch(PDO::FETCH_ASSOC);
-		if($r['drills_completed']<5){
-			$drills=$r['drills_completed']+1;
-		}else{
-			$drills=5;
+		$q1->execute([':sess_id' => $sess_id, ':user_id' => $userLoggedIn]);
+		$r = $q1->fetch(PDO::FETCH_ASSOC);
+		if ($r['drills_completed'] < 5) {
+			$drills = $r['drills_completed'] + 1;
+		} else {
+			$drills = 5;
 		}
-		$query="UPDATE training_sessions SET drills_completed=:drill_complete WHERE id=:sess_id AND user_id=:user_id;";
+		$query = "UPDATE training_sessions SET drills_completed=:drill_complete WHERE id=:sess_id AND user_id=:user_id;";
 		$q = $con->prepare($query);
-		$r=$q->execute([':drill_complete'=>$drills,':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
-	
-		if($r){
-			echo json_encode(["message"=>"Session Drill Updated!"]);
+		$r = $q->execute([':drill_complete' => $drills, ':sess_id' => $sess_id, ':user_id' => $userLoggedIn]);
+
+		if ($r) {
+			echo json_encode(["message" => "Session Drill Updated!"]);
 		}
-	}else{
-		echo json_encode(["message"=>"Session Drill Updated!"]);
-	}
-
-}
-if (isset($_POST['sess_id'])&& isset($_POST['finish_session_cond'])){
-	$sess_id=htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
-	$query="UPDATE training_sessions SET session_completed=:sess_complete WHERE id=:sess_id AND user_id=:user_id;";
-	$q = $con->prepare($query);
-	$r=$q->execute([':sess_complete'=>"yes",':sess_id'=>$sess_id,':user_id'=>$userLoggedIn]);
-
-	if($r){
-		echo json_encode(["message"=>"Session Marked as Completed!"]);
+	} else {
+		echo json_encode(["message" => "Session Drill Updated!"]);
 	}
 }
-
-function getRating($con,$userLoggedIn){
-	$query="SELECT session_level, drills_completed FROM training_sessions WHERE user_id=? ORDER BY id DESC LIMIT 10";
+if (isset($_POST['sess_id']) && isset($_POST['finish_session_cond'])) {
+	$sess_id = htmlspecialchars(strip_tags(trim($_POST['sess_id'])));
+	$query = "UPDATE training_sessions SET session_completed=:sess_complete WHERE id=:sess_id AND user_id=:user_id;";
 	$q = $con->prepare($query);
+	$r = $q->execute([':sess_complete' => "yes", ':sess_id' => $sess_id, ':user_id' => $userLoggedIn]);
+
+	if ($r) {
+		echo json_encode(["message" => "Session Marked as Completed!"]);
+	}
+}
+
+function getRating($con, $userLoggedIn)
+{
+	$q = $con->prepare("SELECT * FROM training_sessions WHERE user_id=? and session_completed='yes'");
 	$q->execute([$userLoggedIn]);
-	$r=$q->fetchAll(PDO::FETCH_DEFAULT);
-	$rating=0.00;
-	foreach($r as $e){
-		// echo '<pre>';
-		// print_r($e);
-		// echo '</pre>';
-		if($e['session_level']==1){
-			$rating+=floatval(0.06*$e[1]);
-			echo $rating;
-		}elseif($e['session_level']==3){
-			$rating+=floatval(0.08*$e[1]);
-			echo $e['session_level'];
-		}else{
-			$rating+=floatval(0.1*$e[1]);
+	$session_comp_result = $q->fetchAll();
+	$rating_count = $q->rowCount();
+	
+	$q2= $con->prepare("SELECT SUM(drills_completed) as drills FROM training_sessions WHERE user_id=?");
+	$q2->execute([$userLoggedIn]);
+	$row = $q2->fetch(PDO::FETCH_ASSOC);
+	$sum = $row['drills'];
+	if ($rating_count < 10) {
+		$q = $con->prepare("SELECT * FROM ratings WHERE user_id=?");
+		$q->execute([$userLoggedIn]);
+		$rating_result = $q->fetch(PDO::FETCH_ASSOC);
+		$r_cond = $rating_result['r_conditioning'];
+		
+		if ($r_cond < 3) {
+			$rating= (50-intval($rating_count)*5)*0.06 + $sum*0.06;
+		} else {
+			$rating= (50-intval($rating_count)*5)*0.08 + $sum*0.08;
+		}
+	} else {
+		$query = "SELECT session_level, drills_completed FROM training_sessions WHERE user_id=? ORDER BY id DESC LIMIT 10";
+		$q = $con->prepare($query);
+		$q->execute([$userLoggedIn]);
+		$r = $q->fetchAll(PDO::FETCH_DEFAULT);
+		$rating = 0.00;
+		foreach ($r as $e) {
+			// echo '<pre>';
+			// print_r($e);
+			// echo '</pre>';
+			if ($e['session_level'] == 1) {
+				$rating += floatval(0.06 * $e[1]);
+				echo $rating;
+			} elseif ($e['session_level'] == 3) {
+				$rating += floatval(0.08 * $e[1]);
+				echo $e['session_level'];
+			} else {
+				$rating += floatval(0.1 * $e[1]);
+			}
 		}
 	}
 	return $rating;
@@ -82,6 +104,3 @@ function getRating($con,$userLoggedIn){
 // 		$r=$q->fetchAll(PDO::FETCH_ASSOC);
 // 		echo'<pre>';
 // 		print_r($r);
-
-
-?>

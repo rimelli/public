@@ -75,18 +75,18 @@ include("includes/form_handlers/sess_handler.php");
  									<a class="blog-post">
  										<div class="blog-post-content">
 						<?php
-						$q = $con->prepare("SELECT * FROM training_sessions WHERE user_id=? and session_completed='yes'");
-						$q->execute([$userLoggedIn]);
-						$rating_result = $q->fetchAll();
-					  	$rating_count = $q->rowCount();
-					  	if ($rating_count < 10) {
-					  		echo "<div class='star-rating' data-rating='1.0'>
-							  Complete ". 10-$rating_count ." more sessions to start updating your rating
-									</div>";
-					  	} elseif ($rating_count> 10) {
+						// $q = $con->prepare("SELECT * FROM training_sessions WHERE user_id=? and session_completed='yes'");
+						// $q->execute([$userLoggedIn]);
+						// $rating_result = $q->fetchAll();
+					  	// $rating_count = $q->rowCount();
+					  	// if ($rating_count < 10) {
+					  	// 	echo "<div class='star-rating' data-rating='1.0'>
+						// 	  Complete ". 10-$rating_count ." more sessions to start updating your rating
+						// 			</div>";
+					  	// } elseif ($rating_count> 10) {
 					  		echo "<div class='star-rating' data-rating='". getRating($con,$userLoggedIn)."'>
 									</div>";
-					  	}
+					  	// }
 						?>
 						<h3>Conditioning</h3>
 						<p>Conditioning is about preparing the player's body and mind to achieve full potential, as well as improving recovery times and resistance to injury, allowing them to meet the tough demands of the game, especially at top levels.</p>
