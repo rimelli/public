@@ -11,7 +11,7 @@ if(isset($_POST['update_child'])) {
 	$query->execute([$userLoggedIn, $fname_child, $lname_child, $gender, 'no']);
 	$last_id = $con->lastInsertId();
 
-	echo 'Child Added!';
+	header('Location: /settings.php');
 
 }
 else
@@ -32,7 +32,7 @@ if (isset($_GET['remove_child_id']) && is_numeric($_GET['remove_child_id'])){
 		$delete -> execute(['yes', $_GET['remove_child_id']]);
 		
 		if ($delete -> rowCount()){
-			echo 'deleted';
+			header('Location: /settings.php');
 		}
 	}
 

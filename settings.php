@@ -73,7 +73,7 @@ include("includes/form_handlers/settings_handler.php");
 								$child_id = $child['child_id'] ?>
 								<div class="attachment-box ripple-effect" id="child_<?php echo $child_id; ?>" style="display: inline-grid;">
 									<p><?php echo $child['first_name_child'] . ' ' . $child['last_name_child'] ?></p>
-									<a href="#" data-id="<?php echo $child_id; ?>" class="remove-child">
+									<a href="/settings.php?remove_child_id=<?php echo $child_id; ?>" data-id="<?php echo $child_id; ?>" class="remove-child">
 		                              <i class="icon-feather-trash-2 remove-child" data-id="<?php echo $child_id; ?>" id="del_<?php echo $child_id; ?>" title="Remove" data-tippy-placement="left"></i>
 		                            </a>
 	                            </div>
@@ -95,14 +95,14 @@ include("includes/form_handlers/settings_handler.php");
 										<div class="col-xl-6">
 											<div class="submit-field">
 												<h5>First Name</h5>
-												<input type="text" name="first_name_child" class="with-border" value="" required>
+												<input type="text" name="first_name_child" class="with-border" value="" autocomplete="off" required>
 											</div>
 										</div>
 
 										<div class="col-xl-6">
 											<div class="submit-field">
 												<h5>Last Name</h5>
-												<input type="text" name="last_name_child" class="with-border" value="" required>
+												<input type="text" name="last_name_child" class="with-border" value="" autocomplete="off" required >
 											</div>
 										</div>
 
