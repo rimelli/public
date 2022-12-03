@@ -73,11 +73,12 @@ include("includes/form_handlers/settings_handler.php");
 								$child_id = $child['child_id'] ?>
 								<div class="attachment-box ripple-effect" id="child_<?php echo $child_id; ?>" style="display: inline-grid;">
 									<p><?php echo $child['first_name_child'] . ' ' . $child['last_name_child'] ?></p>
-									<a href="/settings.php?remove_child_id=<?php echo $child_id; ?>" data-id="<?php echo $child_id; ?>" class="remove-child">
+									<a href="#" data-id="<?php echo $child_id; ?>" class="remove-child">
 		                              <i class="icon-feather-trash-2 remove-child" data-id="<?php echo $child_id; ?>" id="del_<?php echo $child_id; ?>" title="Remove" data-tippy-placement="left"></i>
 		                            </a>
 	                            </div>
 							<?php endforeach ?>
+							<div id="child-deleted-message"></div>
 
 							<div class="row">
 
@@ -109,7 +110,7 @@ include("includes/form_handlers/settings_handler.php");
 										<div class="col-xl-6">
 											<div class="submit-field">
 												<h5>Gender</h5>
-												<select class="selectpicker with-border" name="gender_child" data-size="7" required>
+												<select class="selectpicker with-border" id="gender_child" name="gender_child" data-size="7" required>
 													<option value="" selected>Select Child's Gender</option>
 													<option value="M">Male</option>
 													<option value="F">Female</option>

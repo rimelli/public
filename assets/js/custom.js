@@ -214,7 +214,7 @@ $(document).ready(function(){
 	/*--------------------------------------------------*/
 	/*  Child form submission
 	/*--------------------------------------------------*/
-	$('.child-form').on('submit', function(e) {
+	$('#child-form').on('submit', function(e) {
 		e.preventDefault();
 
 		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
@@ -230,9 +230,19 @@ $(document).ready(function(){
 		button.find($('.fa-spin')).show();
 
 		$.post('settings_update.php', $(e.target).serialize(), data => {
-			var response= JSON.parse(data);			
+			var response= JSON.parse(data);	
+			let html = '';
+
+			html += `<div class="attachment-box ripple-effect" id="child_${response.child_id}" style="display: inline-grid;"><p>${childName} ${childLastName}</p><a href="#" data-id="${response.child_id}" class="remove-child">
+										  <i class="icon-feather-trash-2 remove-child" data-id="${response.child_id}" id="del_${response.child_id}" title="Remove" data-tippy-placement="left"></i>
+										</a></div>`;
+	
+			$('#child-container').prepend(html);		
 			setTimeout(() => {
 				return_message.html(response.message);
+				inputs["first_name_child"].value='';
+				inputs["last_name_child"].value='';
+				// document.getElementById('gender_child').value='';
 				button.prop('disabled', false);
 				button.find($('.icon-feather-save')).show();
 				button.find($('.icon-material-outline-add')).show();
@@ -242,13 +252,7 @@ $(document).ready(function(){
 
 		});
 
-		let html = '';
 
-		html += `<div class="attachment-box ripple-effect" id="child-container" style="display: inline-grid;"><p>${childName} ${childLastName}</p><a href="#" data-id="<?php echo $child_id; ?>" class="remove-child">
-		                              <i class="icon-feather-trash-2 remove-child" data-id="<?php echo $child_id; ?>" id="del_<?php echo $child_id; ?>" title="Remove" data-tippy-placement="left"></i>
-		                            </a></div>`;
-
-		$('#child-container').prepend(html);
 				
 	});
 
@@ -259,11 +263,14 @@ $(document).ready(function(){
 	$(document).on('click', '.remove-child', function(e){ 
     	e.preventDefault();	
 		let child_id = $(e.target).data("id");	
-
+		var return_message = $('#child-deleted-message');
 		if (child_id){
 			$.get(`settings_update.php?remove_child_id=${child_id}`);			
 			$(`#child_${child_id}`).fadeOut();
-
+			return_message.html('Child Deleted!');
+			setTimeout(()=>{
+			return_message.html('');
+			},2000)
 		}
 
 	});

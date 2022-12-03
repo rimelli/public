@@ -32,7 +32,8 @@ if (isset($_GET['remove_child_id']) && is_numeric($_GET['remove_child_id'])){
 		$delete -> execute(['yes', $_GET['remove_child_id']]);
 		
 		if ($delete -> rowCount()){
-			header('Location: /settings.php');
+			echo 'Child Deleted';
+
 		}
 	}
 
