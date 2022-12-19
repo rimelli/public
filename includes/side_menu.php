@@ -40,6 +40,7 @@
                             }
                         ?>
                         <li><a href="settings.php"><i class="icon-material-outline-group"></i>Settings</a></li>
+                        <li><a href="events_post.php"><i class="icon-material-outline-group"></i>Post event</a></li>
                         <li><a href="users.php"><i class="icon-material-outline-group"></i>All Users</a></li>
                     </ul>
 

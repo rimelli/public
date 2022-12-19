@@ -212,66 +212,51 @@ $(document).ready(function(){
 
 
 	/*--------------------------------------------------*/
-	/*  Child form submission
+	/*  Event post form submission
 	/*--------------------------------------------------*/
-	$('#child-form').on('submit', function(e) {
-		e.preventDefault();
+	$('#events-post-submit').on('submit', function(e) {
+		e.preventDefault();		
 
-		let button = $(e.target).find($('.save-details')), return_message = $(e.target).find($('.return-message'));
-		let inputs = document.getElementById("child-form").elements;
-		let childName = inputs["first_name_child"].value;
-		let childLastName = inputs["last_name_child"].value;
+		let eventPostOverlay = $('#post-overlay'), 
+			eventPostLoader = $('#post-loader'), 
+			type = $(e.target).find('input[name="post_event"]').length > 0 ? 'add' : 'edit';
+		
+		eventPostLoader.html(`<i class="fas fa-circle-notch fa-spin"></i><ul><li>${type == 'add' ? 'Creating a new event' : 'Editing event'}</li><li>Please wait ...</li></ul>`);
+		eventPostOverlay.css('display', 'block');
+		eventPostLoader.css('display', 'flex');
 
-		return_message.html('');
-
-		button.prop('disabled', true);
-		button.find($('.icon-feather-save')).hide();
-		button.find($('.icon-material-outline-add')).hide();
-		button.find($('.fa-spin')).show();
-
-		$.post('settings_update.php', $(e.target).serialize(), data => {
-			var response= JSON.parse(data);	
-			let html = '';
-
-			html += `<div class="attachment-box ripple-effect" id="child_${response.child_id}" style="display: inline-grid;"><p>${childName} ${childLastName}</p><a href="#" data-id="${response.child_id}" class="remove-child">
-										  <i class="icon-feather-trash-2 remove-child" data-id="${response.child_id}" id="del_${response.child_id}" title="Remove" data-tippy-placement="left"></i>
-										</a></div>`;
-	
-			$('#child-container').prepend(html);		
+		$.post('events_update.php', $(e.target).serialize(), data => {			
 			setTimeout(() => {
-				return_message.html(response.message);
-				inputs["first_name_child"].value='';
-				inputs["last_name_child"].value='';
-				// document.getElementById('gender_child').value='';
-				button.prop('disabled', false);
-				button.find($('.icon-feather-save')).show();
-				button.find($('.icon-material-outline-add')).show();
-				button.find($('.fa-spin')).hide();
+				let message = '';
+
+				if (data == 'event_added'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Event created with success</li>';
+				}else if (data == 'job_edited'){
+					message = '<i class="fas fa-check-circle"></i><ul><li>Event edited with success</li>';	
+				}else{
+					message = `<i class="fas fa-exclamation-circle"></i><ul><li>${data}</li>`;
+				}
+
+				message += '<li><a href="#" id="events-post-submit-close">Click here</a> to close.</li></ul>';
+				
+				eventPostLoader.html(message);
+				
+				if (data == 'event_added'){
+					$(e.target).trigger('reset');	
+					$(".selectpicker").val('default').selectpicker("refresh");			
+				}
 
 			}, 1000);			
 
 		});
-
-
 				
 	});
 
-
-	/*--------------------------------------------------*/
-	/*  Child Delete
-	/*--------------------------------------------------*/
-	$(document).on('click', '.remove-child', function(e){ 
+	$(document).on('click', '#events-post-submit-close', function(e){ 
     	e.preventDefault();	
-		let child_id = $(e.target).data("id");	
-		var return_message = $('#child-deleted-message');
-		if (child_id){
-			$.get(`settings_update.php?remove_child_id=${child_id}`);			
-			$(`#child_${child_id}`).fadeOut();
-			return_message.html('Child Deleted!');
-			setTimeout(()=>{
-			return_message.html('');
-			},2000)
-		}
+
+		$('#post-overlay').css('display', 'none');
+		$('#post-loader').css('display', 'none');
 
 	});
 
